@@ -1,4 +1,4 @@
-package com.example.marketplace;
+package com.drip.marketplace;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

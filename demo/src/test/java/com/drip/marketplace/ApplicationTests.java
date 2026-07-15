@@ -1,4 +1,4 @@
-package com.example.marketplace;
+package com.drip.marketplace;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
