@@ -60,4 +60,9 @@ export class AuthService {
     localStorage.setItem('token', res.token);
     localStorage.setItem('usuario', JSON.stringify(res.usuario));
   }
+
+  getUsuario(): { id: string; nombre: string; email: string; rol: string } | null {
+  const data = localStorage.getItem('usuario');
+  return data ? JSON.parse(data) : null;
+  }
 }

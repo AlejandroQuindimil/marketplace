@@ -26,8 +26,7 @@ export class Login {
     this.authService.login({ email: this.email, password: this.password }).subscribe({
       next: (res) => {
         this.loading = false;
-        console.log('Login OK:', res);
-        alert(`Bienvenido, ${res.usuario.nombre}! Token guardado.`);
+        this.router.navigate(['/home']);
       },
       error: (err) => {
         this.loading = false;

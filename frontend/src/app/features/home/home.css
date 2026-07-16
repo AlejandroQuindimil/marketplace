@@ -71,3 +71,16 @@
   font-size: 13px;
   margin-left: 8px;
 }
+
+.nav-bienvenida {
+  margin-left: 24px;
+  font-size: 14px;
+  color: #1a1a1a;
+  font-weight: 500;
+}
+
+.nav-logout {
+  margin-left: 16px;
+  cursor: pointer;
+  color: #999;
+}

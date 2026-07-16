@@ -2,7 +2,13 @@
   <div class="nav-logo">DRIP</div>
   <div class="nav-links">
     <a routerLink="/productos">Catálogo</a>
-    <a routerLink="/login">Iniciar sesión</a>
+    <ng-container *ngIf="usuario; else noLogueado">
+      <span class="nav-bienvenida">Bienvenido, {{ usuario.nombre }}</span>
+      <a (click)="logout()" class="nav-logout">Cerrar sesión</a>
+    </ng-container>
+    <ng-template #noLogueado>
+      <a routerLink="/login">Iniciar sesión</a>
+    </ng-template>
   </div>
 </nav>
 

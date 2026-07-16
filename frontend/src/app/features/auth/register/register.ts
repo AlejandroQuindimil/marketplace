@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth';
 
 @Component({
@@ -19,7 +19,7 @@ export class Register {
   success = false;
   loading = false;
 
-  constructor(private authService: AuthService) {}
+   constructor(private authService: AuthService, private router: Router) {}
 
   onSubmit(): void {
     this.error = '';
@@ -29,7 +29,7 @@ export class Register {
       next: (res) => {
         this.loading = false;
         this.success = true;
-        console.log('Registro OK:', res);
+        this.router.navigate(['/home']);
       },
       error: (err) => {
         this.loading = false;
