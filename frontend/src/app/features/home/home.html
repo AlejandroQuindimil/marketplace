@@ -1,0 +1,35 @@
+<nav class="navbar">
+  <div class="nav-logo">DRIP</div>
+  <div class="nav-links">
+    <a routerLink="/productos">Catálogo</a>
+    <a routerLink="/login">Iniciar sesión</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <h1>Nueva temporada</h1>
+  <p>Descubre las últimas tendencias</p>
+  <a routerLink="/productos" class="hero-btn">Ver catálogo</a>
+</section>
+
+<section class="destacados">
+  <h2>Destacados</h2>
+
+  <div class="grid" *ngIf="!loading">
+    <a class="card" *ngFor="let p of destacados" [routerLink]="['/productos', p.id]">
+      <div class="card-img">
+        <img [src]="p.imagenes[0]" [alt]="p.nombre" onerror="this.style.display='none'">
+      </div>
+      <div class="card-info">
+        <span class="card-marca">{{ p.marca }}</span>
+        <span class="card-nombre">{{ p.nombre }}</span>
+        <div class="card-precio">
+          <span class="precio-actual">{{ p.precio }}€</span>
+          <span class="precio-anterior" *ngIf="p.precioAnterior">{{ p.precioAnterior }}€</span>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <p *ngIf="loading">Cargando productos...</p>
+</section>
