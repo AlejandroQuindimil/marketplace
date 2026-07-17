@@ -1,0 +1,51 @@
+* { box-sizing: border-box; }
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 40px;
+  border-bottom: 1px solid #eee;
+  font-family: -apple-system, sans-serif;
+}
+
+.nav-logo {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-decoration: none;
+  color: #1a1a1a;
+}
+
+.nav-categorias {
+  display: flex;
+  gap: 28px;
+}
+
+.nav-categorias a {
+  text-decoration: none;
+  color: #1a1a1a;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.nav-categorias a:hover { color: #666; }
+
+.nav-iconos {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-icono-link {
+  text-decoration: none;
+  color: #1a1a1a;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.nav-usuario {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a1a;
+}

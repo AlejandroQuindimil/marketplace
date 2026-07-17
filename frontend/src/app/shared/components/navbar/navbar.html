@@ -1,0 +1,23 @@
+<nav class="navbar">
+  <a routerLink="/" class="nav-logo">DRIP</a>
+
+  <div class="nav-categorias">
+    <a routerLink="/productos" [queryParams]="{categoria: ''}">Novedades</a>
+    <a routerLink="/productos" [queryParams]="{categoria: 'CAMISETAS'}">Ropa</a>
+    <a routerLink="/productos" [queryParams]="{categoria: 'ZAPATILLAS'}">Zapatillas</a>
+    <a routerLink="/productos" [queryParams]="{categoria: 'ACCESORIOS'}">Accesorios</a>
+    <a routerLink="/productos" [queryParams]="{categoria: 'ABRIGOS'}">Abrigos</a>
+  </div>
+
+  <div class="nav-iconos">
+    <ng-container *ngIf="usuario; else noLogueado">
+      <span class="nav-usuario">{{ usuario.nombre }}</span>
+      <a (click)="logout()" class="nav-icono-link">Salir</a>
+    </ng-container>
+    <ng-template #noLogueado>
+      <a routerLink="/login" class="nav-icono-link">Usuario</a>
+    </ng-template>
+    <a routerLink="/favoritos" class="nav-icono-link">Favoritos</a>
+    <a routerLink="/carrito" class="nav-icono-link">Cesta</a>
+  </div>
+</nav>
