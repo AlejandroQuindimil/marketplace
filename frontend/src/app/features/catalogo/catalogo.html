@@ -1,16 +1,19 @@
+<div class="catalogo-container">
+  <h1>Catálogo</h1>
 
+  <div class="filtros">
+    <button
+      *ngFor="let cat of categorias"
+      [class.active]="categoriaActiva === cat.valor"
+      (click)="filtrarPor(cat.valor)">
+      {{ cat.label }}
+    </button>
+  </div>
 
-<section class="hero">
-  <h1>Nueva temporada</h1>
-  <p>Descubre las últimas tendencias</p>
-  <a routerLink="/productos" class="hero-btn">Ver catálogo</a>
-</section>
-
-<section class="destacados">
-  <h2>Destacados</h2>
+  <p *ngIf="loading">Cargando productos...</p>
 
   <div class="grid" *ngIf="!loading">
-    <a class="card" *ngFor="let p of destacados" [routerLink]="['/productos', p.id]">
+    <a class="card" *ngFor="let p of productos" [routerLink]="['/productos', p.id]">
       <div class="card-img">
         <button class="fav-btn" (click)="$event.preventDefault()">♡</button>
         <img [src]="p.imagenes[0]" [alt]="p.nombre" onerror="this.style.display='none'">
@@ -26,5 +29,5 @@
     </a>
   </div>
 
-  <p *ngIf="loading">Cargando productos...</p>
-</section>
+  <p *ngIf="!loading && productos.length === 0" class="empty">No hay productos en esta categoría.</p>
+</div>
