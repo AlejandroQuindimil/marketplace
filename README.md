@@ -32,7 +32,7 @@ El proyecto está desarrollado utilizando las siguientes tecnologías:
 
 ### 🔍 Arquitectura de la aplicación
 
-![Esquema de arquitectura Angular + Spring Boot + MongoDB](arquitecturaproyecto.png)
+![Esquema de arquitectura Angular + Spring Boot + MongoDB](img/arquitecturaproyecto.png)
 
 ---
 
