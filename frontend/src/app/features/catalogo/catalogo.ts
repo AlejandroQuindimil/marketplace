@@ -1,7 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, ActivatedRoute, Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { ProductoService, Producto } from '../../core/producto';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-catalogo',
@@ -14,6 +16,7 @@ export class Catalogo implements OnInit {
   productos: Producto[] = [];
   loading = true;
   categoriaActiva = '';
+  terminoBusqueda = '';
 
   categorias = [
     { valor: '', label: 'Todos' },
@@ -26,30 +29,42 @@ export class Catalogo implements OnInit {
 
   constructor(
     private productoService: ProductoService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private http: HttpClient,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    this.cargarProductos();
+    this.route.queryParams.subscribe(params => {
+      this.terminoBusqueda = params['buscar'] || '';
+      this.categoriaActiva = params['categoria'] || '';
+      this.cargarProductos();
+    });
   }
 
   filtrarPor(categoria: string): void {
-    this.categoriaActiva = categoria;
-    this.cargarProductos();
+    this.router.navigate(['/productos'], { queryParams: { categoria } });
+  }
+
+  quitarBusqueda(): void {
+    this.router.navigate(['/productos']);
   }
 
   private cargarProductos(): void {
     this.loading = true;
-    this.productoService.findAll(this.categoriaActiva || undefined).subscribe({
-      next: (data) => {
-        this.productos = data;
-        this.loading = false;
-        this.cdr.detectChanges();
-      },
-      error: () => {
-        this.loading = false;
-        this.cdr.detectChanges();
-      }
-    });
+
+    if (this.terminoBusqueda) {
+      const url = `${environment.apiUrl}/productos?buscar=${encodeURIComponent(this.terminoBusqueda)}`;
+      this.http.get<Producto[]>(url).subscribe({
+        next: (data) => { this.productos = data; this.loading = false; this.cdr.detectChanges(); },
+        error: () => { this.loading = false; this.cdr.detectChanges(); }
+      });
+    } else {
+      this.productoService.findAll(this.categoriaActiva || undefined).subscribe({
+        next: (data) => { this.productos = data; this.loading = false; this.cdr.detectChanges(); },
+        error: () => { this.loading = false; this.cdr.detectChanges(); }
+      });
+    }
   }
 }

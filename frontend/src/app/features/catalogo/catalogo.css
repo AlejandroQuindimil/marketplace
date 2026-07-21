@@ -84,3 +84,34 @@
 }
 
 .empty { color: #999; margin-top: 40px; }
+.catalogo-header { margin-bottom: 24px; }
+
+.catalogo-contexto { display: none; }
+
+.busqueda-contexto {
+  display: block;
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 4px;
+}
+
+.busqueda-titulo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.busqueda-titulo h1 { margin: 0; }
+
+.quitar-busqueda {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  background: white;
+  cursor: pointer;
+  font-size: 14px;
+  color: #666;
+}
+
+.quitar-busqueda:hover { background: #f5f5f5; }

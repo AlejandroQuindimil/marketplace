@@ -1,5 +1,15 @@
 <div class="catalogo-container">
-  <h1>Catálogo</h1>
+  <div class="catalogo-header">
+  <span class="catalogo-contexto" *ngIf="!terminoBusqueda">Catálogo</span>
+  <div class="busqueda-header" *ngIf="terminoBusqueda">
+    <span class="busqueda-contexto">Resultados de búsqueda</span>
+    <div class="busqueda-titulo">
+      <h1>'{{ terminoBusqueda }}'</h1>
+      <button class="quitar-busqueda" (click)="quitarBusqueda()">✕</button>
+    </div>
+  </div>
+  <h1 *ngIf="!terminoBusqueda">Catálogo</h1>
+</div>
 
   <div class="filtros">
     <button
