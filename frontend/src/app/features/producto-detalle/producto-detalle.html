@@ -1,0 +1,101 @@
+<div class="detalle-container" *ngIf="!loading && producto">
+  <div class="detalle-grid">
+  <div class="detalle-galeria">
+    <div class="miniaturas-col" *ngIf="producto.imagenes.length > 1">
+      <button
+        *ngFor="let img of producto.imagenes"
+        class="miniatura"
+        [class.active]="imagenActiva === img"
+        (click)="seleccionarImagen(img)">
+        <img [src]="img" [alt]="producto.nombre" onerror="this.style.display='none'">
+      </button>
+    </div>
+
+  <div class="detalle-img">
+    <img [src]="imagenActiva" [alt]="producto.nombre" onerror="this.style.display='none'">
+  </div>
+</div>
+
+    <div class="detalle-info">
+      <span class="detalle-marca">{{ producto.marca }}</span>
+      <h1>{{ producto.nombre }}</h1>
+
+      <div class="detalle-precio">
+        <span class="precio-actual">{{ producto.precio }}€</span>
+        <span class="precio-anterior" *ngIf="producto.precioAnterior">{{ producto.precioAnterior }}€</span>
+      </div>
+
+      <p class="detalle-descripcion">{{ producto.descripcion }}</p>
+
+      <div class="seccion" *ngIf="producto.colores.length">
+        <span class="seccion-label">Color</span>
+        <div class="opciones">
+          <button
+            *ngFor="let color of producto.colores"
+            [class.active]="colorSeleccionado === color"
+            (click)="seleccionarColor(color)">
+            {{ color }}
+          </button>
+        </div>
+      </div>
+
+      <div class="seccion" *ngIf="producto.tallas.length">
+        <span class="seccion-label">Talla</span>
+        <div class="opciones">
+          <button
+            *ngFor="let t of producto.tallas"
+            [class.active]="tallaSeleccionada === t.talla"
+            [disabled]="t.stock === 0"
+            (click)="seleccionarTalla(t.talla)">
+            {{ t.talla }}
+          </button>
+        </div>
+      </div>
+
+      <button class="btn-comprar" [disabled]="!tallaSeleccionada">
+        {{ tallaSeleccionada ? 'Añadir a la cesta' : 'Selecciona una talla' }}
+      </button>
+
+      <button class="btn-fav">♡ Añadir a favoritos</button>
+    </div>
+  </div>
+</div>
+
+<p *ngIf="loading" class="loading-msg">Cargando producto...</p>
+<p *ngIf="!loading && !producto" class="loading-msg">Producto no encontrado.</p>
+
+<div class="acordeones" *ngIf="!loading && producto">
+  <div class="acordeon" *ngFor="let a of acordeones; let i = index">
+    <button class="acordeon-header" (click)="toggleAcordeon(i)">
+      <span>{{ a.titulo }}</span>
+      <span class="acordeon-icono">{{ a.abierto ? '−' : '+' }}</span>
+    </button>
+    <div class="acordeon-body" *ngIf="a.abierto">
+      <div class="acordeon-fila" *ngFor="let c of a.contenido">
+        <span class="acordeon-label">{{ c.label }}:</span>
+        <span>{{ c.valor }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="similares" *ngIf="similares.length">
+  <h2>Productos similares</h2>
+  <div class="similares-carrusel">
+    <a class="similar-card" *ngFor="let p of similares" [routerLink]="['/productos', p.id]">
+      <div class="similar-img">
+        <img [src]="p.imagenes[0]" [alt]="p.nombre" onerror="this.style.display='none'">
+      </div>
+      <span class="similar-marca">{{ p.marca }}</span>
+      <span class="similar-nombre">{{ p.nombre }}</span>
+      <span class="similar-precio">{{ p.precio }}€</span>
+    </a>
+
+    <a class="similar-card ver-mas" [routerLink]="['/productos']" [queryParams]="{categoria: producto?.categoria}">
+      <div class="ver-mas-img">
+        <span class="ver-mas-flecha">→</span>
+      </div>
+      <span class="ver-mas-texto">Descubre más productos similares</span>
+    </a>
+  </div>
+</div>
