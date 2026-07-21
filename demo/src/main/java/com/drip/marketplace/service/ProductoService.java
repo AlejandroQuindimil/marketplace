@@ -61,4 +61,8 @@ public class ProductoService {
         producto.setMarca(dto.getMarca());
         producto.setDestacado(dto.isDestacado());
     }
+
+    public List<Producto> buscar(String query) {
+    return productoRepository.findByNombreContainingIgnoreCase(query);
+}
 }

@@ -8,4 +8,5 @@ import java.util.List;
 public interface ProductoRepository extends MongoRepository<Producto, String> {
     List<Producto> findByCategoria(Producto.Categoria categoria);
     List<Producto> findByDestacadoTrue();
+    List<Producto> findByNombreContainingIgnoreCase(String nombre);
 }

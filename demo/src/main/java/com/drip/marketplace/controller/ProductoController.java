@@ -20,8 +20,12 @@ public class ProductoController {
 
     @GetMapping
     public ResponseEntity<List<Producto>> findAll(
-            @RequestParam(required = false) Producto.Categoria categoria
+            @RequestParam(required = false) Producto.Categoria categoria,
+            @RequestParam(required = false) String buscar
     ) {
+        if (buscar != null && !buscar.isBlank()) {
+            return ResponseEntity.ok(productoService.buscar(buscar));
+        }
         return ResponseEntity.ok(productoService.findAll(categoria));
     }
 
@@ -63,3 +67,4 @@ public class ProductoController {
         }
     }
 }
+   
