@@ -37,15 +37,41 @@
   gap: 20px;
 }
 
-.nav-icono-link {
-  text-decoration: none;
+.icono-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   color: #1a1a1a;
-  font-size: 13px;
+  text-decoration: none;
   cursor: pointer;
 }
 
-.nav-usuario {
+.icono-link:hover { color: #666; }
+
+.icono-texto {
   font-size: 13px;
   font-weight: 600;
-  color: #1a1a1a;
+}
+
+.nav-buscador {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 4px 4px 4px 14px;
+}
+
+.nav-buscador input {
+  border: none;
+  outline: none;
+  font-size: 13px;
+  width: 160px;
+}
+
+.nav-buscador button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px 8px;
 }

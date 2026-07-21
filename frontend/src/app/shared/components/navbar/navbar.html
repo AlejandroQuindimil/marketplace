@@ -8,16 +8,36 @@
     <a routerLink="/productos" [queryParams]="{categoria: 'ACCESORIOS'}">Accesorios</a>
     <a routerLink="/productos" [queryParams]="{categoria: 'ABRIGOS'}">Abrigos</a>
   </div>
+  <div class="nav-buscador">
+    <input
+      type="text"
+      placeholder="Buscar productos..."
+      [(ngModel)]="busqueda"
+      (keyup.enter)="buscar()">
+    <button (click)="buscar()">
+      <lucide-icon [img]="SearchIcon" [size]="16"></lucide-icon>
+    </button>
+  </div>
 
   <div class="nav-iconos">
     <ng-container *ngIf="usuario; else noLogueado">
-      <span class="nav-usuario">{{ usuario.nombre }}</span>
-      <a (click)="logout()" class="nav-icono-link">Salir</a>
+      <a class="icono-link" (click)="logout()" title="Cerrar sesión ({{ usuario.nombre }})">
+        <lucide-icon [img]="UserIcon" [size]="20"></lucide-icon>
+        <span class="icono-texto">{{ usuario.nombre }}</span>
+      </a>
     </ng-container>
     <ng-template #noLogueado>
-      <a routerLink="/login" class="nav-icono-link">Usuario</a>
+      <a routerLink="/login" class="icono-link" title="Iniciar sesión">
+        <lucide-icon [img]="UserIcon" [size]="20"></lucide-icon>
+      </a>
     </ng-template>
-    <a routerLink="/favoritos" class="nav-icono-link">Favoritos</a>
-    <a routerLink="/carrito" class="nav-icono-link">Cesta</a>
+
+    <a routerLink="/favoritos" class="icono-link" title="Favoritos">
+      <lucide-icon [img]="HeartIcon" [size]="20"></lucide-icon>
+    </a>
+
+    <a routerLink="/carrito" class="icono-link" title="Cesta">
+      <lucide-icon [img]="CartIcon" [size]="20"></lucide-icon>
+    </a>
   </div>
 </nav>
