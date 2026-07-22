@@ -1,4 +1,5 @@
 <div class="detalle-container" *ngIf="!loading && producto">
+  
   <div class="detalle-grid">
   <div class="detalle-galeria">
     <div class="miniaturas-col" *ngIf="producto.imagenes.length > 1">
@@ -15,9 +16,10 @@
     <img [src]="imagenActiva" [alt]="producto.nombre" onerror="this.style.display='none'">
   </div>
 </div>
-
+<div class="detalle-container" *ngIf="!loading && producto">
+<button class="btn-volver" (click)="volver()">←</button>
     <div class="detalle-info">
-      <span class="detalle-marca">{{ producto.marca }}</span>
+    <span class="detalle-marca">{{  producto.marca }}</span>
       <h1>{{ producto.nombre }}</h1>
 
       <div class="detalle-precio">
@@ -52,11 +54,15 @@
         </div>
       </div>
 
-      <button class="btn-comprar" [disabled]="!tallaSeleccionada">
-        {{ tallaSeleccionada ? 'Añadir a la cesta' : 'Selecciona una talla' }}
-      </button>
+      <div class="acciones-compra">
+        <button class="btn-comprar" [disabled]="!tallaSeleccionada">
+          {{ tallaSeleccionada ? 'Añadir a la cesta' : 'Selecciona una talla' }}
+        </button>
 
-      <button class="btn-fav">♡ Añadir a favoritos</button>
+        <button class="btn-fav-circular" [class.active]="esFavorito" (click)="toggleFavorito()">
+          {{ esFavorito ? '♥' : '♡' }}
+        </button>
+      </div>
     </div>
   </div>
 </div>

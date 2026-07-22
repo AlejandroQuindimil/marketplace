@@ -283,3 +283,52 @@
   color: #1a1a1a;
   line-height: 1.4;
 }
+
+.acciones-compra {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.acciones-compra .btn-comprar {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.btn-fav-circular {
+  width: 52px;
+  height: 52px;
+  min-width: 52px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  background: white;
+  font-size: 20px;
+  cursor: pointer;
+  color: #1a1a1a;
+  transition: all 0.15s;
+}
+
+.btn-fav-circular:hover { border-color: #1a1a1a; }
+
+.btn-fav-circular.active {
+  color: #ff0000;
+  border-color: #ff0000;
+}
+
+.btn-volver {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  background: white;
+  font-size: 18px;
+  cursor: pointer;
+  color: #1a1a1a;
+  margin-bottom: 20px;
+  transition: all 0.15s;
+}
+
+.btn-volver:hover {
+  border-color: #1a1a1a;
+  background: #f5f5f5;
+}

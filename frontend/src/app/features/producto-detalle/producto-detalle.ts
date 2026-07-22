@@ -1,7 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProductoService, Producto } from '../../core/producto';
+import { FavoritoService } from '../../core/favorito';
+import { AuthService } from '../../core/auth';
 
 @Component({
   selector: 'app-producto-detalle',
@@ -17,6 +19,7 @@ export class ProductoDetalle implements OnInit {
   tallaSeleccionada = '';
   colorSeleccionado = '';
   imagenActiva = '';
+  esFavorito = false;
 
   // Info estática de referencia (no viene del backend)
   acordeones = [
@@ -50,7 +53,10 @@ export class ProductoDetalle implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private productoService: ProductoService,
+    private favoritoService: FavoritoService,
+    private authService: AuthService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -66,12 +72,45 @@ export class ProductoDetalle implements OnInit {
         this.loading = false;
         this.cdr.detectChanges();
         this.cargarSimilares(data.categoria, data.id);
+        this.comprobarFavorito(data.id);
       },
       error: () => {
         this.loading = false;
         this.cdr.detectChanges();
       }
     });
+  }
+
+    private comprobarFavorito(productoId: string): void {
+    if (!this.authService.isLoggedIn()) return;
+
+    this.favoritoService.getFavoritos().subscribe({
+      next: (favs) => {
+        this.esFavorito = favs.some(f => f.id === productoId);
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  toggleFavorito(): void {
+    if (!this.producto) return;
+
+    if (!this.authService.isLoggedIn()) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    if (this.esFavorito) {
+      this.favoritoService.remove(this.producto.id).subscribe(() => {
+        this.esFavorito = false;
+        this.cdr.detectChanges();
+      });
+    } else {
+      this.favoritoService.add(this.producto.id).subscribe(() => {
+        this.esFavorito = true;
+        this.cdr.detectChanges();
+      });
+    }
   }
 
   private cargarSimilares(categoria: string, idActual: string): void {
@@ -97,5 +136,9 @@ export class ProductoDetalle implements OnInit {
 
   toggleAcordeon(index: number): void {
     this.acordeones[index].abierto = !this.acordeones[index].abierto;
+  }
+
+  volver(): void {
+    window.history.back();
   }
 }
