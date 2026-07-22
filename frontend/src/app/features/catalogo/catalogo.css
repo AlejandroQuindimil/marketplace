@@ -115,3 +115,7 @@
 }
 
 .quitar-busqueda:hover { background: #f5f5f5; }
+
+.fav-btn.active {
+  color: #e11d48;
+}
