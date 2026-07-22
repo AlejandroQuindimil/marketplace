@@ -1,0 +1,27 @@
+<div class="favoritos-container">
+  <h1>Mis favoritos</h1>
+
+  <p *ngIf="loading">Cargando favoritos...</p>
+
+  <div class="grid" *ngIf="!loading && productos.length">
+    <a class="card" *ngFor="let p of productos" [routerLink]="['/productos', p.id]">
+      <div class="card-img">
+        <button class="fav-btn active" (click)="quitarFavorito(p.id, $event)">♥</button>
+        <img [src]="p.imagenes[0]" [alt]="p.nombre" onerror="this.style.display='none'">
+      </div>
+      <div class="card-info">
+        <span class="card-marca">{{ p.marca }}</span>
+        <span class="card-nombre">{{ p.nombre }}</span>
+        <div class="card-precio">
+          <span class="precio-actual">{{ p.precio }}€</span>
+          <span class="precio-anterior" *ngIf="p.precioAnterior">{{ p.precioAnterior }}€</span>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && !productos.length">
+    <p>Todavía no tienes productos favoritos.</p>
+    <a routerLink="/productos" class="btn-explorar">Explorar catálogo</a>
+  </div>
+</div>
