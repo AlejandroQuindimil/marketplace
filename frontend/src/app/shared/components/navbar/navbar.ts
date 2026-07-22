@@ -31,11 +31,11 @@ export class Navbar implements OnInit {
     this.usuario = this.authService.getUsuario();
 
     this.router.events.subscribe(() => {
+      this.usuario = this.authService.getUsuario();
       const params = this.route.snapshot.queryParams;
       this.busqueda = params['buscar'] || '';
     });
   }
-
   buscar(): void {
     if (this.busqueda.trim()) {
       this.router.navigate(['/productos'], { queryParams: { buscar: this.busqueda.trim() } });

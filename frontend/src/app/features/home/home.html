@@ -12,7 +12,12 @@
   <div class="grid" *ngIf="!loading">
     <a class="card" *ngFor="let p of destacados" [routerLink]="['/productos', p.id]">
       <div class="card-img">
-        <button class="fav-btn" (click)="$event.preventDefault()">♡</button>
+        <button
+          class="fav-btn"
+          [class.active]="favoritoIds.has(p.id)"
+          (click)="toggleFavorito(p.id, $event)">
+          {{ favoritoIds.has(p.id) ? '♥' : '♡' }}
+        </button>
         <img [src]="p.imagenes[0]" [alt]="p.nombre" onerror="this.style.display='none'">
       </div>
       <div class="card-info">
