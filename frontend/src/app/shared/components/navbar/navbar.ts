@@ -4,6 +4,7 @@ import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule, User, Heart, ShoppingCart, Search } from 'lucide-angular';
 import { AuthService } from '../../../core/auth';
+import { CarritoService } from '../../../core/carrito';
 
 @Component({
   selector: 'app-navbar',
@@ -15,6 +16,7 @@ import { AuthService } from '../../../core/auth';
 export class Navbar implements OnInit {
   usuario: { nombre: string } | null = null;
   busqueda = '';
+  totalCarrito = 0;
 
   readonly UserIcon = User;
   readonly HeartIcon = Heart;
@@ -24,18 +26,25 @@ export class Navbar implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public carritoService: CarritoService,
   ) {}
 
   ngOnInit(): void {
-    this.usuario = this.authService.getUsuario();
+  this.usuario = this.authService.getUsuario();
+  this.actualizarContadorCarrito();
 
-    this.router.events.subscribe(() => {
-      this.usuario = this.authService.getUsuario();
-      const params = this.route.snapshot.queryParams;
-      this.busqueda = params['buscar'] || '';
-    });
-  }
+  this.router.events.subscribe(() => {
+    this.usuario = this.authService.getUsuario();
+    this.actualizarContadorCarrito();
+    const params = this.route.snapshot.queryParams;
+    this.busqueda = params['buscar'] || '';
+  });
+}
+
+actualizarContadorCarrito(): void {
+  this.totalCarrito = this.carritoService.getCount();
+}
   buscar(): void {
     if (this.busqueda.trim()) {
       this.router.navigate(['/productos'], { queryParams: { buscar: this.busqueda.trim() } });
@@ -43,8 +52,8 @@ export class Navbar implements OnInit {
   }
 
   logout(): void {
-    this.authService.logout();
-    this.usuario = null;
-    window.location.href = '/';
+  this.authService.logout();
+  this.usuario = null;
+  window.location.href = '/';
   }
 }

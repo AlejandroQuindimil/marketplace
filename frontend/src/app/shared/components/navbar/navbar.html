@@ -36,8 +36,11 @@
       <lucide-icon [img]="HeartIcon" [size]="20"></lucide-icon>
     </a>
 
-    <a routerLink="/carrito" class="icono-link" title="Cesta">
+    <a routerLink="/carrito" class="icono-link icono-carrito" title="Cesta">
       <lucide-icon [img]="CartIcon" [size]="20"></lucide-icon>
+      <span class="badge-carrito" *ngIf="carritoService.contador() > 0">
+        {{ carritoService.contador() > 10 ? '+10' : carritoService.contador() }}
+      </span>
     </a>
   </div>
 </nav>

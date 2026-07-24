@@ -75,3 +75,24 @@
   font-size: 14px;
   padding: 4px 8px;
 }
+
+.icono-carrito {
+  position: relative;
+}
+
+.badge-carrito {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background: #ff5a1f;
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
