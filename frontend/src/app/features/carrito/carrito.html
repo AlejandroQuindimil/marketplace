@@ -1,0 +1,46 @@
+<div class="carrito-container">
+  <h1>Tu cesta</h1>
+
+  <div class="carrito-vacio" *ngIf="items.length === 0">
+    <p>Tu cesta está vacía.</p>
+    <a routerLink="/productos" class="btn-explorar">Explorar catálogo</a>
+  </div>
+
+  <div class="carrito-contenido" *ngIf="items.length > 0">
+    <div class="items-lista">
+      <div class="item-carrito" *ngFor="let item of items; let i = index">
+        <div class="item-img">
+          <img [src]="item.producto.imagenes[0]" [alt]="item.producto.nombre" onerror="this.style.display='none'">
+        </div>
+
+        <div class="item-info">
+          <span class="item-marca">{{ item.producto.marca }}</span>
+          <span class="item-nombre">{{ item.producto.nombre }}</span>
+          <span class="item-variante">Talla {{ item.talla }} · {{ item.color }}</span>
+          <span class="item-precio">{{ item.producto.precio }}€</span>
+        </div>
+
+        <div class="item-cantidad">
+          <button (click)="decrementar(i)">−</button>
+          <span>{{ item.cantidad }}</span>
+          <button (click)="incrementar(i)" [disabled]="item.cantidad >= getStockDisponible(item)">+</button>
+        </div>
+
+        <button class="item-quitar" (click)="quitar(i)">✕</button>
+      </div>
+    </div>
+
+    <div class="resumen">
+      <div class="resumen-linea">
+        <span>Total</span>
+        <span class="resumen-total">{{ getTotal().toFixed(2) }}€</span>
+      </div>
+
+      <p class="error-msg" *ngIf="error">{{ error }}</p>
+
+      <button class="btn-finalizar" [disabled]="procesando" (click)="finalizarCompra()">
+        {{ procesando ? 'Procesando...' : 'Finalizar compra' }}
+      </button>
+    </div>
+  </div>
+</div>

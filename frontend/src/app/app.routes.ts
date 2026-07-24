@@ -5,6 +5,7 @@ import { Register } from './features/auth/register/register';
 import { Catalogo } from './features/catalogo/catalogo';
 import { ProductoDetalle } from './features/producto-detalle/producto-detalle';
 import { Favoritos } from './features/favoritos/favoritos';
+import { Carrito } from './features/carrito/carrito';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -14,4 +15,5 @@ export const routes: Routes = [
   { path: 'productos', component: Catalogo },
   { path: 'productos/:id', component: ProductoDetalle },
   { path: 'favoritos', component: Favoritos },
+  { path: 'carrito', component: Carrito },
 ];
