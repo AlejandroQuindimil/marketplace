@@ -4,6 +4,8 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProductoService, Producto } from '../../core/producto';
 import { FavoritoService } from '../../core/favorito';
 import { AuthService } from '../../core/auth';
+import { CarritoService } from '../../core/carrito';
+import { ToastService } from '../../core/toast';
 
 @Component({
   selector: 'app-producto-detalle',
@@ -57,7 +59,9 @@ export class ProductoDetalle implements OnInit {
     private productoService: ProductoService,
     private favoritoService: FavoritoService,
     private authService: AuthService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private carritoService: CarritoService,
+    private toastService: ToastService,
   ) {}
 
   ngOnInit(): void {
@@ -141,4 +145,17 @@ export class ProductoDetalle implements OnInit {
   volver(): void {
     window.history.back();
   }
+
+ anadirAlCarrito(): void {
+  if (!this.producto || !this.tallaSeleccionada) return;
+
+  this.carritoService.addItem(
+    this.producto,
+    this.tallaSeleccionada,
+    this.colorSeleccionado,
+    1
+  );
+
+  this.toastService.show(`${this.producto.nombre} añadido a la cesta`);
+}
 }

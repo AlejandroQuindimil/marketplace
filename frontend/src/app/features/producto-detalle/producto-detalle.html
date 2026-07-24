@@ -55,7 +55,7 @@
       </div>
 
       <div class="acciones-compra">
-        <button class="btn-comprar" [disabled]="!tallaSeleccionada">
+        <button class="btn-comprar" [disabled]="!tallaSeleccionada" (click)="anadirAlCarrito()">
           {{ tallaSeleccionada ? 'Añadir a la cesta' : 'Selecciona una talla' }}
         </button>
 
