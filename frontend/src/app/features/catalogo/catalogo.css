@@ -119,3 +119,27 @@
 .fav-btn.active {
   color: #e11d48;
 }
+
+.flecha-card {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.85);
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.card-img:hover .flecha-card { opacity: 1; }
+
+.flecha-card-izq { left: 8px; }
+.flecha-card-der { right: 8px; }

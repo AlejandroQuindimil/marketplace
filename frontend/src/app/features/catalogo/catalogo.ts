@@ -103,4 +103,21 @@ export class Catalogo implements OnInit {
       });
     }
   }
+
+  imagenIndexPorProducto: Map<string, number> = new Map();
+
+  getImagenActiva(p: Producto): string {
+    const index = this.imagenIndexPorProducto.get(p.id) || 0;
+    return p.imagenes[index] || p.imagenes[0];
+  }
+
+  cambiarImagen(p: Producto, direccion: number, event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const actual = this.imagenIndexPorProducto.get(p.id) || 0;
+    const total = p.imagenes.length;
+    const nuevo = (actual + direccion + total) % total;
+    this.imagenIndexPorProducto.set(p.id, nuevo);
+  }
 }
