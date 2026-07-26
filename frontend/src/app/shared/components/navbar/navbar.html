@@ -21,10 +21,22 @@
 
   <div class="nav-iconos">
     <ng-container *ngIf="usuario; else noLogueado">
-      <a class="icono-link" (click)="logout()" title="Cerrar sesión ({{ usuario.nombre }})">
-        <lucide-icon [img]="UserIcon" [size]="20"></lucide-icon>
-        <span class="icono-texto">{{ usuario.nombre }}</span>
-      </a>
+      <div class="usuario-menu-wrapper">
+        <button class="icono-link" (click)="toggleMenu()" title="Tu cuenta">
+          <lucide-icon [img]="UserIcon" [size]="20"></lucide-icon>
+          <span class="icono-texto">{{ usuario.nombre }}</span>
+        </button>
+
+        <div class="usuario-dropdown" *ngIf="menuAbierto">
+          <a routerLink="/perfil" [queryParams]="{tab: 'perfil'}" (click)="cerrarMenu()">Tu perfil</a>
+          <a routerLink="/perfil" [queryParams]="{tab: 'pedidos'}" (click)="cerrarMenu()">Pedidos</a>
+          <a routerLink="/perfil" [queryParams]="{tab: 'devoluciones'}" (click)="cerrarMenu()">Devolver artículo</a>
+          <a routerLink="/perfil" [queryParams]="{tab: 'tallas'}" (click)="cerrarMenu()">Tus tallas</a>
+          <a routerLink="/perfil" [queryParams]="{tab: 'ayuda'}" (click)="cerrarMenu()">Ayuda y contacto</a>
+          <hr>
+          <a class="dropdown-logout" (click)="logout()">¿No eres {{ usuario.nombre }}? Cerrar sesión</a>
+        </div>
+      </div>
     </ng-container>
     <ng-template #noLogueado>
       <a routerLink="/login" class="icono-link" title="Iniciar sesión">

@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { LucideAngularModule, User, Heart, ShoppingCart, Search } from 'lucide-angular';
 import { AuthService } from '../../../core/auth';
 import { CarritoService } from '../../../core/carrito';
+import { HostListener, ElementRef } from '@angular/core';
 
 @Component({
   selector: 'app-navbar',
@@ -28,6 +29,7 @@ export class Navbar implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     public carritoService: CarritoService,
+    private elementRef: ElementRef,
   ) {}
 
   ngOnInit(): void {
@@ -40,6 +42,22 @@ export class Navbar implements OnInit {
     const params = this.route.snapshot.queryParams;
     this.busqueda = params['buscar'] || '';
   });
+}
+
+@HostListener('document:click', ['$event'])
+onClickOutside(event: Event): void {
+  if (this.menuAbierto && !this.elementRef.nativeElement.contains(event.target)) {
+    this.menuAbierto = false;
+  }
+}
+menuAbierto = false;
+
+toggleMenu(): void {
+  this.menuAbierto = !this.menuAbierto;
+}
+
+cerrarMenu(): void {
+  this.menuAbierto = false;
 }
 
 actualizarContadorCarrito(): void {
