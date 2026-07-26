@@ -1,0 +1,88 @@
+<div class="perfil-layout" *ngIf="usuario">
+  <aside class="perfil-sidebar">
+    <button [class.active]="tabActiva === 'perfil'" (click)="cambiarTab('perfil')">Tu perfil</button>
+    <button [class.active]="tabActiva === 'pedidos'" (click)="cambiarTab('pedidos')">Pedidos</button>
+    <button [class.active]="tabActiva === 'devoluciones'" (click)="cambiarTab('devoluciones')">Devolver artículo</button>
+    <button [class.active]="tabActiva === 'tallas'" (click)="cambiarTab('tallas')">Tus tallas</button>
+    <button [class.active]="tabActiva === 'ayuda'" (click)="cambiarTab('ayuda')">Ayuda y contacto</button>
+  </aside>
+
+  <section class="perfil-contenido">
+
+    <!-- TU PERFIL -->
+    <div *ngIf="tabActiva === 'perfil'">
+      <h1>Tu perfil</h1>
+      <div class="perfil-info">
+        <div class="perfil-avatar">{{ usuario.nombre.charAt(0) }}</div>
+        <div>
+          <p class="perfil-nombre">{{ usuario.nombre }}</p>
+          <p class="perfil-email">{{ usuario.email }}</p>
+          <span class="perfil-rol" *ngIf="usuario.rol === 'ADMIN'">Administrador</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PEDIDOS -->
+    <div *ngIf="tabActiva === 'pedidos'">
+      <h1>Tus pedidos</h1>
+      <p *ngIf="loadingPedidos">Cargando pedidos...</p>
+
+      <div class="pedido-card" *ngFor="let p of pedidos">
+        <div class="pedido-header">
+          <span class="pedido-fecha">{{ p.createdAt | date:'d MMM yyyy' }}</span>
+          <span class="pedido-estado" [class]="'estado-' + p.estado.toLowerCase()">
+            {{ estadoLabel(p.estado) }}
+          </span>
+        </div>
+        <div class="pedido-body">
+          <span>{{ p.items.length }} artículo(s)</span>
+          <span class="pedido-total">{{ p.total.toFixed(2) }}€</span>
+        </div>
+      </div>
+
+      <p *ngIf="!loadingPedidos && pedidos.length === 0" class="vacio">
+        Todavía no has realizado ningún pedido.
+      </p>
+    </div>
+
+    <!-- DEVOLUCIONES -->
+    <div *ngIf="tabActiva === 'devoluciones'">
+      <h1>Devolver artículo</h1>
+      <p class="vacio">Todavía no tienes artículos disponibles para devolución.</p>
+    </div>
+
+    <!-- TALLAS -->
+    <div *ngIf="tabActiva === 'tallas'">
+      <h1>Tus tallas</h1>
+      <p class="tallas-descripcion">Guarda tu talla preferida por categoría para agilizar tus futuras compras.</p>
+
+      <div class="talla-row" *ngFor="let cat of categorias">
+        <span class="talla-categoria">{{ categoriaLabels[cat] }}</span>
+        <select
+          [value]="tallasPreferidas[cat] || ''"
+          (change)="guardarTalla(cat, $any($event.target).value)">
+          <option value="">Sin definir</option>
+          <option *ngFor="let t of opcionesTalla(cat)" [value]="t">{{ t }}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- AYUDA -->
+    <div *ngIf="tabActiva === 'ayuda'">
+      <h1>Ayuda y contacto</h1>
+      <div class="ayuda-item">
+        <h3>¿Cómo hago un seguimiento de mi pedido?</h3>
+        <p>Puedes ver el estado de tus pedidos en la sección "Pedidos" de tu perfil.</p>
+      </div>
+      <div class="ayuda-item">
+        <h3>¿Cómo devuelvo un artículo?</h3>
+        <p>Desde la sección "Devolver artículo" podrás iniciar el proceso una vez tu pedido haya sido entregado.</p>
+      </div>
+      <div class="ayuda-item">
+        <h3>Contacto</h3>
+        <p>Escríbenos a <a href="mailto:soporte@drip.com">soporte&#64;drip.com</a> y te responderemos lo antes posible.</p>
+      </div>
+    </div>
+
+  </section>
+</div>

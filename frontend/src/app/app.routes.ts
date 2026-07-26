@@ -6,6 +6,7 @@ import { Catalogo } from './features/catalogo/catalogo';
 import { ProductoDetalle } from './features/producto-detalle/producto-detalle';
 import { Favoritos } from './features/favoritos/favoritos';
 import { Carrito } from './features/carrito/carrito';
+import { Perfil } from './features/perfil/perfil';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -16,4 +17,5 @@ export const routes: Routes = [
   { path: 'productos/:id', component: ProductoDetalle },
   { path: 'favoritos', component: Favoritos },
   { path: 'carrito', component: Carrito },
+  { path: 'perfil', component: Perfil },
 ];
