@@ -1,58 +1,64 @@
 # DRIP — Marketplace de Moda
- 
+
 ## 📌 Sobre el proyecto
- 
+
 **DRIP** es un marketplace de moda full-stack inspirado en plataformas como Zalando, donde los usuarios pueden **explorar un catálogo de productos**, **buscar y filtrar por categoría**, **gestionar favoritos** y **realizar pedidos** con gestión automática de stock.
- 
+
 El proyecto está dividido en dos partes independientes que se comunican mediante una API REST protegida con JWT:
- 
+
 - **Backend**: gestiona usuarios, autenticación, productos, favoritos y pedidos.
 - **Frontend**: catálogo navegable, ficha de producto detallada, favoritos y flujo de registro/inicio de sesión.
+
 De esta forma, *DRIP* funciona como una tienda online completa, con separación clara entre la lógica de negocio (backend) y la experiencia de usuario (frontend).
- 
+
 ### 📷 Vista previa de la aplicación
- 
+
 ![Vista previa de DRIP]()
- 
+
 ### 📱 Interfaz de usuario
- 
+
 ![Pantallas de la aplicación]()
- 
+
 ---
- 
+
 ## 🔧 Tecnologías utilizadas
- 
+
 El proyecto está desarrollado utilizando las siguientes tecnologías:
- 
+
 - **Angular** y **Tailwind CSS** para la interfaz de usuario.
 - **Spring Boot** (Java) para la API REST y la lógica de negocio.
 - **MongoDB** para el almacenamiento de datos.
 - **JWT (JSON Web Tokens)** para la autenticación y autorización.
+
 ### 🔍 Arquitectura de la aplicación
- 
+
 ![Esquema de arquitectura Angular + Spring Boot + MongoDB](frontend/public/img/arquitecturaproyecto.png)
- 
+
 ---
- 
+
 ## ✨ Funcionalidades implementadas
- 
+
 - ✅ Registro e inicio de sesión con JWT y roles (`USER` / `ADMIN`)
 - ✅ Interceptor HTTP que adjunta el token JWT automáticamente a las peticiones protegidas
 - ✅ Catálogo de productos con filtro por categoría y búsqueda en tiempo real
 - ✅ Ficha de producto: galería de imágenes, selección de talla/color, productos similares, botón de volver
 - ✅ Sistema de favoritos conectado end-to-end (catálogo, home y ficha de producto)
 - ✅ Página de favoritos con listado y opción de quitar
+- ✅ Carrito de compra con persistencia por usuario y fusión al iniciar sesión
+- ✅ Notificaciones toast y contador de artículos en la navbar
 - ✅ Creación de pedidos con verificación y descuento de stock automático
-- ✅ Historial de pedidos por usuario
+- ✅ Perfil de usuario con historial de pedidos, tallas preferidas por categoría y ayuda/contacto
+- ✅ Imágenes reales de producto (banco libre de derechos)
+
 ### Pendiente
- 
-- ⏳ Carrito de compra y checkout
+
 - ⏳ Panel de administración
 - ⏳ Chatbot de atención al cliente
 - ⏳ Sistema de valoraciones y opiniones
 - ⏳ Carrusel automático de ofertas especiales en Home
+
 ---
- 
+
 > [!IMPORTANT]
 > **Requisitos para poder ejecutar el proyecto:**
 >
@@ -62,9 +68,9 @@ El proyecto está desarrollado utilizando las siguientes tecnologías:
 > - Editor de código: **Visual Studio Code**.
 >
 > Si no tienes MongoDB instalado, sigue los pasos a continuación.
- 
+
 ---
- 
+
 > [!NOTE]
 > **Comprobar que MongoDB está corriendo**
 >
@@ -77,9 +83,9 @@ El proyecto está desarrollado utilizando las siguientes tecnologías:
 > Start-Service MongoDB
 > ```
 > Si no aparece ningún servicio, instala MongoDB Community Server desde [aquí](https://www.mongodb.com/try/download/community).
- 
+
 ---
- 
+
 > [!TIP]
 > **Arrancar el backend (Spring Boot)**
 >
@@ -89,9 +95,9 @@ El proyecto está desarrollado utilizando las siguientes tecnologías:
 > ./mvnw spring-boot:run
 > ```
 > El backend quedará disponible en `http://localhost:8080`.
- 
+
 ---
- 
+
 > [!TIP]
 > **Arrancar el frontend (Angular)**
 >
@@ -102,9 +108,9 @@ El proyecto está desarrollado utilizando las siguientes tecnologías:
 > ng serve
 > ```
 > El frontend quedará disponible en `http://localhost:4200`.
- 
+
 ---
- 
+
 > [!WARNING]
 > **Ejecutar el proyecto en la carpeta correcta**
 >
@@ -114,11 +120,17 @@ El proyecto está desarrollado utilizando las siguientes tecnologías:
 > cd C:\Users\Usuario\marketplace\marketplace
 > ```
 > Luego, sigue los pasos anteriores para iniciar backend y frontend por separado.
- 
+
 ---
- 
+
+## 📸 Créditos de imágenes
+
+Las fotografías de producto utilizadas en el catálogo proceden de [Unsplash](https://unsplash.com) y [Pexels](https://pexels.com), bajo sus respectivas licencias de uso libre para fines comerciales y no comerciales, sin necesidad de atribución. Se usan únicamente con fines de demostración en este proyecto de portfolio.
+
+---
+
 ## 🔌 Endpoints principales de la API
- 
+
 | Método | Ruta | Descripción | Acceso |
 |--------|------|-------------|--------|
 | POST | `/api/auth/register` | Registro de usuario | Público |
@@ -134,25 +146,27 @@ El proyecto está desarrollado utilizando las siguientes tecnologías:
 | DELETE | `/api/favoritos/{productoId}` | Quitar de favoritos | Autenticado |
 | POST | `/api/pedidos` | Crear pedido | Autenticado |
 | GET | `/api/pedidos/mis-pedidos` | Historial de pedidos | Autenticado |
- 
+
 ---
- 
+
 ## 🗺️ Roadmap
- 
+
 - [x] Conectar el botón de favoritos del catálogo/detalle con el backend
 - [x] Página de favoritos
-- [ ] Carrito de compra funcional + checkout
+- [x] Carrito de compra funcional + checkout
+- [x] Perfil de usuario con pedidos, tallas y ayuda/contacto
+- [x] Banco de imágenes reales para los productos
 - [ ] Panel de administración
 - [ ] Carrusel automático de ofertas especiales en Home (productos con descuento, rotación diaria)
 - [ ] Chatbot de atención al cliente
-- [ ] Banco de imágenes reales para los productos
 - [ ] Sistema de valoraciones y opiniones
+
 ---
- 
+
 ✅ **Con estos pasos, tu entorno estará listo para ejecutar el proyecto correctamente. 🚀**
- 
+
 ## 👤 Autor
- 
+
 Alejandro Quindimil
- 
+
 _Proyecto personal desarrollado con fines de aprendizaje y portfolio._
