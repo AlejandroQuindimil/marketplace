@@ -73,6 +73,7 @@ export class ProductoDetalle implements OnInit {
         this.producto = data;
         this.colorSeleccionado = data.colores[0] || '';
         this.imagenActiva = data.imagenes[0] || '';
+        this.imagenIndexActivo = 0;
         this.loading = false;
         this.cdr.detectChanges();
         this.cargarSimilares(data.categoria, data.id);
@@ -135,7 +136,9 @@ export class ProductoDetalle implements OnInit {
   }
 
   seleccionarImagen(img: string): void {
+    if (!this.producto) return;
     this.imagenActiva = img;
+    this.imagenIndexActivo = this.producto.imagenes.indexOf(img);
   }
 
   toggleAcordeon(index: number): void {
@@ -157,5 +160,20 @@ export class ProductoDetalle implements OnInit {
   );
 
   this.toastService.show(`${this.producto.nombre} añadido a la cesta`);
+}
+
+imagenIndexActivo = 0;
+
+siguienteImagen(): void {
+  if (!this.producto) return;
+  this.imagenIndexActivo = (this.imagenIndexActivo + 1) % this.producto.imagenes.length;
+  this.imagenActiva = this.producto.imagenes[this.imagenIndexActivo];
+}
+
+anteriorImagen(): void {
+  if (!this.producto) return;
+  this.imagenIndexActivo =
+    (this.imagenIndexActivo - 1 + this.producto.imagenes.length) % this.producto.imagenes.length;
+  this.imagenActiva = this.producto.imagenes[this.imagenIndexActivo];
 }
 }

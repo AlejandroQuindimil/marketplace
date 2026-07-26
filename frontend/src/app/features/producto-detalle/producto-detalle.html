@@ -13,7 +13,17 @@
     </div>
 
   <div class="detalle-img">
+    <button
+      class="flecha-img flecha-izq"
+      *ngIf="producto.imagenes.length > 1"
+      (click)="anteriorImagen()">‹</button>
+
     <img [src]="imagenActiva" [alt]="producto.nombre" onerror="this.style.display='none'">
+
+    <button
+      class="flecha-img flecha-der"
+      *ngIf="producto.imagenes.length > 1"
+      (click)="siguienteImagen()">›</button>
   </div>
 </div>
 <div class="detalle-container" *ngIf="!loading && producto">
