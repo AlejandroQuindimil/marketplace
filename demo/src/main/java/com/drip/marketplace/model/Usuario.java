@@ -7,6 +7,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 @Document(collection = "usuarios")
@@ -25,6 +27,7 @@ public class Usuario {
     private List<Direccion> direcciones = new ArrayList<>();
 
     private LocalDateTime createdAt = LocalDateTime.now();
+    private Map<String, String> tallasPreferidas = new HashMap<>();
 
     public enum Rol {
         USER, ADMIN
