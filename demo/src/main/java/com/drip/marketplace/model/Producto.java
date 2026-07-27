@@ -7,12 +7,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Data
 @Document(collection = "productos")
 public class Producto {
 
     @Id
+    @JsonProperty("id")
     private String id;
 
     private String nombre;

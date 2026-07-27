@@ -1,32 +1,31 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, ActivatedRoute, Router} from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ProductoService, Producto } from '../../core/producto';
 import { AuthService } from '../../core/auth';
 import { FavoritoService } from '../../core/favorito';
-
+import { OfertasCarrusel } from './ofertas-carrusel/ofertas-carrusel';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, OfertasCarrusel],
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
-
 export class Home implements OnInit {
   destacados: Producto[] = [];
+  ofertas: Producto[] = [];
   loading = true;
   usuario: { nombre: string } | null = null;
-
   favoritoIds: Set<string> = new Set();
 
   constructor(
     private productoService: ProductoService,
     private authService: AuthService,
-    private cdr: ChangeDetectorRef,
-    private router: Router,
     private favoritoService: FavoritoService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -49,6 +48,13 @@ export class Home implements OnInit {
       },
       error: () => {
         this.loading = false;
+        this.cdr.detectChanges();
+      }
+    });
+
+    this.productoService.findAll().subscribe({
+      next: (data) => {
+        this.ofertas = data.filter(p => p.precioAnterior && p.precioAnterior > p.precio);
         this.cdr.detectChanges();
       }
     });
@@ -75,11 +81,9 @@ export class Home implements OnInit {
       });
     }
   }
-
+  
   logout(): void {
     this.authService.logout();
     this.usuario = null;
   }
-
-
 }
