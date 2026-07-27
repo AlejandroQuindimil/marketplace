@@ -1,0 +1,46 @@
+<div class="ofertas-section" *ngIf="productos.length > 0">
+  <h2>Ofertas especiales</h2>
+
+  <div class="carousel-outer">
+    <button class="carousel-arrow carousel-arrow--left" type="button" aria-label="Anterior" (click)="prev()">‹</button>
+
+    <div
+      class="carousel-viewport"
+      (mouseenter)="onMouseEnter()"
+      (mouseleave)="onMouseLeave()"
+      (pointerdown)="onPointerDown($event)"
+      (pointermove)="onPointerMove($event)"
+      (pointerup)="onPointerUp($event)"
+      (pointercancel)="onPointerUp($event)">
+      <div class="carousel-wrapper">
+        <div
+          class="carousel-container"
+          [class.no-transition]="!transitionEnabled"
+          [style.transform]="trackTransform"
+          (transitionend)="onTrackTransitionEnd()">
+<div class="carousel-item" [style.flex]="'0 0 ' + (100/itemsPerView) + '%'" [style.max-width.%]="100/itemsPerView" *ngFor="let p of extendedProductos; let i = index">
+          
+            <div class="oferta-card" [attr.data-id]="p.id">
+              <div class="oferta-badge" *ngIf="descuento(p) > 0">-{{ descuento(p) }}%</div>
+              <div class="oferta-img">
+                <img [src]="p.imagenes[0]" [alt]="p.nombre" onerror="this.style.display='none'">              </div>
+              <span class="oferta-marca">{{ p.marca }}</span>
+              <span class="oferta-nombre">{{ p.nombre }}</span>
+              <div class="oferta-precios">
+                <span class="oferta-actual">{{ p.precio }}€</span>
+                <span class="oferta-anterior" *ngIf="p.precioAnterior">{{ p.precioAnterior }}€</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <button class="carousel-arrow carousel-arrow--right" type="button" aria-label="Siguiente" (click)="next()">›</button>
+  </div>
+
+  <div class="carousel-dots" (pointerdown)="onDotsPointerDown($event)" (pointermove)="onDotsPointerMove($event)" (pointerup)="onDotsPointerUp($event)" (pointercancel)="onDotsPointerUp($event)">
+    <button *ngFor="let p of productos; let i = index" class="carousel-dot" [class.active]="i === currentIndex" type="button" (click)="goTo(i)"></button>
+  </div>
+</div>
