@@ -9,6 +9,10 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.util.Date;
 
+/**
+ * Utilidad para generar y validar JWT. La clave secreta y el tiempo de
+ * expiracion se leen de application.properties (jwt.secret, jwt.expiration).
+ */
 @Component
 public class JwtUtil {
 
@@ -22,6 +26,10 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
+    /**
+     * Genera un JWT firmado con el id del usuario como subject, y el
+     * email/rol como claims adicionales dentro del payload.
+     */
     public String generateToken(String usuarioId, String email, String rol) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + expirationMs);
@@ -36,6 +44,7 @@ public class JwtUtil {
                 .compact();
     }
 
+    /** Verifica la firma del token y extrae su contenido (claims). */
     public Claims extractClaims(String token) {
         return Jwts.parser()
                 .verifyWith(getSigningKey())
@@ -52,6 +61,7 @@ public class JwtUtil {
         return extractClaims(token).get("rol", String.class);
     }
 
+    /** Valido si la firma es correcta y el token no ha expirado todavia. */
     public boolean isTokenValid(String token) {
         try {
             Claims claims = extractClaims(token);
