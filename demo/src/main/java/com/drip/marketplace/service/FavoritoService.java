@@ -9,6 +9,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Logica de favoritos. Los ids de producto favorito viven embebidos en
+ * el propio documento Usuario (campo favoritos), no en una coleccion
+ * aparte, asi que aqui se lee/escribe siempre el Usuario completo.
+ */
 @Service
 @RequiredArgsConstructor
 public class FavoritoService {
@@ -16,6 +21,8 @@ public class FavoritoService {
     private final UsuarioRepository usuarioRepository;
     private final ProductoRepository productoRepository;
 
+    /** findAllById hace una unica consulta a Mongo para traer todos los
+     * productos favoritos de golpe, en vez de uno por uno. */
     public List<Producto> getFavoritos(String usuarioId) {
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
@@ -31,6 +38,7 @@ public class FavoritoService {
             throw new IllegalArgumentException("Producto no encontrado");
         }
 
+        // Evita duplicados: si ya estaba en favoritos, no se vuelve a añadir
         if (!usuario.getFavoritos().contains(productoId)) {
             usuario.getFavoritos().add(productoId);
             usuarioRepository.save(usuario);
@@ -41,6 +49,8 @@ public class FavoritoService {
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 
+        // remove() no falla si el id no estaba en la lista, simplemente no
+        // hace nada, asi que no hace falta comprobarlo antes
         usuario.getFavoritos().remove(productoId);
         usuarioRepository.save(usuario);
     }

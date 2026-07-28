@@ -8,12 +8,17 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Logica de negocio de productos. El Controller delega aqui toda la
+ * validacion y acceso a datos; el Repository solo hace consultas simples.
+ */
 @Service
 @RequiredArgsConstructor
 public class ProductoService {
 
     private final ProductoRepository productoRepository;
 
+    /** Si no se pasa categoria, devuelve el catalogo completo. */
     public List<Producto> findAll(Producto.Categoria categoria) {
         if (categoria != null) {
             return productoRepository.findByCategoria(categoria);
@@ -36,6 +41,10 @@ public class ProductoService {
         return productoRepository.save(producto);
     }
 
+    /** Reutiliza mapDtoToProducto: busca el producto existente y le
+     * sobreescribe los mismos campos que en create(), en vez de duplicar
+     * la logica de mapeo. 
+    */
     public Producto update(String id, ProductoDTO dto) {
         Producto producto = findById(id);
         mapDtoToProducto(dto, producto);
@@ -49,6 +58,9 @@ public class ProductoService {
         productoRepository.deleteById(id);
     }
 
+    /** Copia los campos del DTO recibido al Producto de MongoDB.
+     * Centraliza el mapeo para que create() y update() no lo dupliquen. 
+     */
     private void mapDtoToProducto(ProductoDTO dto, Producto producto) {
         producto.setNombre(dto.getNombre());
         producto.setDescripcion(dto.getDescripcion());
@@ -62,6 +74,7 @@ public class ProductoService {
         producto.setDestacado(dto.isDestacado());
     }
 
+    /** Busqueda por nombre, usada cuando el frontend manda ?buscar=. */
     public List<Producto> buscar(String query) {
     return productoRepository.findByNombreContainingIgnoreCase(query);
 }
