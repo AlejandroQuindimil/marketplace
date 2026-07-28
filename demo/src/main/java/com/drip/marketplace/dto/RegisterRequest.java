@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+/** Body esperado en POST /api/auth/register. */
 @Data
 public class RegisterRequest {
 
