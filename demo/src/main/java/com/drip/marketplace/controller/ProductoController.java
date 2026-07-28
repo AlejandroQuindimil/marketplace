@@ -24,22 +24,21 @@ public class ProductoController {
     private final ProductoService productoService;
 
     /**
-     * Listado de productos con dos filtros opcionales:
-     * - buscar: si viene informado, tiene prioridad y busca por nombre
-     *   (se asume que una busqueda explicita del usuario pesa mas que
-     *   solo estar navegando por categoria).
-     * - categoria: si no hay busqueda, filtra por categoria (o devuelve
-     *   todos si tampoco se especifica categoria).
+     * Listado de productos con tres filtros opcionales:
+     * - buscar: si viene informado, tiene prioridad sobre categoria/genero
+     *   (se asume que una busqueda explicita pesa mas que solo navegar).
+     * - categoria y genero: se pueden combinar (ej. Hombre + Camisetas).
      */
     @GetMapping
     public ResponseEntity<List<Producto>> findAll(
             @RequestParam(required = false) Producto.Categoria categoria,
+            @RequestParam(required = false) Producto.Genero genero,
             @RequestParam(required = false) String buscar
     ) {
         if (buscar != null && !buscar.isBlank()) {
             return ResponseEntity.ok(productoService.buscar(buscar));
         }
-        return ResponseEntity.ok(productoService.findAll(categoria));
+        return ResponseEntity.ok(productoService.findAll(categoria, genero));
     }
 
     /** Productos marcados como destacado=true, para la home. */
@@ -74,7 +73,7 @@ public class ProductoController {
         }
     }
 
-     /** Elimina un producto. Requiere rol ADMIN. */
+    /** Elimina un producto. Requiere rol ADMIN. */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable String id) {
         try {
@@ -85,4 +84,3 @@ public class ProductoController {
         }
     }
 }
-   

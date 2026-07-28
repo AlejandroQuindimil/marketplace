@@ -27,6 +27,10 @@ public class Producto {
     // "camiseta" / "Camisetas" / "CAMISETA" que romperian los filtros
     private Categoria categoria;
 
+    // Separado de Categoria porque son dos filtros independientes: un
+    // usuario puede querer "Hombre" sin importar la prenda, o "Camisetas"
+    // sin importar el genero. UNISEX cubre accesorios/productos sin genero
+    private Genero genero;
     
     private List<String> imagenes = new ArrayList<>();
 
@@ -45,6 +49,9 @@ public class Producto {
         CAMISETAS, PANTALONES, ZAPATILLAS, ACCESORIOS, ABRIGOS
     }
 
+    public enum Genero {
+        HOMBRE, MUJER, UNISEX
+    }
     /** Stock disponible para una talla concreta de este producto. */
     @Data
     public static class TallaStock {

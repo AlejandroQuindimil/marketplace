@@ -18,8 +18,17 @@ public class ProductoService {
 
     private final ProductoRepository productoRepository;
 
-    /** Si no se pasa categoria, devuelve el catalogo completo. */
-    public List<Producto> findAll(Producto.Categoria categoria) {
+    /**
+     * Filtra por categoria y/o genero, combinandolos si ambos vienen
+     * informados. Si no se pasa ninguno, devuelve el catalogo completo.
+     */
+    public List<Producto> findAll(Producto.Categoria categoria, Producto.Genero genero) {
+        if (genero != null && categoria != null) {
+            return productoRepository.findByGeneroAndCategoria(genero, categoria);
+        }
+        if (genero != null) {
+            return productoRepository.findByGenero(genero);
+        }
         if (categoria != null) {
             return productoRepository.findByCategoria(categoria);
         }
@@ -43,8 +52,7 @@ public class ProductoService {
 
     /** Reutiliza mapDtoToProducto: busca el producto existente y le
      * sobreescribe los mismos campos que en create(), en vez de duplicar
-     * la logica de mapeo. 
-    */
+     * la logica de mapeo. */
     public Producto update(String id, ProductoDTO dto) {
         Producto producto = findById(id);
         mapDtoToProducto(dto, producto);
@@ -59,14 +67,14 @@ public class ProductoService {
     }
 
     /** Copia los campos del DTO recibido al Producto de MongoDB.
-     * Centraliza el mapeo para que create() y update() no lo dupliquen. 
-     */
+     * Centraliza el mapeo para que create() y update() no lo dupliquen. */
     private void mapDtoToProducto(ProductoDTO dto, Producto producto) {
         producto.setNombre(dto.getNombre());
         producto.setDescripcion(dto.getDescripcion());
         producto.setPrecio(dto.getPrecio());
         producto.setPrecioAnterior(dto.getPrecioAnterior());
         producto.setCategoria(dto.getCategoria());
+        producto.setGenero(dto.getGenero());
         producto.setImagenes(dto.getImagenes());
         producto.setTallas(dto.getTallas());
         producto.setColores(dto.getColores());
@@ -76,6 +84,6 @@ public class ProductoService {
 
     /** Busqueda por nombre, usada cuando el frontend manda ?buscar=. */
     public List<Producto> buscar(String query) {
-    return productoRepository.findByNombreContainingIgnoreCase(query);
-}
+        return productoRepository.findByNombreContainingIgnoreCase(query);
+    }
 }

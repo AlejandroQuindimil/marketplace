@@ -32,6 +32,9 @@ public class ProductoDTO {
     @NotNull(message = "La categoría es obligatoria")
     private Producto.Categoria categoria;
 
+    @NotNull(message = "El género es obligatorio")
+    private Producto.Genero genero;
+
     private List<String> imagenes;
     private List<Producto.TallaStock> tallas;
     private List<String> colores;
