@@ -2,12 +2,21 @@
   <a routerLink="/" class="nav-logo">DRIP</a>
 
   <div class="nav-categorias">
-    <a routerLink="/productos" [queryParams]="{categoria: ''}">Novedades</a>
-    <a routerLink="/productos" [queryParams]="{categoria: 'CAMISETAS'}">Ropa</a>
-    <a routerLink="/productos" [queryParams]="{categoria: 'ZAPATILLAS'}">Zapatillas</a>
+    <a routerLink="/productos" [queryParams]="{genero: ''}">Novedades</a>
+
+    
+    <a *ngFor="let genero of generos"
+      routerLink="/productos"
+      [queryParams]="{genero: genero.valor}"
+      (mouseenter)="abrirSubmenu(genero.valor)"
+      (mouseleave)="cerrarSubmenuConRetraso()">
+      {{ genero.label }}
+    </a>
+
     <a routerLink="/productos" [queryParams]="{categoria: 'ACCESORIOS'}">Accesorios</a>
-    <a routerLink="/productos" [queryParams]="{categoria: 'ABRIGOS'}">Abrigos</a>
+    <a routerLink="/productos" [queryParams]="{genero: '', rebajas: 'true'}" class="nav-rebajas">Rebajas</a>
   </div>
+
   <div class="nav-buscador">
     <input
       type="text"
@@ -56,3 +65,17 @@
     </a>
   </div>
 </nav>
+
+<div
+  class="mega-menu"
+  *ngIf="generoAbierto"
+  (mouseenter)="abrirSubmenu(generoAbierto)"
+  (mouseleave)="cerrarSubmenuInmediato()">
+  
+  <a *ngFor="let cat of categorias"
+    routerLink="/productos"
+    [queryParams]="{genero: generoAbierto, categoria: cat.valor}"
+    (click)="cerrarSubmenuInmediato()">
+    {{ cat.label }}
+  </a>
+</div>

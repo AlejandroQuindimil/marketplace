@@ -15,6 +15,7 @@ export interface Producto {
   precio: number;
   precioAnterior?: number;
   categoria: string;
+  genero: string;
   imagenes: string[];
   tallas: TallaStock[];
   colores: string[];
@@ -28,9 +29,12 @@ export class ProductoService {
 
   constructor(private http: HttpClient) {}
 
-  findAll(categoria?: string): Observable<Producto[]> {
-    const url = categoria ? `${this.apiUrl}?categoria=${categoria}` : this.apiUrl;
-    return this.http.get<Producto[]>(url);
+  findAll(categoria?: string, genero?: string): Observable<Producto[]> {
+    const params: string[] = [];
+    if (categoria) params.push(`categoria=${categoria}`);
+    if (genero) params.push(`genero=${genero}`);
+    const query = params.length ? `?${params.join('&')}` : '';
+    return this.http.get<Producto[]>(`${this.apiUrl}${query}`);
   }
 
   findDestacados(): Observable<Producto[]> {

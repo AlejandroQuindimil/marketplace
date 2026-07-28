@@ -18,8 +18,9 @@ export class OfertasCarrusel implements OnInit, OnChanges, OnDestroy {
   // truco para que el loop infinito no se note al llegar a los extremos
   public extendedProductos: Producto[] = [];
 
-  // Posicion actual dentro de extendedProductos (empieza en 1, no en 0, por el clon inicial)
-  public trackIndex = 1;
+  // Posicion actual dentro de extendedProductos (se recalcula en buildExtended,
+  // ya no es fija en 1: depende de cuantos clones haya al principio)
+  public trackIndex = 0;
 
   // Posicion "real" (0 a N-1) para saber que punto de abajo debe estar activo
   public currentIndex = 0;
@@ -32,7 +33,13 @@ export class OfertasCarrusel implements OnInit, OnChanges, OnDestroy {
   // Por si transitionend nunca llega a dispararse (pestaña en segundo plano, etc.)
   private transitionWatchdog: any = null;
 
-  private autoPlayIntervalMs = 5000;
+  // Cuantos clones hay al principio (= al final) de extendedProductos.
+  // Con itemsPerView > 1 hace falta un clon POR CADA tarjeta visible a la
+  // vez, si no la ventana visible se sale del array cerca de los extremos
+  // y aparecen huecos en blanco.
+  private clonesCount = 0;
+
+  private autoPlayIntervalMs = 2500;
   // Tiempo de pausa tras interactuar manualmente (flechas, dots, swipe)
   private readonly RESUME_DELAY_MS = 3000;
   // Tiempo de pausa tras hacer clic en una tarjeta para abrir el producto
@@ -60,8 +67,9 @@ export class OfertasCarrusel implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit(): void {
     // Ajusta itemsPerView al tamano de pantalla actual antes de construir el track
-    this.onResize();
+    this.itemsPerView = window.innerWidth <= 768 ? 2 : 4;
     this.buildExtended();
+    this.trackIndex = this.clonesCount; // primer producto real, tras los clones iniciales
     if (this.extendedProductos.length > 0) {
       this.startAutoPlay();
     }
@@ -71,6 +79,8 @@ export class OfertasCarrusel implements OnInit, OnChanges, OnDestroy {
     // Si la lista de productos cambia desde fuera (ej: Home recarga datos),
     // reconstruimos el track y reiniciamos el autoplay desde cero
     this.buildExtended();
+    this.currentIndex = 0;
+    this.trackIndex = this.clonesCount;
     this.stopAutoPlay();
     if (this.extendedProductos.length > 0) {
       this.startAutoPlay();
@@ -84,16 +94,23 @@ export class OfertasCarrusel implements OnInit, OnChanges, OnDestroy {
     if (this.transitionWatchdog) clearTimeout(this.transitionWatchdog);
   }
 
-  // Anade el clon del ultimo producto al principio y del primero al final,
-  // para que el carrusel pueda "dar la vuelta" sin cortes visibles
+  // Anade tantos clones del final al principio (y del principio al final)
+  // como tarjetas se ven a la vez (itemsPerView). Con un solo clon por lado
+  // (como en un carrusel de 1 tarjeta) la ventana visible se sale del
+  // array cerca de los extremos en cuanto itemsPerView > 1, dejando
+  // huecos en blanco durante el loop.
   private buildExtended(): void {
-    if (this.productos.length === 0) {
+    const total = this.productos.length;
+    if (total === 0) {
       this.extendedProductos = [];
+      this.clonesCount = 0;
       return;
     }
-    const first = this.productos[0];
-    const last = this.productos[this.productos.length - 1];
-    this.extendedProductos = [last, ...this.productos, first];
+    // No clonar mas elementos de los que realmente hay
+    this.clonesCount = Math.min(this.itemsPerView, total);
+    const startClones = this.productos.slice(total - this.clonesCount);
+    const endClones = this.productos.slice(0, this.clonesCount);
+    this.extendedProductos = [...startClones, ...this.productos, ...endClones];
   }
 
   // Calcula el % de descuento a partir de precio y precioAnterior, para el badge rojo
@@ -152,7 +169,7 @@ export class OfertasCarrusel implements OnInit, OnChanges, OnDestroy {
       this.transitionWatchdog = null;
     }
     this.transitionEnabled = true;
-    this.trackIndex = index + 1; // +1 por el clon inicial
+    this.trackIndex = index + this.clonesCount;
     this.currentIndex = index;
     this.pauseAutoPlayTemporarily();
   }
@@ -161,12 +178,15 @@ export class OfertasCarrusel implements OnInit, OnChanges, OnDestroy {
   private syncCurrentIndex(): void {
     const total = this.productos.length;
     if (total === 0) return;
-    if (this.trackIndex === 0) {
-      this.currentIndex = total - 1;
-    } else if (this.trackIndex === total + 1) {
-      this.currentIndex = 0;
+    const c = this.clonesCount;
+    if (this.trackIndex < c) {
+      // Estamos en la zona de clones del principio (viniendo del final)
+      this.currentIndex = total - c + this.trackIndex;
+    } else if (this.trackIndex >= c + total) {
+      // Estamos en la zona de clones del final (viniendo del principio)
+      this.currentIndex = this.trackIndex - (c + total);
     } else {
-      this.currentIndex = this.trackIndex - 1;
+      this.currentIndex = this.trackIndex - c;
     }
   }
 
@@ -178,18 +198,22 @@ export class OfertasCarrusel implements OnInit, OnChanges, OnDestroy {
       this.transitionWatchdog = null;
     }
     const total = this.productos.length;
+    const c = this.clonesCount;
     if (total === 0) {
       this.isTransitioning = false;
       return;
     }
 
-    if (this.trackIndex === 0) {
+    if (this.trackIndex < c) {
+      // Nos hemos metido en los clones del principio: saltamos +total
+      // sin animacion para reaparecer en el tramo real equivalente
       this.transitionEnabled = false;
-      this.trackIndex = total;
+      this.trackIndex += total;
       setTimeout(() => { this.transitionEnabled = true; }, 20);
-    } else if (this.trackIndex === total + 1) {
+    } else if (this.trackIndex >= c + total) {
+      // Nos hemos metido en los clones del final: saltamos -total
       this.transitionEnabled = false;
-      this.trackIndex = 1;
+      this.trackIndex -= total;
       setTimeout(() => { this.transitionEnabled = true; }, 20);
     }
 
@@ -341,14 +365,25 @@ export class OfertasCarrusel implements OnInit, OnChanges, OnDestroy {
         this.transitionWatchdog = null;
       }
       this.transitionEnabled = true;
-      this.trackIndex = index + 1;
+      this.trackIndex = index + this.clonesCount;
       this.currentIndex = index;
     }
   }
 
-  // Recalcula cuantas tarjetas caben por vista si cambia el tamano de ventana
+  // Recalcula cuantas tarjetas caben por vista si cambia el tamano de ventana.
+  // Como clonesCount depende de itemsPerView, si este cambia (p. ej. al
+  // rotar el movil o redimensionar por debajo/encima de 768px) hay que
+  // reconstruir extendedProductos entero, o el numero de clones dejaria
+  // de coincidir y volveriamos a tener huecos cerca de los extremos.
   @HostListener('window:resize')
   onResize(): void {
-    this.itemsPerView = window.innerWidth <= 768 ? 2 : 4;
+    const nuevo = window.innerWidth <= 768 ? 2 : 4;
+    if (nuevo === this.itemsPerView) return;
+
+    this.itemsPerView = nuevo;
+    this.transitionEnabled = false;
+    this.buildExtended();
+    this.trackIndex = this.clonesCount + this.currentIndex;
+    setTimeout(() => { this.transitionEnabled = true; }, 20);
   }
 }

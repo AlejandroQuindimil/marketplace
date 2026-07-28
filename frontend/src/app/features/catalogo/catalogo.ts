@@ -19,6 +19,7 @@ export class Catalogo implements OnInit {
   loading = true;
   categoriaActiva = '';
   terminoBusqueda = '';
+  generoActivo = '';
 
   favoritoIds: Set<string> = new Set();
 
@@ -51,10 +52,11 @@ export class Catalogo implements OnInit {
     });
   }
     this.route.queryParams.subscribe(params => {
-      this.terminoBusqueda = params['buscar'] || '';
-      this.categoriaActiva = params['categoria'] || '';
-      this.cargarProductos();
-    });
+    this.terminoBusqueda = params['buscar'] || '';
+    this.categoriaActiva = params['categoria'] || '';
+    this.generoActivo = params['genero'] || '';
+    this.cargarProductos();
+  });
   }
 
   filtrarPor(categoria: string): void {
@@ -75,10 +77,10 @@ export class Catalogo implements OnInit {
         error: () => { this.loading = false; this.cdr.detectChanges(); }
       });
     } else {
-      this.productoService.findAll(this.categoriaActiva || undefined).subscribe({
-        next: (data) => { this.productos = data; this.loading = false; this.cdr.detectChanges(); },
-        error: () => { this.loading = false; this.cdr.detectChanges(); }
-      });
+      this.productoService.findAll(this.categoriaActiva || undefined, this.generoActivo || undefined).subscribe({
+      next: (data) => { this.productos = data; this.loading = false; this.cdr.detectChanges(); },
+      error: () => { this.loading = false; this.cdr.detectChanges(); }
+    });
     }
   }
 

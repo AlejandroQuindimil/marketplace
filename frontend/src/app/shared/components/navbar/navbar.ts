@@ -18,12 +18,25 @@ export class Navbar implements OnInit {
   usuario: { nombre: string } | null = null;
   busqueda = '';
   totalCarrito = 0;
+  generos = [
+    { valor: 'HOMBRE', label: 'Hombre' },
+    { valor: 'MUJER', label: 'Mujer' }
+  ];
+
+  categorias = [
+    { valor: '', label: 'Todo' },
+    { valor: 'CAMISETAS', label: 'Camisetas' },
+    { valor: 'PANTALONES', label: 'Pantalones' },
+    { valor: 'ZAPATILLAS', label: 'Zapatillas' },
+    { valor: 'ABRIGOS', label: 'Abrigos' }
+  ];
 
   readonly UserIcon = User;
   readonly HeartIcon = Heart;
   readonly CartIcon = ShoppingCart;
   readonly SearchIcon = Search;
 
+  
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -74,4 +87,26 @@ actualizarContadorCarrito(): void {
   this.usuario = null;
   window.location.href = '/';
   }
+
+generoAbierto: string | null = null;
+private cerrarTimeout: any = null;
+
+abrirSubmenu(genero: string): void {
+  if (this.cerrarTimeout) {
+    clearTimeout(this.cerrarTimeout);
+    this.cerrarTimeout = null;
+  }
+  this.generoAbierto = genero;
+}
+
+cerrarSubmenuConRetraso(): void {
+  this.cerrarTimeout = setTimeout(() => {
+    this.generoAbierto = null;
+  }, 150);
+}
+
+cerrarSubmenuInmediato(): void {
+  if (this.cerrarTimeout) clearTimeout(this.cerrarTimeout);
+  this.generoAbierto = null;
+}
 }
