@@ -10,19 +10,26 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Controlador REST de favoritos. Requiere estar autenticado (cualquier rol);
+ * gestiona los favoritos del usuario que hace la peticion, nunca los de otro.
+ */
 @RestController
 @RequestMapping("/api/favoritos")
 @RequiredArgsConstructor
 public class FavoritoController {
 
+    // Servicio que maneja la lógica de favoritos
     private final FavoritoService favoritoService;
 
+    /** Lista los productos favoritos del usuario autenticado. */
     @GetMapping
     public ResponseEntity<List<Producto>> getFavoritos(Authentication authentication) {
         String usuarioId = authentication.getName();
         return ResponseEntity.ok(favoritoService.getFavoritos(usuarioId));
     }
 
+    /** Añade un producto a favoritos. 404 si el producto no existe. */
     @PostMapping("/{productoId}")
     public ResponseEntity<?> addFavorito(@PathVariable String productoId, Authentication authentication) {
         try {
@@ -34,6 +41,7 @@ public class FavoritoController {
         }
     }
 
+    /** Quita un producto de favoritos. */
     @DeleteMapping("/{productoId}")
     public ResponseEntity<?> removeFavorito(@PathVariable String productoId, Authentication authentication) {
         try {
