@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
+/** Documento MongoDB de un usuario registrado. */
 @Data
 @Document(collection = "usuarios")
 public class Usuario {
@@ -23,16 +24,22 @@ public class Usuario {
 
     private Rol rol = Rol.USER;
 
+    /* Array de ids de producto embebido directamente en el usuario, no una
+    * coleccion aparte: la relacion es simple (solo una lista de
+    * referencias), no se justifica una coleccion separada para esto
+    * */
     private List<String> favoritos = new ArrayList<>();
     private List<Direccion> direcciones = new ArrayList<>();
 
     private LocalDateTime createdAt = LocalDateTime.now();
+    // Talla preferida por categoria, ej: {"CAMISETAS": "M", "ZAPATILLAS": "42"}
     private Map<String, String> tallasPreferidas = new HashMap<>();
 
     public enum Rol {
         USER, ADMIN
     }
 
+    /** Direccion de envio; puede haber varias guardadas por usuario. */
     @Data
     public static class Direccion {
         private String calle;

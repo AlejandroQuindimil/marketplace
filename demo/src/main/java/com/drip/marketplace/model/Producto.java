@@ -9,22 +9,30 @@ import java.util.ArrayList;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/** Documento MongoDB de un producto del catalogo. */
 @Data
 @Document(collection = "productos")
 public class Producto {
 
     @Id
-    @JsonProperty("id")
+    @JsonProperty("id") // fuerza que el JSON de salida use "id", no "_id"
     private String id;
 
     private String nombre;
     private String descripcion;
     private Double precio;
-    private Double precioAnterior;
+    private Double precioAnterior; // null si no hay descuento activo
 
+    // Enum en vez de String libre: evita valores inconsistentes como
+    // "camiseta" / "Camisetas" / "CAMISETA" que romperian los filtros
     private Categoria categoria;
 
+    
     private List<String> imagenes = new ArrayList<>();
+
+    // Array de objetos embebidos en vez de campos sueltos (stockS, stockM...)
+    // porque cada producto puede tener un conjunto de tallas totalmente
+    // distinto (una gorra solo "Unica", unas zapatillas tallas numericas)
     private List<TallaStock> tallas = new ArrayList<>();
     private List<String> colores = new ArrayList<>();
 
@@ -37,6 +45,7 @@ public class Producto {
         CAMISETAS, PANTALONES, ZAPATILLAS, ACCESORIOS, ABRIGOS
     }
 
+    /** Stock disponible para una talla concreta de este producto. */
     @Data
     public static class TallaStock {
         private String talla;
