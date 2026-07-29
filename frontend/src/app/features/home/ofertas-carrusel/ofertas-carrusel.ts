@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, OnChanges, SimpleChanges, Input, HostListener } from '@angular/core';
+import { Component, OnDestroy, OnInit, OnChanges, Input, HostListener, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Producto } from '../../../core/producto';
@@ -11,76 +11,63 @@ import { Producto } from '../../../core/producto';
   styleUrl: './ofertas-carrusel.css'
 })
 export class OfertasCarrusel implements OnInit, OnChanges, OnDestroy {
-  // Lista real de ofertas que llega desde el componente padre (Home)
   @Input() productos: Producto[] = [];
 
-  // Misma lista con un clon del ultimo al principio y del primero al final,
-  // truco para que el loop infinito no se note al llegar a los extremos
+  // Track extendido con `itemsPerView` clones al principio y al final.
+  // OJO: antes solo se clonaba 1 item a cada lado, lo cual solo alcanza
+  // si el carrusel muestra 1 producto a la vez. Como aqui se muestran
+  // hasta 4 (itemsPerView), cerca del final del recorrido la ventana
+  // visible se salia del array (no habia suficientes clones para llenar
+  // los 4 huecos) -> aparecia un hueco en blanco y luego el salto brusco
+  // al hacer el teletransporte de vuelta al principio real.
   public extendedProductos: Producto[] = [];
 
-  // Posicion actual dentro de extendedProductos (se recalcula en buildExtended,
-  // ya no es fija en 1: depende de cuantos clones haya al principio)
-  public trackIndex = 0;
-
-  // Posicion "real" (0 a N-1) para saber que punto de abajo debe estar activo
+  public trackIndex = 1;
   public currentIndex = 0;
-
-  // Se desactiva un instante durante el "salto invisible" del loop,
-  // para que ese salto no se vea animado
   public transitionEnabled = true;
 
   private isTransitioning = false;
-  // Por si transitionend nunca llega a dispararse (pestaña en segundo plano, etc.)
   private transitionWatchdog: any = null;
 
-  // Cuantos clones hay al principio (= al final) de extendedProductos.
-  // Con itemsPerView > 1 hace falta un clon POR CADA tarjeta visible a la
-  // vez, si no la ventana visible se sale del array cerca de los extremos
-  // y aparecen huecos en blanco.
-  private clonesCount = 0;
-
-  private autoPlayIntervalMs = 2500;
-  // Tiempo de pausa tras interactuar manualmente (flechas, dots, swipe)
+  private autoPlayIntervalMs = 2000;
   private readonly RESUME_DELAY_MS = 3000;
-  // Tiempo de pausa tras hacer clic en una tarjeta para abrir el producto
   private readonly RESUME_DELAY_AFTER_OPEN_MS = 1500;
   private autoPlayTimer: any = null;
   private resumeTimeout: any = null;
+  private jumpTimeout: any = null;
 
-  // --- Estado del swipe (arrastrar con dedo/raton/trackpad) ---
   private pointerStartX = 0;
   private pointerStartY = 0;
   private isDragging = false;
-  // Publico: evita que un swipe se interprete tambien como un clic al soltar
   public dragHandled = false;
-  // Distancia minima en px para considerar que fue un swipe y no un tap/clic
   private readonly SWIPE_THRESHOLD_PX = 40;
 
-  // --- Estado del "scrubber" de puntos (arrastrar sobre los dots) ---
   public isDraggingDots = false;
   private dotsTrackEl: HTMLElement | null = null;
+  // Flag propio del scrubber de puntos, independiente de dragHandled,
+  // para que un drag en los puntos no bloquee un click en una tarjeta
+  // (y viceversa) al compartir la misma variable.
+  private dotsDragHandled = false;
+  private readonly DOTS_DRAG_THRESHOLD_PX = 4;
+  private dotsPointerStartX = 0;
 
-  // Cuantas tarjetas se ven a la vez (4 en escritorio, 2 en movil)
   public itemsPerView = 4;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    // Ajusta itemsPerView al tamano de pantalla actual antes de construir el track
     this.itemsPerView = window.innerWidth <= 768 ? 2 : 4;
     this.buildExtended();
-    this.trackIndex = this.clonesCount; // primer producto real, tras los clones iniciales
+    this.trackIndex = this.itemsPerView;
     if (this.extendedProductos.length > 0) {
       this.startAutoPlay();
     }
   }
 
   ngOnChanges(): void {
-    // Si la lista de productos cambia desde fuera (ej: Home recarga datos),
-    // reconstruimos el track y reiniciamos el autoplay desde cero
     this.buildExtended();
+    this.trackIndex = this.itemsPerView;
     this.currentIndex = 0;
-    this.trackIndex = this.clonesCount;
     this.stopAutoPlay();
     if (this.extendedProductos.length > 0) {
       this.startAutoPlay();
@@ -88,45 +75,45 @@ export class OfertasCarrusel implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // Limpia todos los timers para no dejar procesos corriendo en segundo plano
     this.stopAutoPlay();
     if (this.resumeTimeout) clearTimeout(this.resumeTimeout);
+    if (this.jumpTimeout) clearTimeout(this.jumpTimeout);
     if (this.transitionWatchdog) clearTimeout(this.transitionWatchdog);
   }
 
-  // Anade tantos clones del final al principio (y del principio al final)
-  // como tarjetas se ven a la vez (itemsPerView). Con un solo clon por lado
-  // (como en un carrusel de 1 tarjeta) la ventana visible se sale del
-  // array cerca de los extremos en cuanto itemsPerView > 1, dejando
-  // huecos en blanco durante el loop.
+  // Construye el array extendido con `itemsPerView` clones a cada lado.
+  // Usamos modulo para que funcione incluso si hay menos productos que
+  // clones necesarios (ej. 2 productos con itemsPerView=4).
   private buildExtended(): void {
     const total = this.productos.length;
     if (total === 0) {
       this.extendedProductos = [];
-      this.clonesCount = 0;
       return;
     }
-    // No clonar mas elementos de los que realmente hay
-    this.clonesCount = Math.min(this.itemsPerView, total);
-    const startClones = this.productos.slice(total - this.clonesCount);
-    const endClones = this.productos.slice(0, this.clonesCount);
-    this.extendedProductos = [...startClones, ...this.productos, ...endClones];
+
+    const clones = this.itemsPerView;
+    const mod = (n: number, m: number) => ((n % m) + m) % m;
+
+    const head: Producto[] = [];
+    const tail: Producto[] = [];
+    for (let i = 0; i < clones; i++) {
+      head.push(this.productos[mod(total - clones + i, total)]);
+      tail.push(this.productos[mod(i, total)]);
+    }
+
+    this.extendedProductos = [...head, ...this.productos, ...tail];
   }
 
-  // Calcula el % de descuento a partir de precio y precioAnterior, para el badge rojo
   descuento(p: Producto): number {
     if (!p.precioAnterior) return 0;
     return Math.round(((p.precioAnterior - p.precio) / p.precioAnterior) * 100);
   }
 
-  // Navega a la ficha del producto (salvo que se acabe de hacer un swipe)
   abrirProducto(id: string): void {
     if (this.dragHandled) return;
     this.router.navigate(['/productos', id]);
     this.pauseAutoPlayTemporarily(this.RESUME_DELAY_AFTER_OPEN_MS);
   }
-
-  // --- Navegacion manual (flechas) ---
 
   next(force: boolean = true): void {
     if (this.isTransitioning && !force) return;
@@ -140,18 +127,21 @@ export class OfertasCarrusel implements OnInit, OnChanges, OnDestroy {
     this.pauseAutoPlayTemporarily();
   }
 
-  // Logica compartida de avance: mueve trackIndex, sincroniza currentIndex
-  // y arma el watchdog de seguridad. La usan next()/prev() y el propio autoplay.
+  // Cambia el estado del carrusel. Se llama tanto desde interacciones de
+  // usuario (clic, swipe) como desde el setInterval del autoplay. En el
+  // segundo caso, Angular/Zone.js puede no repintar la vista de inmediato
+  // aunque las propiedades ya hayan cambiado, dejando el carrusel "quieto"
+  // hasta que otra interaccion fuerce un ciclo de deteccion de cambios.
+  // detectChanges() fuerza ese repintado ahora mismo, sin esperar a nada mas.
   private advanceSlide(direction: 1 | -1): void {
     this.isTransitioning = true;
     this.transitionEnabled = true;
     this.trackIndex += direction;
     this.syncCurrentIndex();
     this.armTransitionWatchdog();
+    this.cdr.detectChanges();
   }
 
-  // Salvaguarda: si transitionend no se dispara, liberamos el lock
-  // pasado un tiempo prudente para no dejar el carrusel congelado
   private armTransitionWatchdog(): void {
     if (this.transitionWatchdog) clearTimeout(this.transitionWatchdog);
     this.transitionWatchdog = setTimeout(() => {
@@ -160,67 +150,77 @@ export class OfertasCarrusel implements OnInit, OnChanges, OnDestroy {
     }, 800);
   }
 
-  // Salta directamente a un slide concreto (usado al hacer clic en un punto)
   goTo(index: number): void {
-    if (this.dragHandled) return;
+    if (this.dotsDragHandled) return;
     this.isTransitioning = false;
     if (this.transitionWatchdog) {
       clearTimeout(this.transitionWatchdog);
       this.transitionWatchdog = null;
     }
     this.transitionEnabled = true;
-    this.trackIndex = index + this.clonesCount;
+    this.trackIndex = index + this.itemsPerView;
     this.currentIndex = index;
     this.pauseAutoPlayTemporarily();
   }
 
-  // Traduce trackIndex (que incluye los clones) al indice "real" que usan los puntos
+  // Los "puntos de anclaje" del loop ya no son fijos (0 y total+1), sino
+  // que dependen de cuantos clones (itemsPerView) haya a cada lado.
   private syncCurrentIndex(): void {
     const total = this.productos.length;
     if (total === 0) return;
-    const c = this.clonesCount;
-    if (this.trackIndex < c) {
-      // Estamos en la zona de clones del principio (viniendo del final)
-      this.currentIndex = total - c + this.trackIndex;
-    } else if (this.trackIndex >= c + total) {
-      // Estamos en la zona de clones del final (viniendo del principio)
-      this.currentIndex = this.trackIndex - (c + total);
+
+    const clones = this.itemsPerView;
+    const cloneLeftIndex = clones - 1;       // clon justo antes del primer item real
+    const cloneRightIndex = clones + total;  // clon justo despues del ultimo item real
+
+    if (this.trackIndex < cloneLeftIndex) {
+      this.trackIndex = clones + total - 1;
+    } else if (this.trackIndex > cloneRightIndex) {
+      this.trackIndex = clones;
+    }
+
+    if (this.trackIndex === cloneLeftIndex) {
+      this.currentIndex = total - 1;
+    } else if (this.trackIndex === cloneRightIndex) {
+      this.currentIndex = 0;
     } else {
-      this.currentIndex = this.trackIndex - c;
+      this.currentIndex = this.trackIndex - clones;
     }
   }
 
-  // Al terminar la animacion, si estamos sobre un clon, saltamos sin
-  // transicion al elemento real equivalente: esto es lo que hace el loop infinito
   onTrackTransitionEnd(): void {
+    this.isTransitioning = false;
     if (this.transitionWatchdog) {
       clearTimeout(this.transitionWatchdog);
       this.transitionWatchdog = null;
     }
+
     const total = this.productos.length;
-    const c = this.clonesCount;
-    if (total === 0) {
-      this.isTransitioning = false;
-      return;
-    }
+    if (total === 0) return;
 
-    if (this.trackIndex < c) {
-      // Nos hemos metido en los clones del principio: saltamos +total
-      // sin animacion para reaparecer en el tramo real equivalente
-      this.transitionEnabled = false;
-      this.trackIndex += total;
-      setTimeout(() => { this.transitionEnabled = true; }, 20);
-    } else if (this.trackIndex >= c + total) {
-      // Nos hemos metido en los clones del final: saltamos -total
-      this.transitionEnabled = false;
-      this.trackIndex -= total;
-      setTimeout(() => { this.transitionEnabled = true; }, 20);
-    }
+    const clones = this.itemsPerView;
+    const cloneLeftIndex = clones - 1;
+    const cloneRightIndex = clones + total;
 
-    this.isTransitioning = false;
+    if (this.trackIndex === cloneLeftIndex) {
+      this.jumpTo(clones + total - 1);
+    } else if (this.trackIndex === cloneRightIndex) {
+      this.jumpTo(clones);
+    }
   }
 
-  // Calcula cuanto desplazar el carrusel en % segun trackIndex e itemsPerView
+  private jumpTo(extendedIndex: number): void {
+    this.transitionEnabled = false;
+    this.trackIndex = extendedIndex;
+    this.syncCurrentIndex();
+    this.cdr.detectChanges();
+    if (this.jumpTimeout) clearTimeout(this.jumpTimeout);
+    this.jumpTimeout = setTimeout(() => {
+      this.transitionEnabled = true;
+      this.cdr.detectChanges();
+    }, 20);
+  }
+
   get trackTransform(): string {
     const paso = 100 / this.itemsPerView;
     return `translateX(-${this.trackIndex * paso}%)`;
@@ -242,7 +242,6 @@ export class OfertasCarrusel implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  // Para el autoplay un momento tras una interaccion manual y lo reanuda despues
   private pauseAutoPlayTemporarily(delayMs: number = this.RESUME_DELAY_MS): void {
     this.stopAutoPlay();
     if (this.resumeTimeout) clearTimeout(this.resumeTimeout);
@@ -252,7 +251,6 @@ export class OfertasCarrusel implements OnInit, OnChanges, OnDestroy {
     }, delayMs);
   }
 
-  // Pausa el autoplay mientras el raton esta encima del carrusel
   onMouseEnter(): void {
     this.stopAutoPlay();
     if (this.resumeTimeout) {
@@ -261,15 +259,27 @@ export class OfertasCarrusel implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  // Reanuda el autoplay al sacar el raton (si no hay ya un resume pendiente)
   onMouseLeave(): void {
     if (!this.resumeTimeout) this.startAutoPlay();
   }
 
-  // --- Swipe: arrastrar con dedo/raton/trackpad sobre las tarjetas ---
+  // Al ocultar la pestaña, los timers se throttlean; al volver, retomamos
+  // limpio y forzamos un repintado por si el estado quedo desincronizado
+  @HostListener('document:visibilitychange')
+  onVisibilityChange(): void {
+    if (document.hidden) {
+      this.stopAutoPlay();
+      if (this.resumeTimeout) {
+        clearTimeout(this.resumeTimeout);
+        this.resumeTimeout = null;
+      }
+    } else if (this.extendedProductos.length > 0) {
+      this.isTransitioning = false;
+      this.startAutoPlay();
+      this.cdr.detectChanges();
+    }
+  }
 
-  // Guarda donde empezo el gesto y "captura" el puntero para seguir
-  // recibiendo sus eventos aunque el dedo/raton salga del elemento
   onPointerDown(event: PointerEvent): void {
     this.isDragging = true;
     this.dragHandled = false;
@@ -280,13 +290,11 @@ export class OfertasCarrusel implements OnInit, OnChanges, OnDestroy {
     try { target.setPointerCapture(event.pointerId); } catch {}
   }
 
-  // Si el movimiento horizontal supera el umbral, avanza/retrocede el
-  // slide y marca dragHandled=true (para no confundirlo con un clic)
   onPointerMove(event: PointerEvent): void {
     if (!this.isDragging || this.dragHandled) return;
     const deltaX = event.clientX - this.pointerStartX;
     const deltaY = event.clientY - this.pointerStartY;
-    if (Math.abs(deltaY) > Math.abs(deltaX)) return; // gesto vertical: no interceptar
+    if (Math.abs(deltaY) > Math.abs(deltaX)) return;
 
     if (Math.abs(deltaX) >= this.SWIPE_THRESHOLD_PX) {
       this.dragHandled = true;
@@ -294,9 +302,6 @@ export class OfertasCarrusel implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  // Libera la captura del puntero. Si no hubo swipe, busca con
-  // elementFromPoint que tarjeta hay bajo el dedo/raton y navega a su
-  // producto (necesario porque la captura del puntero rompe el click nativo)
   onPointerUp(event: PointerEvent): void {
     this.isDragging = false;
     const target = event.currentTarget as HTMLElement;
@@ -315,21 +320,23 @@ export class OfertasCarrusel implements OnInit, OnChanges, OnDestroy {
     this.pauseAutoPlayTemporarily();
   }
 
-  // --- Scrubber de puntos: arrastrar el dedo sobre la fila de puntos
-  // funciona como un mini-slider, cambiando de producto en vivo ---
-
   onDotsPointerDown(event: PointerEvent): void {
     this.isDraggingDots = true;
-    this.dragHandled = false;
+    this.dotsDragHandled = false;
+    this.dotsPointerStartX = event.clientX;
     this.dotsTrackEl = event.currentTarget as HTMLElement;
     this.stopAutoPlay();
     try { this.dotsTrackEl.setPointerCapture(event.pointerId); } catch {}
-    this.updateDotFromPointer(event);
+    // No llamamos a updateDotFromPointer aqui: si es solo un tap sobre un
+    // punto concreto, dejamos que lo resuelva el (click) del propio boton.
   }
 
   onDotsPointerMove(event: PointerEvent): void {
     if (!this.isDraggingDots) return;
-    this.dragHandled = true;
+    if (!this.dotsDragHandled && Math.abs(event.clientX - this.dotsPointerStartX) < this.DOTS_DRAG_THRESHOLD_PX) {
+      return;
+    }
+    this.dotsDragHandled = true;
     this.updateDotFromPointer(event);
   }
 
@@ -339,14 +346,12 @@ export class OfertasCarrusel implements OnInit, OnChanges, OnDestroy {
       try { this.dotsTrackEl.releasePointerCapture(event.pointerId); } catch {}
     }
     this.dotsTrackEl = null;
-    if (this.dragHandled) {
-      setTimeout(() => { this.dragHandled = false; }, 50);
+    if (this.dotsDragHandled) {
+      setTimeout(() => { this.dotsDragHandled = false; }, 50);
     }
     this.pauseAutoPlayTemporarily();
   }
 
-  // Calcula, segun la posicion X del puntero sobre la fila de puntos,
-  // a que producto corresponde y salta ahi directamente
   private updateDotFromPointer(event: PointerEvent): void {
     if (!this.dotsTrackEl || this.productos.length === 0) return;
     const rect = this.dotsTrackEl.getBoundingClientRect();
@@ -365,25 +370,30 @@ export class OfertasCarrusel implements OnInit, OnChanges, OnDestroy {
         this.transitionWatchdog = null;
       }
       this.transitionEnabled = true;
-      this.trackIndex = index + this.clonesCount;
+      this.trackIndex = index + this.itemsPerView;
       this.currentIndex = index;
+      this.cdr.detectChanges();
     }
   }
 
-  // Recalcula cuantas tarjetas caben por vista si cambia el tamano de ventana.
-  // Como clonesCount depende de itemsPerView, si este cambia (p. ej. al
-  // rotar el movil o redimensionar por debajo/encima de 768px) hay que
-  // reconstruir extendedProductos entero, o el numero de clones dejaria
-  // de coincidir y volveriamos a tener huecos cerca de los extremos.
+  // Al cambiar itemsPerView tambien cambia cuantos clones hacen falta,
+  // asi que hay que reconstruir extendedProductos y reposicionar el
+  // track (conservando el producto actual como primer visible).
   @HostListener('window:resize')
   onResize(): void {
-    const nuevo = window.innerWidth <= 768 ? 2 : 4;
+    const nuevo = window.innerWidth <= 768 ? 2 : 5;
     if (nuevo === this.itemsPerView) return;
 
     this.itemsPerView = nuevo;
     this.transitionEnabled = false;
     this.buildExtended();
-    this.trackIndex = this.clonesCount + this.currentIndex;
-    setTimeout(() => { this.transitionEnabled = true; }, 20);
+    this.trackIndex = this.itemsPerView + this.currentIndex;
+    this.cdr.detectChanges();
+
+    if (this.jumpTimeout) clearTimeout(this.jumpTimeout);
+    this.jumpTimeout = setTimeout(() => {
+      this.transitionEnabled = true;
+      this.cdr.detectChanges();
+    }, 20);
   }
 }
