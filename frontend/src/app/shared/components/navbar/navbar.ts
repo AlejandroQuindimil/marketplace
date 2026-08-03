@@ -23,13 +23,86 @@ export class Navbar implements OnInit {
     { valor: 'MUJER', label: 'Mujer' }
   ];
 
-  categorias = [
-    { valor: '', label: 'Todo' },
-    { valor: 'CAMISETAS', label: 'Camisetas' },
-    { valor: 'PANTALONES', label: 'Pantalones' },
-    { valor: 'ZAPATILLAS', label: 'Zapatillas' },
-    { valor: 'ABRIGOS', label: 'Abrigos' }
-  ];
+columnasMenuHombre = [
+  {
+    items: [
+      { valor: '', label: 'Todo Hombre', destacado: true },
+      { valor: '', label: 'Novedades' },
+      
+    ]
+  },
+  {
+    items: [
+      { valor: 'PANTALONES', label: 'Pantalones', destacado: true },
+      { valor: 'CHAQUETAS', label: 'Chaquetas y Chalecos' },
+      { valor: 'JERSEYS', label: 'Punto' },
+      { valor: 'SUDADERAS', label: 'Sudaderas' }
+    ]
+  },
+  {
+    items: [
+      { valor: 'CAMISAS', label: 'Camisas', destacado: true },
+      { valor: 'CAMISETAS', label: 'Camisetas y Polos' },
+      { valor: 'VAQUEROS', label: 'Vaqueros' },
+      { valor: 'ABRIGOS', label: 'Petos' }
+    ]
+  },
+  {
+    items: [
+      { valor: 'SHORTS', label: 'Shorts y Bañadores', destacado: true },
+      { valor: 'ROPA_INTERIOR', label: 'Ropa Interior' },
+      { valor: 'ACCESORIOS', label: 'Accesorios' },
+      { valor: '', label: 'Gadgets' }
+    ]
+  },
+  {
+    items: [
+      { valor: 'ZAPATILLAS', label: 'Zapatillas', destacado: true },
+      { valor: '', label: 'Colaboraciones' },
+      { valor: '', label: 'Rebajas' }
+    ]
+  }
+];
+
+columnasMenuMujer = [
+  {
+    items: [
+      { valor: '', label: 'Todo Mujer', destacado: true },
+      { valor: '', label: 'Novedades' },
+    ]
+  },
+  {
+    items: [
+      { valor: 'VESTIDOS', label: 'Vestidos', destacado: true },
+      { valor: 'FALDAS', label: 'Faldas' },
+      { valor: 'PANTALONES', label: 'Pantalones' },
+      { valor: 'VAQUEROS', label: 'Vaqueros' }
+    ]
+  },
+  {
+    items: [
+      { valor: 'CAMISETAS', label: 'Camisetas y Tops', destacado: true },
+      { valor: 'CAMISAS', label: 'Camisas y Blusas' },
+      { valor: 'JERSEYS', label: 'Punto' },
+      { valor: 'SUDADERAS', label: 'Sudaderas' }
+    ]
+  },
+  {
+    items: [
+      { valor: 'ABRIGOS', label: 'Abrigos', destacado: true },
+      { valor: 'CHAQUETAS', label: 'Chaquetas' },
+      { valor: 'ROPA_INTERIOR', label: 'Ropa Interior' },
+      { valor: 'ACCESORIOS', label: 'Accesorios' }
+    ]
+  },
+  {
+    items: [
+      { valor: 'ZAPATILLAS', label: 'Zapatos', destacado: true },
+      { valor: '', label: 'Colaboraciones' },
+      { valor: '', label: 'Rebajas' }
+    ]
+  }
+];
 
   readonly UserIcon = User;
   readonly HeartIcon = Heart;
@@ -108,5 +181,9 @@ cerrarSubmenuConRetraso(): void {
 cerrarSubmenuInmediato(): void {
   if (this.cerrarTimeout) clearTimeout(this.cerrarTimeout);
   this.generoAbierto = null;
+}
+
+get columnasMenuActivo() {
+  return this.generoAbierto === 'MUJER' ? this.columnasMenuMujer : this.columnasMenuHombre;
 }
 }

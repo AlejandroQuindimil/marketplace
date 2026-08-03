@@ -71,11 +71,15 @@
   *ngIf="generoAbierto"
   (mouseenter)="abrirSubmenu(generoAbierto)"
   (mouseleave)="cerrarSubmenuInmediato()">
-  
-  <a *ngFor="let cat of categorias"
-    routerLink="/productos"
-    [queryParams]="{genero: generoAbierto, categoria: cat.valor}"
-    (click)="cerrarSubmenuInmediato()">
-    {{ cat.label }}
-  </a>
+
+  <div class="mega-menu-columna" *ngFor="let col of columnasMenuActivo">
+    <a
+      *ngFor="let cat of col.items"
+      routerLink="/productos"
+      [queryParams]="{genero: generoAbierto, categoria: cat.valor}"
+      (click)="cerrarSubmenuInmediato()">
+      {{ cat.label }}
+    </a>
+  </div>
+
 </div>

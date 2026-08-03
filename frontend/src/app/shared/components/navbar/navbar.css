@@ -143,20 +143,35 @@
   border-top: 1px solid #eee;
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px 32px;
-  padding: 20px 40px;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(140px, 1fr));
+  gap: 12px 28px;
+  padding: 28px 40px;
   box-sizing: border-box;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.mega-menu-columna {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .mega-menu a {
   font-size: 13px;
   font-weight: 400;
-  color: #1a1a1a;
+  color: #444;
   text-decoration: none;
 }
 
 .mega-menu a:hover {
-  color: #666;
+  color: #1a1a1a;
+}
+
+.mega-menu-destacado {
+  font-weight: 700 !important;
+  color: #1a1a1a !important;
+  font-size: 14px !important;
+  margin-bottom: 2px;
 }
