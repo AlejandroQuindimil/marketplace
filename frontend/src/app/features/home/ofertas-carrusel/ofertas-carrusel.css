@@ -7,8 +7,13 @@
   font-family: -apple-system, sans-serif;
 }
 
-.ofertas-section h2 { font-size: 22px; margin-bottom: 20px; }
-
+.ofertas-section h2 {
+  margin-top: 20px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  letter-spacing: 0.5px;
+  margin-bottom: 20px;
+}
 .carousel-outer { display: flex; align-items: center; gap: 12px; width: 100%; }
 
 .carousel-viewport {
