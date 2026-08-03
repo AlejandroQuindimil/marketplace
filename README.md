@@ -22,8 +22,6 @@ De esta forma, *DRIP* funciona como una tienda online completa, con separación 
 | Tendencia Mujer | Accesorios |
 | :---: | :---: |
 | <img src="frontend/public/img/inicio_img3.png" width="100%"/> | <img src="frontend/public/img/inicio_img4.png" width="100%"/> |
-![Accesorios](frontend/public/img/inicio_img4.png)
-
 ### 📱 Interfaz de usuario
 
 ![Pantallas de la aplicación]()
