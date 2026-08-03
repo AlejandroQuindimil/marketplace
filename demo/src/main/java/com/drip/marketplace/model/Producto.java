@@ -45,10 +45,15 @@ public class Producto {
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    public enum Categoria {
-        CAMISETAS, PANTALONES, ZAPATILLAS, ACCESORIOS, ABRIGOS
-    }
-
+   public enum Categoria {
+    CAMISETAS, POLOS, CAMISAS, SUDADERAS, JERSEYS,
+    PANTALONES, VAQUEROS, SHORTS,
+    VESTIDOS, FALDAS,
+    ZAPATILLAS, BOTAS,
+    ABRIGOS, CHAQUETAS,
+    ACCESORIOS, ROPA_INTERIOR
+    }   
+    
     public enum Genero {
         HOMBRE, MUJER, UNISEX
     }
