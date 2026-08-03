@@ -1,23 +1,129 @@
 <div class="catalogo-container">
   <div class="catalogo-header">
-  <span class="catalogo-contexto" *ngIf="!terminoBusqueda">Catálogo</span>
-  <div class="busqueda-header" *ngIf="terminoBusqueda">
-    <span class="busqueda-contexto">Resultados de búsqueda</span>
-    <div class="busqueda-titulo">
-      <h1>'{{ terminoBusqueda }}'</h1>
-      <button class="quitar-busqueda" (click)="quitarBusqueda()">✕</button>
+    <span class="catalogo-contexto" *ngIf="!terminoBusqueda">Catálogo</span>
+    <div class="busqueda-header" *ngIf="terminoBusqueda">
+      <span class="busqueda-contexto">Resultados de búsqueda</span>
+      <div class="busqueda-titulo">
+        <h1>'{{ terminoBusqueda }}'</h1>
+        <button class="quitar-busqueda" (click)="quitarBusqueda()">✕</button>
+      </div>
     </div>
+    <h1 *ngIf="!terminoBusqueda">Catálogo</h1>
   </div>
-  <h1 *ngIf="!terminoBusqueda">Catálogo</h1>
-</div>
 
-  <div class="filtros">
+  <!-- Nivel superior: Novedades / Hombre / Mujer / Accesorios / Rebajas -->
+  <div class="filtros filtros-top" *ngIf="!terminoBusqueda">
     <button
-      *ngFor="let cat of categorias"
+      *ngFor="let item of topFiltros"
+      [class.active]="esTopActivo(item)"
+      (click)="seleccionarTop(item)">
+      {{ item.label }}
+    </button>
+  </div>
+
+  <!-- Subcategorias: solo si hay un genero seleccionado -->
+  <div class="filtros filtros-sub" *ngIf="!terminoBusqueda && generoActivo && categoriasPorGenero[generoActivo]">
+    <button
+      *ngFor="let cat of categoriasPorGenero[generoActivo]"
       [class.active]="categoriaActiva === cat.valor"
       (click)="filtrarPor(cat.valor)">
       {{ cat.label }}
     </button>
+  </div>
+
+  <!-- Boton de filtros avanzados -->
+  <div class="filtros-avanzados-bar">
+    <button class="btn-filtros" (click)="toggleFiltros()">
+      Filtros {{ mostrarPanelFiltros ? '▲' : '▼' }}
+    </button>
+    <span class="resultados-count">{{ productos.length }} producto(s)</span>
+  </div>
+
+  <div class="panel-filtros" *ngIf="mostrarPanelFiltros">
+    <div class="filtro-grupo">
+      <label>Talla</label>
+      <select [(ngModel)]="filtroTalla" (change)="aplicarFiltrosLocales()">
+        <option value="">Todas</option>
+        <option *ngFor="let t of opcionesTallas" [value]="t">{{ t }}</option>
+      </select>
+    </div>
+
+    <div class="filtro-grupo">
+      <label>Color</label>
+      <select [(ngModel)]="filtroColor" (change)="aplicarFiltrosLocales()">
+        <option value="">Todos</option>
+        <option *ngFor="let c of opcionesColores" [value]="c">{{ c }}</option>
+      </select>
+    </div>
+
+    <div class="filtro-grupo">
+      <label>Marca</label>
+      <select [(ngModel)]="filtroMarca" (change)="aplicarFiltrosLocales()">
+        <option value="">Todas</option>
+        <option *ngFor="let m of opcionesMarcas" [value]="m">{{ m }}</option>
+      </select>
+    </div>
+
+    <div class="filtro-grupo filtro-precio">
+      <label>Precio</label>
+
+      <div class="precio-inputs">
+        <div class="precio-input-wrap">
+          <input
+            type="text"
+            inputmode="numeric"
+            autocomplete="off"
+            class="precio-input"
+            maxlength="6"
+            [value]="filtroPrecioMin"
+            (input)="onPrecioMinInputChange($event)"
+            (keydown)="bloquearNoNumerico($event)"
+            aria-label="Precio mínimo">
+          <span class="precio-simbolo">€</span>
+        </div>
+        <span class="precio-guion">–</span>
+        <div class="precio-input-wrap">
+          <input
+            type="text"
+            inputmode="numeric"
+            autocomplete="off"
+            class="precio-input"
+            maxlength="6"
+            [value]="filtroPrecioMax"
+            (input)="onPrecioMaxInputChange($event)"
+            (keydown)="bloquearNoNumerico($event)"
+            aria-label="Precio máximo">
+          <span class="precio-simbolo">€</span>
+        </div>
+      </div>
+
+      <div class="precio-slider">
+        <div class="precio-slider-track"></div>
+        <div
+          class="precio-slider-relleno"
+          [style.left.%]="precioMinPorcentaje"
+          [style.width.%]="precioMaxPorcentaje - precioMinPorcentaje">
+        </div>
+        <input
+          type="range"
+          class="precio-range precio-range-min"
+          [min]="precioMinLimite"
+          [max]="precioMaxLimite"
+          [value]="filtroPrecioMin"
+          (input)="onSliderMinChange($event)"
+          aria-label="Deslizador de precio mínimo">
+        <input
+          type="range"
+          class="precio-range precio-range-max"
+          [min]="precioMinLimite"
+          [max]="precioMaxLimite"
+          [value]="filtroPrecioMax"
+          (input)="onSliderMaxChange($event)"
+          aria-label="Deslizador de precio máximo">
+      </div>
+    </div>
+
+    <button class="btn-limpiar-filtros" (click)="limpiarFiltrosLocales()">Limpiar filtros</button>
   </div>
 
   <p *ngIf="loading">Cargando productos...</p>
@@ -55,5 +161,5 @@
     </a>
   </div>
 
-  <p *ngIf="!loading && productos.length === 0" class="empty">No hay productos en esta categoría.</p>
+  <p *ngIf="!loading && productos.length === 0" class="empty">No hay productos con estos filtros.</p>
 </div>

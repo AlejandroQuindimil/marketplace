@@ -2,33 +2,42 @@
 
 .catalogo-container {
   padding: 40px;
-  font-family: -apple-system, sans-serif;
+  max-width: 1400px;
+  margin: 0 auto;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #1a1a1a;
 }
 
 .catalogo-container h1 {
-  font-size: 28px;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   margin-bottom: 24px;
 }
 
 .filtros {
   display: flex;
-  gap: 10px;
-  margin-bottom: 32px;
+  gap: 8px;
+  margin-bottom: 28px;
   flex-wrap: wrap;
 }
 
 .filtros button {
-  padding: 8px 18px;
-  border: 1px solid #ddd;
+  padding: 9px 20px;
+  border: 1px solid #e2e2e2;
   background: white;
-  border-radius: 20px;
+  border-radius: 999px;
   cursor: pointer;
   font-size: 13px;
+  font-weight: 500;
   color: #444;
-  transition: all 0.15s;
+  transition: border-color 0.15s, background-color 0.15s, color 0.15s, transform 0.1s;
 }
 
-.filtros button:hover { border-color: #1a1a1a; }
+.filtros button:hover {
+  border-color: #1a1a1a;
+  transform: translateY(-1px);
+}
 
 .filtros button.active {
   background: #1a1a1a;
@@ -38,22 +47,38 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 28px 22px;
 }
 
-.card { text-decoration: none; color: inherit; }
+.card {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
 
 .card-img {
   position: relative;
   aspect-ratio: 3/4;
   background: #f0f0f0;
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  transition: box-shadow 0.2s;
 }
 
-.card-img img { width: 100%; height: 100%; object-fit: cover; }
+.card:hover .card-img {
+  box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+}
+
+.card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.card:hover .card-img img { transform: scale(1.04); }
 
 .fav-btn {
   position: absolute;
@@ -70,15 +95,21 @@
   box-shadow: 0 1px 4px rgba(0,0,0,0.15);
 }
 
-.card-info { display: flex; flex-direction: column; gap: 2px; }
-.card-marca { font-size: 12px; font-weight: 600; color: #666; }
-.card-nombre { font-size: 14px; color: #1a1a1a; }
+.card-info { display: flex; flex-direction: column; gap: 3px; }
+.card-marca {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #888;
+}
+.card-nombre { font-size: 14px; color: #1a1a1a; line-height: 1.3; }
 
-.card-precio { margin-top: 4px; }
-.precio-actual { font-weight: 600; font-size: 14px; }
+.card-precio { margin-top: 5px; }
+.precio-actual { font-weight: 700; font-size: 14px; }
 .precio-anterior {
   text-decoration: line-through;
-  color: #999;
+  color: #aaa;
   font-size: 13px;
   margin-left: 8px;
 }
@@ -143,3 +174,214 @@
 
 .flecha-card-izq { left: 8px; }
 .flecha-card-der { right: 8px; }
+
+
+.filtros-top button.active {
+  background: #1a1a1a;
+  color: white;
+  border-color: #1a1a1a;
+}
+
+.filtros-sub {
+  padding-top: 4px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.filtros-avanzados-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.btn-filtros {
+  padding: 9px 18px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: border-color 0.15s;
+}
+
+.btn-filtros:hover { border-color: #1a1a1a; }
+
+.resultados-count {
+  font-size: 13px;
+  color: #999;
+}
+
+.panel-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  align-items: flex-start;
+  padding: 22px 24px;
+  background: #f8f8f7;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  margin-bottom: 28px;
+}
+
+.filtro-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filtro-grupo label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #777;
+}
+
+.filtro-grupo select {
+  padding: 9px 10px;
+  border: 1px solid #ddd;
+  border-radius: 7px;
+  font-size: 13px;
+  min-width: 140px;
+  background: white;
+  transition: border-color 0.15s;
+}
+
+.filtro-grupo select:hover,
+.filtro-grupo select:focus {
+  border-color: #1a1a1a;
+  outline: none;
+}
+
+.btn-limpiar-filtros {
+  padding: 9px 4px;
+  border: none;
+  background: none;
+  color: #666;
+  font-size: 13px;
+  text-decoration: underline;
+  cursor: pointer;
+  align-self: center;
+}
+
+.btn-limpiar-filtros:hover { color: #1a1a1a; }
+
+/* --- Filtro de precio: inputs numéricos + slider de doble tirador --- */
+
+.filtro-precio { min-width: 240px; }
+
+.precio-inputs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.precio-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 7px 10px;
+  border: 1px solid #ddd;
+  border-radius: 7px;
+  background: white;
+  transition: border-color 0.15s;
+}
+
+.precio-input-wrap:focus-within {
+  border-color: #1a1a1a;
+}
+
+.precio-input {
+  width: 52px;
+  border: none;
+  outline: none;
+  font-size: 13px;
+  font-family: inherit;
+  color: #1a1a1a;
+  background: transparent;
+  /* quita las flechas de incremento por si el navegador las añade */
+  -moz-appearance: textfield;
+}
+
+.precio-input::-webkit-outer-spin-button,
+.precio-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.precio-simbolo { font-size: 13px; color: #999; }
+
+.precio-guion { color: #bbb; font-size: 13px; }
+
+.precio-slider {
+  position: relative;
+  height: 20px;
+  margin-top: 4px;
+}
+
+.precio-slider-track {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 4px;
+  transform: translateY(-50%);
+  background: #e2e2e2;
+  border-radius: 2px;
+}
+
+.precio-slider-relleno {
+  position: absolute;
+  top: 50%;
+  height: 4px;
+  transform: translateY(-50%);
+  background: #1a1a1a;
+  border-radius: 2px;
+}
+
+.precio-range {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  margin: 0;
+  background: transparent;
+  pointer-events: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.precio-range::-webkit-slider-runnable-track {
+  -webkit-appearance: none;
+  background: transparent;
+}
+
+.precio-range::-moz-range-track {
+  background: transparent;
+}
+
+.precio-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  pointer-events: auto;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #1a1a1a;
+  border: 2px solid white;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  cursor: pointer;
+  margin-top: 0;
+}
+
+.precio-range::-moz-range-thumb {
+  pointer-events: auto;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #1a1a1a;
+  border: 2px solid white;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  cursor: pointer;
+}
