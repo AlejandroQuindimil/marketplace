@@ -1,0 +1,19 @@
+<section class="coleccion-banner">
+  <div class="coleccion-banner-img">
+    <img [src]="imagenes[indiceImagen]" [alt]="titulo">
+    <button
+      class="coleccion-banner-flecha"
+      *ngIf="imagenes.length > 1"
+      (click)="siguienteImagen()"
+      aria-label="Ver otra imagen">›</button>
+  </div>
+
+  <div class="coleccion-banner-contenido">
+    <h3>{{ titulo }}</h3>
+    <p>{{ descripcion }}</p>
+    <a routerLink="/productos" [queryParams]="ctaQueryParams" class="coleccion-banner-btn">
+      <span>{{ ctaTexto }}</span>
+      <span>→</span>
+    </a>
+  </div>
+</section>

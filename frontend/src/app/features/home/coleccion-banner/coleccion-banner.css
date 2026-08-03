@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap');
+
+* { box-sizing: border-box; }
+
+/* Las imágenes son placeholders de stock: sustituir por fotografía real
+   de campaña cuando esté disponible. */
+.coleccion-banner {
+  max-width: 1550px;
+  margin: 40px auto;
+  padding: 0 40px;
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 4px;
+  align-items: stretch;
+  font-family: 'Inter', -apple-system, sans-serif;
+}
+
+/* Restringir la altura del contenedor para que la imagen no sea enorme */
+.coleccion-banner-img {
+  position: relative;
+  height: 620px; /* Define una altura máxima fija proporcional al banner */
+  min-height: 320px;
+}
+
+.coleccion-banner-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center; /* Asegura el reencuadre centrado del sujeto */
+  display: block;
+}
+
+.coleccion-banner-flecha {
+  position: absolute;
+  top: 50%; /* Ubica al 50% de la altura */
+  right: 16px; /* Pegado al borde derecho */
+  bottom: auto; /* Anula el posicionamiento inferior anterior */
+  left: auto;
+  transform: translateY(-50%); /* Centra exactamente en el eje vertical */
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.9);
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.25);
+  transition: background 0.15s, transform 0.15s;
+}
+
+.coleccion-banner-flecha:hover {
+  background: white;
+  transform: translateY(-50%) scale(1.05);
+}
+
+.coleccion-banner-contenido {
+  background: #f4f2ee;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 32px;
+}
+
+.coleccion-banner-contenido h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: 0.5px;
+  margin: 0 0 10px;
+}
+
+.coleccion-banner-contenido p {
+  font-size: 14px;
+  color: #555;
+  margin: 0 0 20px;
+  line-height: 1.4;
+}
+
+.coleccion-banner-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  padding: 12px 26px;
+  background: #1a1a1a;
+  color: white;
+  text-decoration: none;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 700;
+  transition: all 0.2s;
+}
+
+.coleccion-banner-btn:hover {
+  background: white;
+  color: #1a1a1a;
+  border: 1px solid #1a1a1a;
+}
+
+@media (max-width: 900px) {
+  .coleccion-banner {
+    grid-template-columns: 1fr;
+  }
+}
