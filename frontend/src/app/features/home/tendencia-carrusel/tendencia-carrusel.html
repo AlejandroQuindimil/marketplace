@@ -1,0 +1,49 @@
+<section class="tendencia" *ngIf="productos.length">
+  <div class="tendencia-header" [class]="'tendencia-header acento-' + acento">
+    <h2>{{ titulo }}</h2>
+    <span class="tendencia-franja"></span>
+  </div>
+
+  <div class="carrusel-wrapper">
+    <button
+      class="carrusel-flecha carrusel-flecha-izq"
+      [disabled]="!puedeIzquierda"
+      (click)="scroll('izquierda')"
+      aria-label="Anterior">‹</button>
+
+    <div class="carrusel-track" #track>
+      <a class="card" *ngFor="let p of productos" [routerLink]="['/productos', p.id]">
+        <div class="card-img">
+          <button
+            class="fav-btn"
+            [class.active]="favoritoIds.has(p.id)"
+            (click)="onToggleFavorito(p.id, $event)">
+            {{ favoritoIds.has(p.id) ? '♥' : '♡' }}
+          </button>
+          <img [src]="p.imagenes[0]" [alt]="p.nombre" onerror="this.style.display='none'">
+        </div>
+        <div class="card-info">
+          <span class="card-marca">{{ p.marca }}</span>
+          <span class="card-nombre">{{ p.nombre }}</span>
+          <div class="card-precio">
+            <span class="precio-actual">{{ p.precio }}€</span>
+            <span class="precio-anterior" *ngIf="p.precioAnterior">{{ p.precioAnterior }}€</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="card card-ver-mas" [routerLink]="['/productos']" [queryParams]="verMasQueryParams">
+        <div class="ver-mas-contenido">
+          <span class="ver-mas-flecha">→</span>
+          <span>Descubre<br>todo</span>
+        </div>
+      </a>
+    </div>
+
+    <button
+      class="carrusel-flecha carrusel-flecha-der"
+      [disabled]="!puedeDerecha"
+      (click)="scroll('derecha')"
+      aria-label="Siguiente">›</button>
+  </div>
+</section>

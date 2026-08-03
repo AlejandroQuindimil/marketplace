@@ -1,0 +1,188 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap');
+
+* { box-sizing: border-box; }
+
+.tendencia {
+  max-width: 1550px;
+  margin: 0 auto;
+  padding: 30px 40px 10px;
+  font-family: 'Inter', -apple-system, sans-serif;
+}
+
+.tendencia h2 {
+  position: relative;
+  z-index: 1;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  letter-spacing: 0.5px;
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* Resaltado tipo rotulador detrás del título, como en el boceto */
+.tendencia h2::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  left: -6px;
+  right: -6px;
+  bottom: 2px;
+  height: 40%;
+  border-radius: 3px;
+  transform: rotate(-1deg);
+}
+
+.tendencia-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.tendencia-franja {
+  flex: 1;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.tendencia-header.acento-hombre h2::before { background: rgba(59, 91, 115, 0.35); }
+.tendencia-header.acento-hombre .tendencia-franja { background: #3b5b73; }
+
+.tendencia-header.acento-mujer h2::before { background: rgba(168, 93, 107, 0.3); }
+.tendencia-header.acento-mujer .tendencia-franja { background: #a85d6b; }
+
+.tendencia-header.acento-accesorios h2::before { background: rgba(176, 141, 87, 0.35); }
+.tendencia-header.acento-accesorios .tendencia-franja { background: #b08d57; }
+
+.carrusel-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.carrusel-track {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  padding: 4px 2px 12px;
+}
+
+.carrusel-track::-webkit-scrollbar {
+  display: none;
+}
+
+.carrusel-flecha {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  background: white;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  z-index: 2;
+}
+
+.carrusel-flecha-izq { margin-right: 12px; }
+.carrusel-flecha-der { margin-left: 12px; }
+
+.carrusel-flecha:hover { background: #f0f0f0; }
+
+.carrusel-flecha:disabled {
+  opacity: 0.3;
+  cursor: default;
+  box-shadow: none;
+}
+
+.carrusel-flecha:disabled:hover {
+  background: white;
+}
+
+.card {
+  flex: none;
+  width: 220px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.card-img {
+  position: relative;
+  aspect-ratio: 3/4;
+  background: #f0f0f0;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.card-img img { width: 100%; height: 100%; object-fit: cover; }
+
+.fav-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: white;
+  font-size: 16px;
+  cursor: pointer;
+  z-index: 2;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+
+.fav-btn.active { color: #e11d48; }
+
+.card-info { display: flex; flex-direction: column; gap: 2px; }
+.card-marca { font-size: 12px; font-weight: 600; color: #666; }
+.card-nombre { font-size: 14px; color: #1a1a1a; }
+
+.card-precio { margin-top: 4px; }
+.precio-actual { font-weight: 600; font-size: 14px; }
+.precio-anterior {
+  text-decoration: line-through;
+  color: #999;
+  font-size: 13px;
+  margin-left: 8px;
+}
+
+.card-ver-mas {
+  display: flex;
+}
+
+.ver-mas-contenido {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid #1a1a1a;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+  transition: all 0.2s;
+}
+
+.card-ver-mas:hover .ver-mas-contenido {
+  background: #1a1a1a;
+  color: white;
+}
+
+.ver-mas-flecha {
+  font-size: 22px;
+  transition: transform 0.2s;
+}
+
+.card-ver-mas:hover .ver-mas-flecha {
+  transform: translateX(4px);
+}
