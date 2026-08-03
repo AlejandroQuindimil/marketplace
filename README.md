@@ -13,8 +13,15 @@ De esta forma, *DRIP* funciona como una tienda online completa, con separación 
 
 ### 📷 Vista previa de la aplicación
 
-![Vista previa de DRIP]()
+### 📸 Previsualización de la Landing Page
 
+| Header & Ofertas | Tendencia Hombre |
+| :---: | :---: |
+| <img src="frontend/public/img/inicio_img1.png" width="100%"/> | <img src="frontend/public/img/inicio_img2.png" width="100%"/> |
+
+| Tendencia Mujer | Accesorios |
+| :---: | :---: |
+| <img src="frontend/public/img/inicio_img3.png" width="100%"/> | <img src="frontend/public/img/inicio_img4.png" width="100%"/> |
 ### 📱 Interfaz de usuario
 
 ![Pantallas de la aplicación]()
