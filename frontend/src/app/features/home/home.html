@@ -1,35 +1,71 @@
-
-
 <section class="hero">
-  <h1>Nueva temporada</h1>
-  <p>Descubre las últimas tendencias</p>
-  <a routerLink="/productos" class="hero-btn">Ver catálogo</a>
-</section>
-<app-ofertas-carrusel [productos]="ofertas"></app-ofertas-carrusel>
-<section class="destacados">
-  <h2>Destacados</h2>
-
-  <div class="grid" *ngIf="!loading">
-    <a class="card" *ngFor="let p of destacados" [routerLink]="['/productos', p.id]">
-      <div class="card-img">
-        <button
-          class="fav-btn"
-          [class.active]="favoritoIds.has(p.id)"
-          (click)="toggleFavorito(p.id, $event)">
-          {{ favoritoIds.has(p.id) ? '♥' : '♡' }}
-        </button>
-        <img [src]="p.imagenes[0]" [alt]="p.nombre" onerror="this.style.display='none'">
-      </div>
-      <div class="card-info">
-        <span class="card-marca">{{ p.marca }}</span>
-        <span class="card-nombre">{{ p.nombre }}</span>
-        <div class="card-precio">
-          <span class="precio-actual">{{ p.precio }}€</span>
-          <span class="precio-anterior" *ngIf="p.precioAnterior">{{ p.precioAnterior }}€</span>
-        </div>
-      </div>
-    </a>
+  <div class="hero-overlay"></div>
+  <div class="hero-contenido">
+    <h1>Nueva temporada</h1>
+    <p>Descubre las últimas tendencias</p>
+    <a routerLink="/productos" class="hero-btn">Ver catálogo</a>
   </div>
+</section>
 
-  <p *ngIf="loading">Cargando productos...</p>
+<app-ofertas-carrusel [productos]="ofertas"></app-ofertas-carrusel>
+
+<p class="destacados-cargando" *ngIf="loading">Cargando productos...</p>
+
+<app-tendencia-carrusel
+  *ngIf="!loading"
+  titulo="Tendencia Hombre"
+  acento="hombre"
+  [productos]="productosHombre"
+  [favoritoIds]="favoritoIds"
+  [verMasQueryParams]="{ genero: 'HOMBRE' }"
+  (toggleFavorito)="toggleFavorito($event.productoId, $event.event)">
+</app-tendencia-carrusel>
+
+<app-coleccion-banner
+  titulo="Nueva Colección Hombre"
+  descripcion="Descubre los looks recién llegados para él."
+  ctaTexto="Ver colección hombre"
+  [imagenes]="[
+    'https://images.unsplash.com/photo-1589305227000-aa173eb8d102?q=80&w=626&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1532332248682-206cc786359f?q=80&w=778&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+  ]"
+  [ctaQueryParams]="{ genero: 'HOMBRE' }">
+</app-coleccion-banner>
+
+<app-tendencia-carrusel
+  *ngIf="!loading"
+  titulo="Tendencia Mujer"
+  acento="mujer"
+  [productos]="productosMujer"
+  [favoritoIds]="favoritoIds"
+  [verMasQueryParams]="{ genero: 'MUJER' }"
+  (toggleFavorito)="toggleFavorito($event.productoId, $event.event)">
+</app-tendencia-carrusel>
+
+<app-coleccion-banner
+  titulo="Nueva Colección Mujer"
+  descripcion="Descubre los looks recién llegados para ella."
+  ctaTexto="Ver colección mujer"
+  [imagenes]="[
+    'https://images.unsplash.com/photo-1611586170803-7f79b4a39765?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1664515226058-03952a19bd76?q=80&w=772&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+  ]"
+  [ctaQueryParams]="{ genero: 'MUJER' }">
+</app-coleccion-banner>
+
+<app-tendencia-carrusel
+  *ngIf="!loading"
+  titulo="Accesorios"
+  acento="accesorios"
+  [productos]="productosAccesorios"
+  [favoritoIds]="favoritoIds"
+  [verMasQueryParams]="{ categoria: 'ACCESORIOS' }"
+  (toggleFavorito)="toggleFavorito($event.productoId, $event.event)">
+</app-tendencia-carrusel>
+
+<section class="descubre-mas">
+  <a routerLink="/productos" class="descubre-mas-link">
+    <span>Explora todo el catálogo</span>
+    <span class="descubre-mas-flecha">→</span>
+  </a>
 </section>

@@ -5,20 +5,27 @@ import { ProductoService, Producto } from '../../core/producto';
 import { AuthService } from '../../core/auth';
 import { FavoritoService } from '../../core/favorito';
 import { OfertasCarrusel } from './ofertas-carrusel/ofertas-carrusel';
+import { TendenciaCarrusel } from './tendencia-carrusel/tendencia-carrusel';
+import { ColeccionBanner } from './coleccion-banner/coleccion-banner';
+
+const LIMITE_TENDENCIA = 12;
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterLink, OfertasCarrusel],
+  imports: [CommonModule, RouterLink, OfertasCarrusel, TendenciaCarrusel, ColeccionBanner],
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
 export class Home implements OnInit {
-  destacados: Producto[] = [];
   ofertas: Producto[] = [];
   loading = true;
   usuario: { nombre: string } | null = null;
   favoritoIds: Set<string> = new Set();
+
+  productosHombre: Producto[] = [];
+  productosMujer: Producto[] = [];
+  productosAccesorios: Producto[] = [];
 
   constructor(
     private productoService: ProductoService,
@@ -40,14 +47,28 @@ export class Home implements OnInit {
       });
     }
 
-    this.productoService.findDestacados().subscribe({
+    this.productoService.findAll(undefined, 'HOMBRE').subscribe({
       next: (data) => {
-        this.destacados = data;
+        this.productosHombre = data.slice(0, LIMITE_TENDENCIA);
         this.loading = false;
         this.cdr.detectChanges();
       },
       error: () => {
         this.loading = false;
+        this.cdr.detectChanges();
+      }
+    });
+
+    this.productoService.findAll(undefined, 'MUJER').subscribe({
+      next: (data) => {
+        this.productosMujer = data.slice(0, LIMITE_TENDENCIA);
+        this.cdr.detectChanges();
+      }
+    });
+
+    this.productoService.findAll('ACCESORIOS').subscribe({
+      next: (data) => {
+        this.productosAccesorios = data.slice(0, LIMITE_TENDENCIA);
         this.cdr.detectChanges();
       }
     });
@@ -81,7 +102,7 @@ export class Home implements OnInit {
       });
     }
   }
-  
+
   logout(): void {
     this.authService.logout();
     this.usuario = null;
