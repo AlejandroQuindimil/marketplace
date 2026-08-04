@@ -8,11 +8,33 @@
 }
 
 .ofertas-section h2 {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
   margin-top: 20px;
   font-family: 'Bebas Neue', sans-serif;
   font-size: 32px;
   letter-spacing: 0.5px;
   margin-bottom: 20px;
+  bottom: 4px;
+  height: 55%;
+
+}
+
+/* Resaltado tipo rotulador detrás del título, en el rojo de las etiquetas
+   de descuento (mismo tono que .oferta-badge), para emparentar visualmente
+   esta sección con las ofertas sin convertirla en una fila de tendencia más */
+.ofertas-section h2::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  left: -6px;
+  right: -6px;
+  bottom: 2px;
+  height: 40%;
+  border-radius: 3px;
+  transform: rotate(-1deg);
+  background: rgb(255, 0, 0);
 }
 .carousel-outer { display: flex; align-items: center; gap: 12px; width: 100%; }
 
