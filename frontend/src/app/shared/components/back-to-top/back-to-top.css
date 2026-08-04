@@ -1,0 +1,59 @@
+* { box-sizing: border-box; }
+
+.volver-arriba {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  padding: 12px 20px;
+  border-radius: 30px;
+  border: none;
+  background: #1a1a1a;
+  color: white;
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+
+  /* Oculto por defecto: opacidad 0 + visibility hidden (no solo opacidad)
+     para que no sea clicable ni "robe" el foco por teclado mientras está
+     arriba del todo */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s, background 0.15s;
+  z-index: 100;
+}
+
+.volver-arriba.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.volver-arriba:hover {
+  background: #333;
+}
+
+.volver-arriba-flecha {
+  font-size: 15px;
+  transition: transform 0.2s;
+}
+
+.volver-arriba:hover .volver-arriba-flecha {
+  transform: translateY(-2px);
+}
+
+@media (max-width: 640px) {
+  .volver-arriba {
+    right: 16px;
+    bottom: 16px;
+    padding: 10px 16px;
+    font-size: 12px;
+  }
+}
