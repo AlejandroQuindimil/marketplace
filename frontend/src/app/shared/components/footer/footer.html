@@ -1,0 +1,57 @@
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-marca">
+      <span class="footer-logo">DRIP</span>
+      <p>Moda para él y para ella, sin complicaciones.</p>
+    </div>
+
+    <div class="footer-columna">
+      <h3>Comprar</h3>
+      <ul>
+        <li><a routerLink="/productos" [queryParams]="{ genero: '' }">Novedades</a></li>
+        <li><a routerLink="/productos" [queryParams]="{ genero: 'HOMBRE' }">Hombre</a></li>
+        <li><a routerLink="/productos" [queryParams]="{ genero: 'MUJER' }">Mujer</a></li>
+        <li><a routerLink="/productos" [queryParams]="{ categoria: 'ACCESORIOS' }">Accesorios</a></li>
+        <li><a routerLink="/productos" [queryParams]="{ genero: '', rebajas: 'true' }">Rebajas</a></li>
+      </ul>
+    </div>
+
+    <!-- TODO: estas rutas aún no existen en la app, están como placeholder
+         a la espera de que se construyan las páginas correspondientes -->
+    <div class="footer-columna">
+      <h3>Ayuda</h3>
+      <ul>
+        <li><a routerLink="/faq">Preguntas frecuentes</a></li>
+        <li><a routerLink="/como-comprar">Cómo comprar</a></li>
+        <li><a routerLink="/devoluciones">Devoluciones y cambios</a></li>
+        <li><a routerLink="/contacto">Contacto</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-columna">
+      <h3>Drip</h3>
+      <ul>
+        <li><a routerLink="/quienes-somos">Quiénes somos</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="footer-legal">
+      <a routerLink="/terminos">Términos y condiciones</a>
+      <a routerLink="/privacidad">Privacidad</a>
+      <a routerLink="/cookies">Cookies</a>
+    </div>
+
+    <div class="footer-redes">
+      <a href="#" aria-label="Instagram">Instagram</a>
+      <a href="#" aria-label="TikTok">TikTok</a>
+      <a href="#" aria-label="Facebook">Facebook</a>
+    </div>
+
+    <p class="footer-copy">
+      © {{ anioActual }} Drip. Todos los derechos reservados.
+      <span class="footer-disclaimer">Proyecto de portfolio diseñado y desarrollado por mí — no es un marketplace real ni funcional.</span>
+    </p>
+  </div>
+</footer>
