@@ -24,6 +24,15 @@ public class Usuario {
 
     private Rol rol = Rol.USER;
 
+    // String vacío por defecto (no null): usuarios ya existentes en la BBDD
+    // no tienen este campo en el documento guardado, y Map.of() en el
+    // controller lanza NullPointerException si algún valor es null.
+    private String telefono = "";
+
+    // Opt-in explícito (no opt-out): por defecto el usuario NO recibe
+    // comunicaciones hasta que lo active él mismo.
+    private boolean recibirNewsletter = false;
+
     /* Array de ids de producto embebido directamente en el usuario, no una
     * coleccion aparte: la relacion es simple (solo una lista de
     * referencias), no se justifica una coleccion separada para esto
@@ -45,5 +54,6 @@ public class Usuario {
         private String calle;
         private String ciudad;
         private String cp;
+        private boolean predeterminada = false;
     }
 }
