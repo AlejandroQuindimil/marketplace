@@ -37,6 +37,7 @@
 
 .perfil-contenido { flex: 1; }
 .perfil-contenido h1 { font-size: 24px; margin-bottom: 20px; }
+.perfil-contenido h2 { font-size: 16px; margin: 32px 0 16px; }
 
 .perfil-info {
   display: flex;
@@ -71,6 +72,124 @@
   margin-top: 4px;
 }
 
+/* --- Direcciones --- */
+
+.direcciones-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.direccion-card {
+  position: relative;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 90px;
+}
+
+.direccion-card.predeterminada {
+  border-color: #1a1a1a;
+}
+
+.direccion-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #dcfce7;
+  color: #166534;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.direccion-calle { font-size: 14px; font-weight: 600; }
+.direccion-detalle { font-size: 13px; color: #666; }
+
+.direccion-acciones {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.direccion-editar,
+.direccion-eliminar,
+.direccion-predeterminada-btn {
+  border: none;
+  background: none;
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
+.direccion-editar { color: #1a1a1a; }
+.direccion-eliminar { color: #999; }
+.direccion-predeterminada-btn { color: #666; }
+
+.direccion-form-titulo {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.direccion-nueva {
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed #ccc;
+  color: #999;
+  cursor: pointer;
+  font-size: 13px;
+  gap: 6px;
+}
+
+.direccion-nueva:hover {
+  border-color: #1a1a1a;
+  color: #1a1a1a;
+}
+
+.direccion-nueva-icono { font-size: 22px; line-height: 1; }
+
+.direccion-form input {
+  padding: 7px 9px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 13px;
+}
+
+.direccion-form-acciones {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.btn-guardar-direccion {
+  flex: 1;
+  padding: 6px;
+  background: #1a1a1a;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.btn-cancelar-direccion {
+  padding: 6px 10px;
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* --- Pedidos --- */
+
 .pedido-card {
   border: 1px solid #eee;
   border-radius: 8px;
@@ -81,17 +200,21 @@
 .pedido-header {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
   margin-bottom: 8px;
   font-size: 13px;
+  cursor: pointer;
 }
 
-.pedido-fecha { color: #999; }
+.pedido-numero { display: block; font-weight: 600; font-size: 14px; color: #1a1a1a; }
+.pedido-fecha { display: block; color: #999; margin-top: 2px; }
 
 .pedido-estado {
   padding: 2px 10px;
   border-radius: 12px;
   font-weight: 600;
   font-size: 12px;
+  white-space: nowrap;
 }
 
 .estado-pendiente { background: #fef3c7; color: #92400e; }
@@ -101,15 +224,91 @@
 
 .pedido-body {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   font-size: 14px;
 }
 
 .pedido-total { font-weight: 600; }
 
+.pedido-toggle {
+  border: none;
+  background: none;
+  color: #666;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.pedido-desglose {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pedido-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pedido-item-img {
+  width: 44px;
+  height: 56px;
+  background: #f5f5f5;
+  border-radius: 4px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.pedido-item-img img { width: 100%; height: 100%; object-fit: cover; }
+
+.pedido-item-info { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.pedido-item-nombre { font-size: 13px; font-weight: 500; }
+.pedido-item-variante { font-size: 12px; color: #999; }
+.pedido-item-precio { font-size: 13px; font-weight: 600; }
+
 .vacio { color: #999; font-size: 14px; }
 
+/* --- Devoluciones --- */
+
+.devolucion-plazo {
+  font-size: 12px;
+  color: #e11d48;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.btn-solicitar-devolucion {
+  padding: 6px 14px;
+  border: 1px solid #1a1a1a;
+  background: white;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-solicitar-devolucion:hover {
+  background: #1a1a1a;
+  color: white;
+}
+
+/* --- Tallas --- */
+
 .tallas-descripcion { color: #666; font-size: 14px; margin-bottom: 20px; }
+
+.talla-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.talla-categoria { font-size: 14px; font-weight: 500; }
 
 .talla-row select {
   width: 110px;
@@ -121,18 +320,89 @@
   cursor: pointer;
 }
 
-.talla-categoria { font-size: 14px; font-weight: 500; }
-
-.talla-row input {
-  width: 80px;
-  padding: 8px 10px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 14px;
-  text-align: center;
-}
+/* --- Ayuda --- */
 
 .ayuda-item { margin-bottom: 24px; }
 .ayuda-item h3 { font-size: 15px; margin-bottom: 6px; }
 .ayuda-item p { font-size: 14px; color: #555; line-height: 1.5; }
 .ayuda-item a { color: #1a1a1a; font-weight: 600; }
+
+.direccion-error {
+  font-size: 11px;
+  color: #dc2626;
+  margin: 2px 0;
+}
+
+.btn-guardar-direccion:disabled {
+  background: #999;
+  cursor: not-allowed;
+}
+
+/* --- Datos de contacto / comunicaciones --- */
+
+.datos-contacto-section,
+.comunicaciones-section {
+  margin-top: 12px;
+}
+
+.campo-telefono {
+  display: flex;
+  gap: 8px;
+  max-width: 460px;
+}
+
+.prefijo-telefono {
+  flex: none;
+  width: 150px;
+  padding: 9px 6px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 13px;
+  background: white;
+  cursor: pointer;
+}
+
+.campo-telefono input {
+  flex: 1;
+  min-width: 0;
+  padding: 9px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.campo-telefono button {
+  padding: 9px 16px;
+  background: #1a1a1a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.campo-telefono button:disabled {
+  background: #999;
+  cursor: not-allowed;
+}
+
+.toggle-newsletter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+}
+
+.toggle-newsletter input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.mensaje-guardado {
+  font-size: 12px;
+  color: #166534;
+  margin: 2px 0;
+}

@@ -20,6 +20,81 @@
           <span class="perfil-rol" *ngIf="usuario.rol === 'ADMIN'">Administrador</span>
         </div>
       </div>
+
+      <div class="direcciones-section">
+        <h2>Direcciones de envío</h2>
+
+        <div class="direcciones-grid">
+          <div class="direccion-card" *ngFor="let d of direcciones; let i = index" [class.predeterminada]="d.predeterminada">
+            <span class="direccion-badge" *ngIf="d.predeterminada">Predeterminada</span>
+            <span class="direccion-calle">{{ d.calle }}</span>
+            <span class="direccion-detalle">{{ d.ciudad }}, {{ d.cp }}</span>
+            <div class="direccion-acciones">
+              <button class="direccion-editar" (click)="abrirFormDireccion(i)">Editar</button>
+              <button class="direccion-eliminar" (click)="eliminarDireccion(i)">Eliminar</button>
+              <button class="direccion-predeterminada-btn" *ngIf="!d.predeterminada" (click)="marcarPredeterminada(i)">Marcar como predeterminada</button>
+            </div>
+          </div>
+
+          <!-- Tarjeta para añadir nueva dirección -->
+          <div class="direccion-card direccion-nueva" *ngIf="!mostrandoFormDireccion" (click)="abrirFormDireccion()">
+            <span class="direccion-nueva-icono">+</span>
+            <span>Añadir dirección</span>
+          </div>
+
+          <div class="direccion-card direccion-form" *ngIf="mostrandoFormDireccion">
+            <span class="direccion-form-titulo">{{ editandoDireccionIndex !== null ? 'Editar dirección' : 'Nueva dirección' }}</span>
+            <input type="text" placeholder="Calle y número" [(ngModel)]="nuevaDireccion.calle">
+            <input type="text" placeholder="Ciudad" [(ngModel)]="nuevaDireccion.ciudad">
+            <input
+              type="text"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              maxlength="5"
+              placeholder="Código postal"
+              [value]="nuevaDireccion.cp"
+              (input)="onCpInput($event)">
+
+            <p class="direccion-error" *ngIf="errorDireccion">{{ errorDireccion }}</p>
+
+            <div class="direccion-form-acciones">
+              <button class="btn-guardar-direccion" [disabled]="validandoDireccion" (click)="guardarDireccion()">
+                {{ validandoDireccion ? 'Verificando...' : 'Guardar' }}
+              </button>
+              <button class="btn-cancelar-direccion" (click)="cerrarFormDireccion()">Cancelar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="datos-contacto-section">
+        <h2>Datos de contacto</h2>
+        <div class="campo-telefono">
+          <select class="prefijo-telefono" [(ngModel)]="prefijoTelefono">
+            <option *ngFor="let p of paises" [value]="p.prefijo">{{ p.bandera }} {{ p.prefijo }} {{ p.nombre }}</option>
+          </select>
+          <input
+            type="tel"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            placeholder="666 555 666"
+            autocomplete="tel"
+            [value]="formatearNumero(numeroTelefono)"
+            (input)="onNumeroTelefonoInput($event)">
+          <button [disabled]="guardandoTelefono" (click)="guardarTelefono()">
+            {{ guardandoTelefono ? 'Guardando...' : 'Guardar' }}
+          </button>
+        </div>
+        <p class="mensaje-guardado" *ngIf="mensajeTelefono">{{ mensajeTelefono }}</p>
+      </div>
+
+      <div class="comunicaciones-section">
+        <h2>Comunicaciones</h2>
+        <label class="toggle-newsletter">
+          <input type="checkbox" [checked]="recibirNewsletter" (change)="toggleNewsletter()">
+          <span>Quiero recibir novedades y ofertas por email</span>
+        </label>
+      </div>
     </div>
 
     <!-- PEDIDOS -->
@@ -28,15 +103,35 @@
       <p *ngIf="loadingPedidos">Cargando pedidos...</p>
 
       <div class="pedido-card" *ngFor="let p of pedidos">
-        <div class="pedido-header">
-          <span class="pedido-fecha">{{ p.createdAt | date:'d MMM yyyy' }}</span>
+        <div class="pedido-header" (click)="toggleDesglose(p.id)">
+          <div>
+            <span class="pedido-numero">Pedido #{{ p.id.slice(-8).toUpperCase() }}</span>
+            <span class="pedido-fecha">{{ p.createdAt | date:'d MMM yyyy' }}</span>
+          </div>
           <span class="pedido-estado" [class]="'estado-' + p.estado.toLowerCase()">
             {{ estadoLabel(p.estado) }}
           </span>
         </div>
+
         <div class="pedido-body">
           <span>{{ p.items.length }} artículo(s)</span>
           <span class="pedido-total">{{ p.total.toFixed(2) }}€</span>
+          <button class="pedido-toggle" (click)="toggleDesglose(p.id)">
+            {{ pedidoExpandido === p.id ? 'Ocultar detalle ▲' : 'Ver detalle ▼' }}
+          </button>
+        </div>
+
+        <div class="pedido-desglose" *ngIf="pedidoExpandido === p.id">
+          <div class="pedido-item" *ngFor="let item of p.items">
+            <div class="pedido-item-img">
+              <img [src]="item.imagen" [alt]="item.nombre" onerror="this.style.display='none'">
+            </div>
+            <div class="pedido-item-info">
+              <span class="pedido-item-nombre">{{ item.nombre }}</span>
+              <span class="pedido-item-variante">Talla {{ item.talla }} · {{ item.color }} · x{{ item.cantidad }}</span>
+            </div>
+            <span class="pedido-item-precio">{{ (item.precio * item.cantidad).toFixed(2) }}€</span>
+          </div>
         </div>
       </div>
 
@@ -48,7 +143,26 @@
     <!-- DEVOLUCIONES -->
     <div *ngIf="tabActiva === 'devoluciones'">
       <h1>Devolver artículo</h1>
-      <p class="vacio">Todavía no tienes artículos disponibles para devolución.</p>
+      <p class="tallas-descripcion">Puedes solicitar la devolución de un pedido hasta 30 días después de su entrega.</p>
+
+      <div class="pedido-card" *ngFor="let p of pedidosDevolvibles">
+        <div class="pedido-header">
+          <div>
+            <span class="pedido-numero">Pedido #{{ p.id.slice(-8).toUpperCase() }}</span>
+            <span class="pedido-fecha">{{ p.createdAt | date:'d MMM yyyy' }}</span>
+          </div>
+          <span class="devolucion-plazo">{{ diasRestantesDevolucion(p) }} días restantes</span>
+        </div>
+        <div class="pedido-body">
+          <span>{{ p.items.length }} artículo(s)</span>
+          <span class="pedido-total">{{ p.total.toFixed(2) }}€</span>
+          <button class="btn-solicitar-devolucion">Solicitar devolución</button>
+        </div>
+      </div>
+
+      <p *ngIf="pedidosDevolvibles.length === 0" class="vacio">
+        No tienes pedidos entregados dentro del plazo de devolución.
+      </p>
     </div>
 
     <!-- TALLAS -->
@@ -59,8 +173,8 @@
       <div class="talla-row" *ngFor="let cat of categorias">
         <span class="talla-categoria">{{ categoriaLabels[cat] }}</span>
         <select
-          [value]="tallasPreferidas[cat] || ''"
-          (change)="guardarTalla(cat, $any($event.target).value)">
+          [ngModel]="tallasPreferidas[cat] || ''"
+          (ngModelChange)="guardarTalla(cat, $event)">
           <option value="">Sin definir</option>
           <option *ngFor="let t of opcionesTalla(cat)" [value]="t">{{ t }}</option>
         </select>
@@ -76,7 +190,7 @@
       </div>
       <div class="ayuda-item">
         <h3>¿Cómo devuelvo un artículo?</h3>
-        <p>Desde la sección "Devolver artículo" podrás iniciar el proceso una vez tu pedido haya sido entregado.</p>
+        <p>Desde la sección "Devolver artículo" podrás iniciar el proceso dentro de los 30 días posteriores a la entrega.</p>
       </div>
       <div class="ayuda-item">
         <h3>Contacto</h3>
