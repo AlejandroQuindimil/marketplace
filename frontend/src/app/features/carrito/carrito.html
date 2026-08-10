@@ -7,6 +7,8 @@
   </div>
 
   <div class="carrito-contenido" *ngIf="items.length > 0">
+
+    <!-- Productos del carrito -->
     <div class="items-lista">
       <div class="item-carrito" *ngFor="let item of items; let i = index">
         <div class="item-img">
@@ -30,17 +32,106 @@
       </div>
     </div>
 
+    <!-- Total + boton para abrir el checkout -->
     <div class="resumen">
       <div class="resumen-linea">
         <span>Total</span>
         <span class="resumen-total">{{ getTotal().toFixed(2) }}€</span>
       </div>
 
-      <p class="error-msg" *ngIf="error">{{ error }}</p>
-
-      <button class="btn-finalizar" [disabled]="procesando" (click)="finalizarCompra()">
-        {{ procesando ? 'Procesando...' : 'Finalizar compra' }}
+      <button class="btn-tramitar" *ngIf="!mostrandoCheckout" (click)="abrirCheckout()">
+        Tramitar pedido
       </button>
     </div>
+
+    <!-- Panel de checkout: se despliega tras pulsar "Tramitar pedido" -->
+    <div class="checkout-panel" *ngIf="mostrandoCheckout">
+
+      <div class="checkout-bloque">
+        <h2>Dirección de envío</h2>
+
+        <div class="direcciones-grid" *ngIf="direcciones.length > 0">
+          <div
+            class="direccion-card"
+            *ngFor="let d of direcciones; let i = index"
+            [class.seleccionada]="direccionSeleccionadaIndex === i && !mostrandoNuevaDireccion"
+            (click)="seleccionarDireccion(i)">
+            <span class="direccion-calle">{{ d.calle }}</span>
+            <span class="direccion-detalle">{{ d.ciudad }}, {{ d.cp }}</span>
+          </div>
+        </div>
+
+        <button class="btn-nueva-direccion" (click)="toggleNuevaDireccion()" *ngIf="!mostrandoNuevaDireccion">
+          + Añadir otra dirección
+        </button>
+
+        <div class="nueva-direccion-form" *ngIf="mostrandoNuevaDireccion">
+          <input type="text" placeholder="Calle y número" [(ngModel)]="nuevaDireccion.calle">
+          <input type="text" placeholder="Ciudad" [(ngModel)]="nuevaDireccion.ciudad">
+          <input
+            type="text" inputmode="numeric" maxlength="5"
+            placeholder="Código postal"
+            [value]="nuevaDireccion.cp"
+            (input)="onCpInput($event)">
+
+          <p class="checkout-error" *ngIf="errorDireccion">{{ errorDireccion }}</p>
+
+          <div class="nueva-direccion-acciones">
+            <button [disabled]="guardandoDireccion" (click)="guardarNuevaDireccion()">
+              {{ guardandoDireccion ? 'Guardando...' : 'Guardar dirección' }}
+            </button>
+            <button class="btn-cancelar" *ngIf="direcciones.length > 0" (click)="toggleNuevaDireccion()">Cancelar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="checkout-bloque">
+        <h2>Teléfono de contacto</h2>
+
+        <div class="telefono-row" *ngIf="!telefonoEditable">
+          <span>{{ telefono }}</span>
+          <button class="btn-editar-telefono" (click)="activarEdicionTelefono()">Editar</button>
+        </div>
+
+        <div class="telefono-row" *ngIf="telefonoEditable">
+          <input type="tel" placeholder="666 555 666" [(ngModel)]="telefono">
+          <button [disabled]="guardandoTelefono" (click)="guardarTelefono()">
+            {{ guardandoTelefono ? 'Guardando...' : 'Guardar' }}
+          </button>
+        </div>
+      </div>
+
+      <div class="checkout-bloque entrega-estimada">
+        <h2>Entrega estimada</h2>
+        <p>📦 Tu pedido llegará en <strong>2-5 días laborables</strong> desde la confirmación de la compra.</p>
+      </div>
+
+      <div class="checkout-bloque">
+        <h2>Método de pago</h2>
+        <p class="pago-nota">Próximamente. De momento, esta selección es solo informativa.</p>
+
+        <div class="metodos-pago">
+          <label class="metodo-pago-opcion" [class.seleccionado]="metodoPago === 'tarjeta'">
+            <input type="radio" name="metodoPago" value="tarjeta" [(ngModel)]="metodoPago">
+            <span>💳 Tarjeta de crédito/débito</span>
+          </label>
+          <label class="metodo-pago-opcion" [class.seleccionado]="metodoPago === 'paypal'">
+            <input type="radio" name="metodoPago" value="paypal" [(ngModel)]="metodoPago">
+            <span>🅿️ PayPal</span>
+          </label>
+          <label class="metodo-pago-opcion" [class.seleccionado]="metodoPago === 'contrareembolso'">
+            <input type="radio" name="metodoPago" value="contrareembolso" [(ngModel)]="metodoPago">
+            <span>💶 Contrareembolso</span>
+          </label>
+        </div>
+      </div>
+
+      <p class="checkout-error" *ngIf="error">{{ error }}</p>
+
+      <button class="btn-finalizar" [disabled]="!checkoutCompleto || procesando" (click)="finalizarCompra()">
+        {{ procesando ? 'Procesando...' : 'Confirmar pedido' }}
+      </button>
+    </div>
+
   </div>
 </div>

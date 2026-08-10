@@ -112,3 +112,179 @@
   color: #ccc;
   cursor: not-allowed;
 }
+.checkout-bloque {
+  margin: 28px 0;
+  padding-top: 24px;
+  border-top: 1px solid #eee;
+}
+
+.checkout-bloque h2 {
+  font-size: 15px;
+  margin-bottom: 14px;
+}
+
+.direcciones-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.direccion-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 12px 14px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.direccion-card:hover { border-color: #999; }
+
+.direccion-card.seleccionada {
+  border-color: #1a1a1a;
+  border-width: 2px;
+  background: #fafafa;
+}
+
+.direccion-calle { font-size: 13px; font-weight: 600; }
+.direccion-detalle { font-size: 12px; color: #666; }
+
+.btn-nueva-direccion {
+  border: none;
+  background: none;
+  color: #1a1a1a;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
+.nueva-direccion-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 340px;
+}
+
+.nueva-direccion-form input {
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.nueva-direccion-acciones {
+  display: flex;
+  gap: 8px;
+}
+
+.nueva-direccion-acciones button {
+  padding: 8px 16px;
+  background: #1a1a1a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.nueva-direccion-acciones .btn-cancelar {
+  background: none;
+  color: #666;
+  border: 1px solid #ddd;
+}
+
+.checkout-error {
+  color: #dc2626;
+  font-size: 13px;
+  margin: 6px 0;
+}
+
+.telefono-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.telefono-row input {
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  max-width: 200px;
+}
+
+.telefono-row button {
+  padding: 6px 14px;
+  background: #1a1a1a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.btn-editar-telefono {
+  background: none !important;
+  color: #666 !important;
+  text-decoration: underline;
+}
+
+.entrega-estimada p {
+  font-size: 14px;
+  color: #444;
+  margin: 0;
+}
+
+.pago-nota {
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 12px;
+}
+
+.metodos-pago {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.metodo-pago-opcion {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.metodo-pago-opcion.seleccionado {
+  border-color: #1a1a1a;
+  background: #fafafa;
+}
+
+.metodo-pago-opcion input { margin: 0; }
+
+.btn-tramitar {
+  width: 100%;
+  padding: 14px;
+  background: #1a1a1a;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.checkout-panel {
+  margin-top: 30px;
+  padding-top: 24px;
+  border-top: 2px solid #1a1a1a;
+}
