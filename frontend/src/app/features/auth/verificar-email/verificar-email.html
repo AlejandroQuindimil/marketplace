@@ -1,0 +1,43 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <h2>Verifica tu cuenta</h2>
+    <p class="verificar-descripcion">
+      Hemos enviado un código de 6 dígitos a <strong>{{ email }}</strong>. Introdúcelo para activar tu cuenta.
+    </p>
+
+    <form (ngSubmit)="verificar()">
+      <div class="form-group">
+        <label>Código de verificación</label>
+        <input
+          type="text"
+          maxlength="6"
+          inputmode="numeric"
+          placeholder="000000"
+          [(ngModel)]="codigo"
+          name="codigo"
+          class="codigo-input">
+      </div>
+
+      <button type="submit" [disabled]="verificando" class="btn-primary">
+        {{ verificando ? 'Verificando...' : 'Verificar cuenta' }}
+      </button>
+
+      <p class="error-message" *ngIf="error">{{ error }}</p>
+      <p class="mensaje-exito" *ngIf="mensaje">{{ mensaje }}</p>
+    </form>
+
+    <p class="auth-switch">
+      ¿No te ha llegado?
+      <button 
+        type="button"
+        (click)="reenviarCodigo()" 
+        [disabled]="timerActivo || reenviando"
+        class="btn-link">
+        
+        <ng-container *ngIf="reenviando">Enviando...</ng-container>
+        <ng-container *ngIf="!reenviando && timerActivo">Reenviar en {{ tiempoRestante }}s</ng-container>
+        <ng-container *ngIf="!reenviando && !timerActivo">Reenviar código</ng-container>
+      </button>
+    </p>
+  </div>
+</div>s

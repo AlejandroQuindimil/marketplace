@@ -5,6 +5,8 @@ import { environment } from '../environments/environment';
 
 export interface ItemPedido {
   productoId: string;
+  nombre: string;
+  imagen: string | null;
   talla: string;
   color: string;
   cantidad: number;

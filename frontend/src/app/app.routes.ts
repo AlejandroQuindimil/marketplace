@@ -7,6 +7,7 @@ import { ProductoDetalle } from './features/producto-detalle/producto-detalle';
 import { Favoritos } from './features/favoritos/favoritos';
 import { Carrito } from './features/carrito/carrito';
 import { Perfil } from './features/perfil/perfil';
+import { VerificarEmail } from './features/auth/verificar-email/verificar-email';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -18,4 +19,5 @@ export const routes: Routes = [
   { path: 'favoritos', component: Favoritos },
   { path: 'carrito', component: Carrito },
   { path: 'perfil', component: Perfil },
+  { path: 'verificar-email', component: VerificarEmail },
 ];

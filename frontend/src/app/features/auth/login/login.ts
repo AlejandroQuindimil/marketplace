@@ -25,19 +25,28 @@ export class Login {
   ) {}
 
   onSubmit(): void {
-    this.error = '';
-    this.loading = true;
+  this.error = '';
+  this.loading = true;
 
-    this.authService.login({ email: this.email, password: this.password }).subscribe({
-      error: (err) => {
-        this.loading = false;
-        this.error = err.error?.error || 'Error al iniciar sesión';
-      },
-      next: (res) => {
-        this.loading = false;
-        this.carritoService.mergeGuestCartOnLogin();
-        this.router.navigate(['/home']);
+  this.authService.login({ email: this.email, password: this.password }).subscribe({
+    next: (res) => {
+      this.loading = false;
+      this.carritoService.mergeGuestCartOnLogin();
+      this.router.navigate(['/']);
+    },
+    error: (err) => {
+      this.loading = false;
+
+      // distinguimos el caso especifico de cuenta sin verificar (403)
+      // del resto de errores de credenciales, para mandar al usuario
+      // directamente a la pantalla donde puede resolverlo
+      if (err.status === 403 && err.error?.requiresVerification) {
+        this.router.navigate(['/verificar-email'], { queryParams: { email: err.error.email } });
+        return;
       }
-    });
-  }
+
+      this.error = err.error?.error || 'Error al iniciar sesión';
+    }
+  });
+}
 }

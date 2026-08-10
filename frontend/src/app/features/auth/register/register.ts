@@ -22,19 +22,19 @@ export class Register {
    constructor(private authService: AuthService, private router: Router) {}
 
   onSubmit(): void {
-    this.error = '';
-    this.loading = true;
+  this.error = '';
+  this.loading = true;
 
-    this.authService.register({ nombre: this.nombre, email: this.email, password: this.password }).subscribe({
-      next: (res) => {
-        this.loading = false;
-        this.success = true;
-        this.router.navigate(['/home']);
-      },
-      error: (err) => {
-        this.loading = false;
-        this.error = err.error?.error || 'Error al registrarse';
-      }
-    });
+  this.authService.register({ nombre: this.nombre, email: this.email, password: this.password }).subscribe({
+    next: (res) => {
+      this.loading = false;
+      // ya no hay sesion que iniciar: mandamos a la pantalla de codigo
+      this.router.navigate(['/verificar-email'], { queryParams: { email: res.email } });
+    },
+    error: (err) => {
+      this.loading = false;
+      this.error = err.error?.error || 'Error al registrarse';
+    }
+  });
   }
 }

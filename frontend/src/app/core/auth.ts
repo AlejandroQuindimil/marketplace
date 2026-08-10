@@ -33,9 +33,10 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  register(data: RegisterRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, data)
-      .pipe(tap(res => this.saveSession(res)));
+  // ya no guarda sesion automaticamente: la cuenta no esta verificada
+  // todavia, asi que no tiene sentido loguear de golpe
+  register(data: RegisterRequest): Observable<{ message: string; email: string }> {
+    return this.http.post<{ message: string; email: string }>(`${this.apiUrl}/register`, data);
   }
 
   login(data: LoginRequest): Observable<AuthResponse> {
@@ -64,5 +65,15 @@ export class AuthService {
   getUsuario(): { id: string; nombre: string; email: string; rol: string } | null {
   const data = localStorage.getItem('usuario');
   return data ? JSON.parse(data) : null;
+  }
+
+  // manda el codigo introducido por el usuario al backend para validarlo
+  verifyEmail(email: string, code: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/verify-email`, { email, code });
+  }
+
+  // pide un codigo nuevo por si el primero caduco o no llego al correo
+  resendCode(email: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/resend-code`, { email });
   }
 }
