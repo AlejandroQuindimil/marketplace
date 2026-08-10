@@ -9,14 +9,11 @@ import com.drip.marketplace.repository.ProductoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Logica de creacion y consulta de pedidos. Es el Service con mas
- * responsabilidad del backend: valida stock, lo descuenta, y calcula
- * el total real sin confiar en nada que venga del frontend.
- */
 @Service
 @RequiredArgsConstructor
 public class PedidoService {
@@ -24,24 +21,11 @@ public class PedidoService {
     private final PedidoRepository pedidoRepository;
     private final ProductoRepository productoRepository;
 
-    /**
-     * Crea un pedido a partir del carrito (PedidoDTO). Por cada item:
-     * 1. Busca el producto real en Mongo (nunca se confia en datos del DTO
-     *    salvo el productoId, la talla, el color y la cantidad).
-     * 2. Busca la talla EXACTA dentro del array de tallas del producto.
-     * 3. Comprueba que hay stock suficiente; si no, aborta con un mensaje
-     *    claro que el frontend puede mostrar directamente.
-     * 4. Descuenta el stock y guarda el producto actualizado.
-     * 5. Congela el precio actual del producto en el item del pedido, para
-     *    que cambios de precio futuros no afecten a compras ya realizadas.
-     *
-     * NOTA: el descuento de stock y la creacion del pedido no son atomicos
-     * (no usan una transaccion de MongoDB). Para este proyecto es aceptable,
-     * pero en produccion real haria falta una transaccion para evitar que
-     * dos compras simultaneas se lleven la misma ultima unidad de stock.
-     * Se puede cambiar  en el futuro a una transaccion de MongoDB si se quiere,
-     * pero es mas  complejo.
-     */
+    // Demo: sin sistema logistico real, simulamos el avance del pedido.
+    // Pasados estos dias desde la creacion, si no esta ya entregado, se
+    // marca automaticamente como ENTREGADO al consultarlo.
+    private static final long DIAS_HASTA_ENTREGA_DEMO = 3;
+
     public Pedido crearPedido(String usuarioId, PedidoDTO dto) {
         List<Pedido.ItemPedido> itemsPedido = new ArrayList<>();
         double total = 0;
@@ -63,14 +47,13 @@ public class PedidoService {
                                 + " (disponible: " + tallaStock.getStock() + ")");
             }
 
-            // Descontar stock
             tallaStock.setStock(tallaStock.getStock() - itemDto.getCantidad());
             productoRepository.save(producto);
 
-            /* Congelar el precio actual en el item del pedido — nunca se
-            * usa un precio que venga del DTO, siempre el real de Mongo*/
             Pedido.ItemPedido item = new Pedido.ItemPedido();
             item.setProductoId(producto.getId());
+            item.setNombre(producto.getNombre());
+            item.setImagen(producto.getImagenes().isEmpty() ? null : producto.getImagenes().get(0));
             item.setTalla(itemDto.getTalla());
             item.setColor(itemDto.getColor());
             item.setCantidad(itemDto.getCantidad());
@@ -96,11 +79,11 @@ public class PedidoService {
     }
 
     public List<Pedido> misPedidos(String usuarioId) {
-        return pedidoRepository.findByUsuarioId(usuarioId);
+        List<Pedido> pedidos = pedidoRepository.findByUsuarioId(usuarioId);
+        pedidos.forEach(this::autoActualizarEstado);
+        return pedidos;
     }
 
-    /** Comprueba que el pedido pertenece al usuario que lo pide, para que
-    * nadie pueda ver el pedido de otro cambiando el id en la URL. */
     public Pedido findById(String id, String usuarioId) {
         Pedido pedido = pedidoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Pedido no encontrado"));
@@ -109,6 +92,20 @@ public class PedidoService {
             throw new IllegalArgumentException("No tienes permiso para ver este pedido");
         }
 
+        autoActualizarEstado(pedido);
         return pedido;
+    }
+
+    /** Simula el avance PENDIENTE -> ENTREGADO tras unos dias, solo para
+     * poder probar el flujo de devoluciones sin depender de un sistema
+     * logistico real. Guarda el cambio si aplica. */
+    private void autoActualizarEstado(Pedido pedido) {
+        if (pedido.getEstado() == Pedido.Estado.ENTREGADO) return;
+
+        long dias = Duration.between(pedido.getCreatedAt(), LocalDateTime.now()).toDays();
+        if (dias >= DIAS_HASTA_ENTREGA_DEMO) {
+            pedido.setEstado(Pedido.Estado.ENTREGADO);
+            pedidoRepository.save(pedido);
+        }
     }
 }

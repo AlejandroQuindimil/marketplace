@@ -8,16 +8,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-/**
- * Logica de registro y login. PasswordEncoder (bcrypt) se inyecta desde
- * el bean definido en SecurityConfig.
- */
+import java.security.SecureRandom;
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService; // lo creamos en la parte 2
+
+    // para generar codigos aleatorios de 6 cifras
+    private final SecureRandom random = new SecureRandom();
 
     public Usuario register(RegisterRequest request) {
         if (usuarioRepository.existsByEmail(request.getEmail())) {
@@ -27,27 +30,88 @@ public class AuthService {
         Usuario usuario = new Usuario();
         usuario.setNombre(request.getNombre());
         usuario.setEmail(request.getEmail());
-        /* La contraseña nunca se guarda en texto plano: se cifra con bcrypt
-        * antes de persistirla
-        */
         usuario.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        return usuarioRepository.save(usuario);
+        // la cuenta nace sin verificar, con su codigo y caducidad de 24h
+        usuario.setVerified(false);
+        usuario.setVerificationCode(generarCodigo());
+        usuario.setTokenExpiration(LocalDateTime.now().plusHours(24));
+
+        Usuario guardado = usuarioRepository.save(usuario);
+
+        // mandamos el correo despues de guardar, para no perder el
+        // registro si el envio de email fallara por lo que sea
+        emailService.enviarCodigoVerificacion(guardado.getEmail(), guardado.getVerificationCode());
+
+        return guardado;
     }
 
     public Usuario login(LoginRequest request) {
         Usuario usuario = usuarioRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Email o contraseña incorrectos"));
 
-        // matches() compara el texto plano recibido contra el hash guardad
         if (!passwordEncoder.matches(request.getPassword(), usuario.getPassword())) {
-            /* Mismo mensaje de error tanto si el email no existe como si
-            * la contraseña es incorrecta, para no revelar a un posible
-            * atacante que emails estan registrados en el sistema
-            */
             throw new IllegalArgumentException("Email o contraseña incorrectos");
         }
 
+        // ojo: la comprobacion de verified se hace en el controller,
+        // porque ahi es donde decidimos el codigo HTTP (403) a devolver
         return usuario;
+    }
+
+    public void changePassword(Usuario usuario, String actual, String nueva) {
+        if (!passwordEncoder.matches(actual, usuario.getPassword())) {
+            throw new IllegalArgumentException("La contraseña actual no es correcta");
+        }
+        usuario.setPassword(passwordEncoder.encode(nueva));
+        usuarioRepository.save(usuario);
+    }
+
+    // 6 cifras, con ceros a la izquierda si toca (ej: 004392)
+    private String generarCodigo() {
+        int numero = random.nextInt(1_000_000);
+        return String.format("%06d", numero);
+    }
+
+    // valida el codigo recibido contra el guardado en Mongo, comprobando
+    // que no haya caducado, y marca la cuenta como verificada si todo cuadra
+    public void verifyEmail(String email, String code) {
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+
+        if (usuario.isVerified()) {
+            // ya estaba verificada, no hace falta hacer nada mas: no lo
+            // tratamos como error para que el frontend pueda reintentar sin drama
+            return;
+        }
+
+        if (usuario.getTokenExpiration() == null || LocalDateTime.now().isAfter(usuario.getTokenExpiration())) {
+            throw new IllegalArgumentException("El código ha caducado, solicita uno nuevo");
+        }
+
+        if (usuario.getVerificationCode() == null || !usuario.getVerificationCode().equals(code)) {
+            throw new IllegalArgumentException("Código incorrecto");
+        }
+
+        usuario.setVerified(true);
+        // limpiamos el codigo tras usarlo, ya no debe servir para nada mas
+        usuario.setVerificationCode(null);
+        usuarioRepository.save(usuario);
+    }
+
+    // genera un codigo nuevo y lo reenvia, por si el primero caduco o no llego
+    public void resendVerificationCode(String email) {
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+
+        if (usuario.isVerified()) {
+            throw new IllegalArgumentException("Esta cuenta ya está verificada");
+        }
+
+        usuario.setVerificationCode(generarCodigo());
+        usuario.setTokenExpiration(LocalDateTime.now().plusHours(24));
+        usuarioRepository.save(usuario);
+
+        emailService.enviarCodigoVerificacion(usuario.getEmail(), usuario.getVerificationCode());
     }
 }
