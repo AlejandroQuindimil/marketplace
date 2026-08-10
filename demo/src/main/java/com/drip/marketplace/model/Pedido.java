@@ -8,11 +8,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Documento MongoDB que representa un pedido ya realizado. Se crea una
- * unica vez al hacer checkout; a partir de ahi solo deberia cambiar su
- * campo estado (PENDIENTE -> PAGADO -> ENVIADO -> ENTREGADO).
- */
+
+// Documento MongoDB que representa un pedido ya realizado. Se crea una
+// unica vez al hacer checkout; a partir de ahi solo deberia cambiar su
+// campo estado (PENDIENTE -> PAGADO -> ENVIADO -> ENTREGADO).
+
 @Data
 @Document(collection = "pedidos")
 public class Pedido {
@@ -38,18 +38,20 @@ public class Pedido {
         PENDIENTE, PAGADO, ENVIADO, ENTREGADO
     }
 
-    /**
-     * Un producto dentro del pedido. El campo precio es una COPIA
-     * CONGELADA del precio del producto en el momento exacto de la
-     * compra — si el precio del producto cambia despues, este pedido
-     * ya realizado no se ve afectado retroactivamente.
-     */
+    
+    // Un producto dentro del pedido. El campo precio es una COPIA
+    // CONGELADA del precio del producto en el momento exacto de la
+    // compra — si el precio del producto cambia despues, este pedido
+    // ya realizado no se ve afectado retroactivamente.
+     
     @Data
     public static class ItemPedido {
         private String productoId;
+        private String nombre;
+        private String imagen;
         private String talla;
         private String color;
         private Integer cantidad;
-        private Double precio; // precio en el momento de la compra
+        private Double precio;
     }
 }

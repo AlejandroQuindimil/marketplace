@@ -3,16 +3,15 @@ package com.drip.marketplace.repository;
 import com.drip.marketplace.model.Usuario;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
-/**
- * Repositorio de Usuario. Interfaz sin implementacion: Spring Data genera
- * la consulta automaticamente a partir del nombre del metodo.
- */
 public interface UsuarioRepository extends MongoRepository<Usuario, String> {
-    /** Usado en login para buscar al usuario por su email. */
     Optional<Usuario> findByEmail(String email);
-    
-    /** Usado en registro para comprobar que el email no este ya en uso. */
     boolean existsByEmail(String email);
+
+    // busca cuentas sin verificar creadas antes de una fecha dada,
+    // para la limpieza programada
+    List<Usuario> findByVerifiedFalseAndCreatedAtBefore(LocalDateTime fecha);
 }
