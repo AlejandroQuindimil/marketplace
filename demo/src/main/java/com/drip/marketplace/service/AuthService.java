@@ -114,4 +114,11 @@ public class AuthService {
 
         emailService.enviarCodigoVerificacion(usuario.getEmail(), usuario.getVerificationCode());
     }
+
+    // re-verifica la contraseña de un usuario ya logueado, sin generar
+    // ningun token nuevo: solo confirma que sigue siendo quien dice ser
+    // antes de dejarle entrar a una zona sensible (panel admin)
+    public boolean verifyPassword(Usuario usuario, String password) {
+        return passwordEncoder.matches(password, usuario.getPassword());
+    }
 }

@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
+import com.drip.marketplace.service.AuthService;
 import java.util.Map;
 
 @RestController
@@ -15,6 +15,7 @@ import java.util.Map;
 public class UsuarioController {
 
     private final UsuarioRepository usuarioRepository;
+    private final AuthService authService;
 
     @GetMapping("/me")
     public ResponseEntity<?> me(Authentication authentication) {
@@ -47,7 +48,7 @@ public class UsuarioController {
         return ResponseEntity.ok(usuario.getTallasPreferidas());
     }
 
-    /** Añade una nueva dirección de envío a la lista del usuario. */
+    // Añade una nueva dirección de envío a la lista del usuario.
     @PostMapping("/direcciones")
     public ResponseEntity<?> addDireccion(
             @RequestBody Usuario.Direccion direccion,
@@ -62,7 +63,7 @@ public class UsuarioController {
         return ResponseEntity.ok(usuario.getDirecciones());
     }
 
-    /** Edita calle/ciudad/cp de una dirección existente (mantiene si era la predeterminada). */
+    // Edita calle/ciudad/cp de una dirección existente (mantiene si era la predeterminada).
     @PutMapping("/direcciones/{index}")
     public ResponseEntity<?> updateDireccion(
             @PathVariable int index,
@@ -85,7 +86,7 @@ public class UsuarioController {
         return ResponseEntity.ok(usuario.getDirecciones());
     }
 
-    /** Elimina una dirección por su posición en la lista. */
+    // Elimina una dirección por su posición en la lista.
     @DeleteMapping("/direcciones/{index}")
     public ResponseEntity<?> removeDireccion(
             @PathVariable int index,
@@ -104,7 +105,7 @@ public class UsuarioController {
         return ResponseEntity.ok(usuario.getDirecciones());
     }
 
-    /** Marca una dirección como predeterminada y desmarca el resto. */
+    // Marca una dirección como predeterminada y desmarca el resto.
     @PutMapping("/direcciones/{index}/predeterminada")
     public ResponseEntity<?> marcarPredeterminada(
             @PathVariable int index,
@@ -152,4 +153,23 @@ public class UsuarioController {
 
         return ResponseEntity.ok(Map.of("recibirNewsletter", usuario.isRecibirNewsletter()));
     }
+
+        // re-autenticacion ligera: comprueba la contraseña del usuario logueado
+        // sin tocar el JWT, usada como segunda barrera antes de entrar al panel admin
+        @PostMapping("/verificar-password")
+        public ResponseEntity<?> verificarPassword(
+                @RequestBody Map<String, String> body,
+                Authentication authentication
+        ) {
+        Usuario usuario = usuarioRepository.findById(authentication.getName())
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+
+        boolean valido = authService.verifyPassword(usuario, body.get("password"));
+
+        if (!valido) {
+                return ResponseEntity.status(401).body(Map.of("valido", false));
+        }
+
+        return ResponseEntity.ok(Map.of("valido", true));
+        }
 }

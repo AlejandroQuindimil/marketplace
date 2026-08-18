@@ -56,6 +56,7 @@ public class ProductoController {
     }
 
     // Crea un producto nuevo. Requiere rol ADMIN (ver SecurityConfig).
+   @PostMapping
     public ResponseEntity<Producto> create(@Valid @RequestBody ProductoDTO dto) {
         return ResponseEntity.ok(productoService.create(dto));
     }
@@ -79,5 +80,11 @@ public class ProductoController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(404).body(Map.of("error", e.getMessage()));
         }
+    }
+
+    // marcas ya usadas en el catalogo, para el desplegable del formulario admin
+    @GetMapping("/marcas")
+    public ResponseEntity<List<String>> marcas() {
+        return ResponseEntity.ok(productoService.marcasDisponibles());
     }
 }
