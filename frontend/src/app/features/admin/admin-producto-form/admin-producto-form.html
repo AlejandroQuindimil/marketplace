@@ -1,0 +1,223 @@
+<div class="admin-form">
+  <div class="admin-header">
+    <h1>{{ modoEdicion ? 'Editar producto' : 'Nuevo producto' }}</h1>
+    <a routerLink="/admin/productos" class="btn-volver">← Volver al listado</a>
+  </div>
+
+  <p *ngIf="loading">Cargando producto...</p>
+
+  <form *ngIf="!loading" (ngSubmit)="guardar()" class="form-layout">
+
+    <div class="form-main">
+
+      <div class="form-fila">
+        <div class="form-campo">
+          <label>Nombre</label>
+          <input type="text" [(ngModel)]="nombre" name="nombre">
+        </div>
+        <div class="form-campo">
+          <label>Marca</label>
+
+          <select
+              *ngIf="!creandoMarcaNueva"
+              [ngModel]="marca"
+              (ngModelChange)="onSeleccionMarca($event)"
+              name="marca">
+              <option value="">Selecciona...</option>
+              <option *ngFor="let m of marcasDisponibles" [value]="m">{{ m }}</option>
+              <option value="__nueva__">+ Crear nueva marca</option>
+          </select>
+
+          <div class="marca-nueva-fila" *ngIf="creandoMarcaNueva">
+              <input
+              type="text"
+              placeholder="Nombre de la marca nueva"
+              [(ngModel)]="marcaNueva"
+              name="marcaNueva">
+              <button type="button" (click)="confirmarMarcaNueva()">Usar</button>
+          </div>
+      </div>
+      </div>
+
+      <div class="form-campo">
+        <label>Descripción</label>
+        <textarea [(ngModel)]="descripcion" name="descripcion" rows="3"></textarea>
+      </div>
+
+      <div class="form-fila">
+        <div class="form-campo">
+          <label>Precio (€)</label>
+          <input type="number" step="0.01" min="0" [(ngModel)]="precio" (ngModelChange)="clampPrecio()" name="precio">
+        </div>
+        <div class="form-campo">
+          <label>Precio anterior (opcional, para oferta)</label>
+          <input type="number" step="0.01" min="0" [(ngModel)]="precioAnterior" (ngModelChange)="clampPrecioAnterior()" name="precioAnterior">
+        </div>
+      </div>
+
+      <div class="form-fila">
+        <div class="form-campo">
+          <label>Género</label>
+          <select [(ngModel)]="genero" (ngModelChange)="onCambioGenero()" name="genero">
+            <option value="">Selecciona...</option>
+            <option *ngFor="let g of generos" [value]="g">{{ g }}</option>
+          </select>
+        </div>
+        <div class="form-campo">
+          <label>Categoría</label>
+          <select [(ngModel)]="categoria" (ngModelChange)="onCambioCategoria()" name="categoria" [disabled]="!genero">
+            <option value="">{{ genero ? 'Selecciona...' : 'Elige primero un género' }}</option>
+            <option *ngFor="let c of categoriasDisponibles" [value]="c">{{ c }}</option>
+          </select>
+        </div>
+      </div>
+
+      <label class="form-checkbox">
+        <input type="checkbox" [(ngModel)]="destacado" name="destacado">
+        <span>Mostrar en destacados (Home)</span>
+      </label>
+
+      <!-- Imagenes -->
+      <div class="form-lista">
+        <label>Imágenes (URL o archivo)</label>
+
+        <div
+          class="form-lista-fila form-lista-imagen"
+          *ngFor="let img of imagenes; let i = index; trackBy: trackByIndex"
+          [class.fila-seleccionada]="imagenSeleccionada === i">
+          <input
+            type="text"
+            [(ngModel)]="imagenes[i]"
+            [name]="'img' + i"
+            placeholder="https://... o sube un archivo"
+            (focus)="seleccionarImagen(i)">
+          <button
+            type="button"
+            class="btn-subir-imagen"
+            (click)="abrirSelectorArchivo(i)"
+            title="Subir imagen desde el ordenador">
+            ⬆
+          </button>
+          <div class="img-preview" [class.vacia]="!imagenes[i]" (click)="seleccionarImagen(i)">
+            <img *ngIf="imagenes[i]" [src]="imagenes[i]" (error)="onImgError(i)" (load)="onImgLoad(i)">
+            <span class="img-preview-placeholder" *ngIf="!imagenes[i]">—</span>
+            <span class="img-preview-error" *ngIf="imagenes[i] && imagenesConError[i]">⚠</span>
+          </div>
+          <button type="button" (click)="removeImagen(i)" *ngIf="imagenes.length > 1">✕</button>
+        </div>
+
+        <div class="botones-imagenes">
+          <button type="button" class="btn-add" (click)="addImagen()">+ Añadir imagen (URL)</button>
+          <button type="button" class="btn-subir-archivo" (click)="addImagenDesdeArchivo()">⬆ Subir imagen (PNG/JPG)</button>
+        </div>
+
+        <!-- input de archivo oculto, compartido por todas las filas -->
+        <input
+          #fileInput
+          type="file"
+          accept="image/png,image/jpeg"
+          class="input-file-oculto"
+          (change)="onArchivoSeleccionado($event)">
+      </div>
+
+      <!-- Colores -->
+      <div class="form-lista">
+        <label>Colores</label>
+
+        <div class="paleta-colores">
+          <button
+            type="button"
+            *ngFor="let c of paletaColores"
+            class="color-swatch"
+            [class.seleccionado]="isColorSeleccionado(c.nombre)"
+            [style.background-color]="c.hex"
+            [title]="c.nombre"
+            (click)="toggleColor(c.nombre)">
+            <span class="check" *ngIf="isColorSeleccionado(c.nombre)">✓</span>
+          </button>
+        </div>
+
+        <div class="picker-personalizado">
+          <input type="color" [(ngModel)]="colorPersonalizadoHex" name="colorPersonalizadoHex">
+          <input
+            type="text"
+            placeholder="Nombre del color (ej: Verde turquesa)"
+            [(ngModel)]="colorPersonalizadoNombre"
+            name="colorPersonalizadoNombre"
+            class="input-nombre-color">
+          <button type="button" class="btn-add" (click)="addColorPersonalizado()" [disabled]="!colorPersonalizadoNombre.trim()">
+            + Añadir
+          </button>
+        </div>
+
+        <div class="colores-seleccionados" *ngIf="colores.length">
+          <span class="chip-color" *ngFor="let c of colores">
+            <span class="chip-swatch" [style.background-color]="getColorHex(c)"></span>
+            {{ c }}
+            <button type="button" (click)="removeColorSeleccionado(c)">✕</button>
+          </span>
+        </div>
+      </div>
+
+      <!-- Tallas y stock -->
+      <div class="form-lista">
+        <div class="form-lista-header">
+          <label>Tallas y stock</label>
+          <button type="button" class="btn-regenerar" (click)="autogenerarTallas(true)" *ngIf="categoria">
+            Regenerar tallas de {{ categoria }}
+          </button>
+        </div>
+        <div class="form-lista-fila form-lista-talla" *ngFor="let t of tallas; let i = index; trackBy: trackByIndex" >
+          <input type="text" [(ngModel)]="t.talla" [name]="'talla' + i" placeholder="Ej: M">
+          <input type="number" min="0" [(ngModel)]="t.stock" (ngModelChange)="clampStock(t)" [name]="'stock' + i" placeholder="Stock">
+          <button type="button" (click)="removeTalla(i)" *ngIf="tallas.length > 1">✕</button>
+        </div>
+        <button type="button" class="btn-add" (click)="addTalla()">+ Añadir talla</button>
+      </div>
+
+      <p class="form-error" *ngIf="error">{{ error }}</p>
+
+      <button type="submit" class="btn-guardar" [disabled]="guardando">
+        {{ guardando ? 'Guardando...' : (modoEdicion ? 'Guardar cambios' : 'Crear producto') }}
+      </button>
+
+    </div>
+
+    <!-- Panel lateral: previsualizacion grande, sticky en escritorio -->
+    <aside class="form-sidebar">
+      <div class="imagen-grande-marco" [class.vacia]="!imagenSeleccionadaUrl">
+        <button
+          type="button"
+          class="btn-nav-imagen btn-nav-prev"
+          *ngIf="imagenes.length > 1"
+          (click)="imagenAnterior()"
+          title="Imagen anterior">
+          ‹
+        </button>
+
+        <img
+          *ngIf="imagenSeleccionadaUrl && !imagenesConError[imagenSeleccionada]"
+          [src]="imagenSeleccionadaUrl">
+        <span class="imagen-grande-placeholder" *ngIf="!imagenSeleccionadaUrl">Sin imagen seleccionada</span>
+        <span class="imagen-grande-error" *ngIf="imagenSeleccionadaUrl && imagenesConError[imagenSeleccionada]">
+          ⚠ No se pudo cargar esta URL
+        </span>
+
+        <button
+          type="button"
+          class="btn-nav-imagen btn-nav-next"
+          *ngIf="imagenes.length > 1"
+          (click)="imagenSiguiente()"
+          title="Imagen siguiente">
+          ›
+        </button>
+
+        <span class="imagen-grande-contador" *ngIf="imagenes.length > 1">
+          {{ imagenSeleccionada + 1 }} / {{ imagenes.length }}
+        </span>
+      </div>
+      <p class="sidebar-hint">Haz clic en una miniatura, o usa las flechas, para navegar.</p>
+    </aside>
+
+  </form>
+</div>

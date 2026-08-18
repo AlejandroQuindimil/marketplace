@@ -1,0 +1,56 @@
+<div class="admin-productos">
+  <div class="admin-header">
+    <h1>Productos</h1>
+    <a routerLink="/admin/productos/nuevo" class="btn-nuevo">+ Nuevo producto</a>
+  </div>
+
+  <input
+    type="text"
+    class="admin-buscador"
+    placeholder="Buscar por nombre o marca..."
+    [(ngModel)]="filtroTexto">
+
+  <p *ngIf="loading">Cargando productos...</p>
+
+  <table class="admin-tabla" *ngIf="!loading">
+    <thead>
+      <tr>
+        <th>Imagen</th>
+        <th>Nombre</th>
+        <th>Marca</th>
+        <th>Categoría</th>
+        <th>Género</th>
+        <th>Precio</th>
+        <th>Stock</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of productosFiltrados">
+        <td>
+          <div class="admin-thumb">
+            <img [src]="p.imagenes[0]" [alt]="p.nombre" onerror="this.style.display='none'">
+          </div>
+        </td>
+        <td>{{ p.nombre }}</td>
+        <td>{{ p.marca }}</td>
+        <td>{{ p.categoria }}</td>
+        <td>{{ p.genero }}</td>
+        <td>{{ p.precio }}€</td>
+        <td>
+          <span [class.stock-bajo]="stockTotal(p) < 10" [class.stock-agotado]="stockTotal(p) === 0">
+            {{ stockTotal(p) }}
+          </span>
+        </td>
+        <td class="admin-acciones">
+          <button (click)="editar(p.id)">Editar</button>
+          <button class="btn-eliminar" (click)="eliminar(p.id, p.nombre)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="!loading && productosFiltrados.length === 0" class="admin-vacio">
+    No hay productos que coincidan con la búsqueda.
+  </p>
+</div>
