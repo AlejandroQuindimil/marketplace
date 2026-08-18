@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Evitar que se suban las credenciales por error ###
+application.properties
