@@ -1,0 +1,47 @@
+.acceso-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f7;
+  font-family: -apple-system, sans-serif;
+}
+
+.acceso-card {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  width: 100%;
+  max-width: 340px;
+  text-align: center;
+}
+
+.acceso-card h2 { font-size: 20px; margin: 0 0 8px; }
+.acceso-card p { font-size: 13px; color: #666; margin-bottom: 20px; }
+
+.acceso-card input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+  margin-bottom: 12px;
+}
+
+.acceso-card button {
+  width: 100%;
+  padding: 11px;
+  background: #1a1a1a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.acceso-card button:disabled { background: #999; }
+
+.acceso-error { color: #dc2626; font-size: 13px; margin-bottom: 10px; }

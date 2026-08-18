@@ -1,0 +1,21 @@
+<div class="acceso-container">
+  <div class="acceso-card">
+    <h2>Panel de administración</h2>
+    <p>Por seguridad, confirma tu contraseña para continuar.</p>
+
+    <form (ngSubmit)="confirmar()">
+      <input
+        type="password"
+        placeholder="Tu contraseña"
+        [(ngModel)]="password"
+        name="password"
+        autofocus>
+
+      <p class="acceso-error" *ngIf="error">{{ error }}</p>
+
+      <button type="submit" [disabled]="verificando">
+        {{ verificando ? 'Verificando...' : 'Confirmar' }}
+      </button>
+    </form>
+  </div>
+</div>
