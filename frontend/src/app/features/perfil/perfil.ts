@@ -6,11 +6,12 @@ import { AuthService } from '../../core/auth';
 import { PedidoService, Pedido } from '../../core/pedido';
 import { UsuarioService, Direccion } from '../../core/usuario';
 import { HttpClient } from '@angular/common/http';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-perfil',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './perfil.html',
   styleUrl: './perfil.css'
 })

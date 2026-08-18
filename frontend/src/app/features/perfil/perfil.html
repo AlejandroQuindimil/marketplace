@@ -18,6 +18,9 @@
           <p class="perfil-nombre">{{ usuario.nombre }}</p>
           <p class="perfil-email">{{ usuario.email }}</p>
           <span class="perfil-rol" *ngIf="usuario.rol === 'ADMIN'">Administrador</span>
+          <a routerLink="/admin/acceso" class="btn-panel-admin" *ngIf="usuario.rol === 'ADMIN'">
+            Acceder al panel de administración →
+          </a>
         </div>
       </div>
 
