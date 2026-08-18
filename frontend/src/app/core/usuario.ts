@@ -58,4 +58,13 @@ export class UsuarioService {
   updateNewsletter(recibirNewsletter: boolean): Observable<{ recibirNewsletter: boolean }> {
     return this.http.put<{ recibirNewsletter: boolean }>(`${this.apiUrl}/newsletter`, { recibirNewsletter });
   }
+
+  // marcas ya existentes en el catalogo, para el desplegable de admin
+  getMarcas(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/marcas`);
+  }
+
+  verificarPassword(password: string): Observable<{ valido: boolean }> {
+    return this.http.post<{ valido: boolean }>(`${this.apiUrl}/verificar-password`, { password });
+  }
 }
