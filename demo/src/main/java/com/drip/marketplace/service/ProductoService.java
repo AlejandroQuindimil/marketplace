@@ -86,4 +86,16 @@ public class ProductoService {
     public List<Producto> buscar(String query) {
         return productoRepository.findByNombreContainingIgnoreCase(query);
     }
+
+    // devuelve las marcas distintas que ya existen en el catalogo, para
+    // rellenar el desplegable del formulario de admin sin tener que
+    // mantener una coleccion aparte solo para esto
+    public List<String> marcasDisponibles() {
+        return productoRepository.findAll().stream()
+                .map(Producto::getMarca)
+                .filter(m -> m != null && !m.isBlank())
+                .distinct()
+                .sorted()
+                .toList();
+    }
 }
