@@ -1,0 +1,94 @@
+<div class="dashboard">
+  <div class="dashboard-header">
+    <h1>Dashboard</h1>
+
+    <div class="rango-selector" role="group" aria-label="Rango de fechas">
+      <button
+        *ngFor="let r of rangos; trackBy: trackByValor"
+        type="button"
+        [class.active]="rangoActivo === r.valor"
+        [attr.aria-pressed]="rangoActivo === r.valor"
+        (click)="cambiarRango(r.valor)">
+        {{ r.label }}
+      </button>
+    </div>
+  </div>
+
+  <div class="dashboard-skeleton" *ngIf="loading" role="status" aria-live="polite" aria-label="Cargando datos del dashboard">
+    <div class="skeleton-row">
+      <div class="skeleton-block"></div>
+      <div class="skeleton-block"></div>
+      <div class="skeleton-block"></div>
+      <div class="skeleton-block"></div>
+    </div>
+    <div class="skeleton-row">
+      <div class="skeleton-block" style="height: 300px; grid-column: span 2;"></div>
+      <div class="skeleton-block" style="height: 300px;"></div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="!loading && data">
+
+    <!-- KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <span class="kpi-label">Ventas totales</span>
+        <span class="kpi-valor">{{ data.totalVentas.toFixed(2) }}€</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Pedidos</span>
+        <span class="kpi-valor">{{ data.totalPedidos }}</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Ticket medio</span>
+        <span class="kpi-valor">{{ data.ticketMedio.toFixed(2) }}€</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Valor del stock</span>
+        <span class="kpi-valor">{{ data.valorStockTotal.toFixed(2) }}€</span>
+      </div>
+    </div>
+
+    <!-- Graficas -->
+    <div class="graficas-grid">
+      <div class="grafica-card grafica-ancha">
+        <h2>Ventas por día</h2>
+        <div class="grafica-contenedor">
+          <canvas #graficoVentas role="img" aria-label="Gráfica de ventas por día en el rango seleccionado"></canvas>
+        </div>
+      </div>
+
+      <div class="grafica-card">
+        <h2>Pedidos por estado</h2>
+        <div class="grafica-contenedor">
+          <canvas #graficoEstados role="img" aria-label="Gráfica de pedidos agrupados por estado"></canvas>
+        </div>
+      </div>
+
+      <div class="grafica-card">
+        <h2>Top 5 productos vendidos</h2>
+        <div class="grafica-contenedor" *ngIf="data.topProductos.length > 0">
+          <canvas #graficoTop role="img" aria-label="Gráfica de los 5 productos más vendidos"></canvas>
+        </div>
+        <p class="grafica-vacio" *ngIf="data.topProductos.length === 0">
+          Todavía no hay ventas registradas en este rango.
+        </p>
+      </div>
+    </div>
+
+    <!-- Stock bajo -->
+    <div class="stock-bajo-section" *ngIf="data.stockBajo.length > 0">
+      <h2>⚠ Productos con stock bajo</h2>
+      <div class="stock-bajo-lista">
+        <a
+          class="stock-bajo-item"
+          *ngFor="let p of data.stockBajo; trackBy: trackByProductoId"
+          [routerLink]="['/admin/productos', p.id, 'editar']">
+          <span>{{ p.nombre }}</span>
+          <span class="stock-bajo-cantidad">{{ p.stockTotal }} uds.</span>
+        </a>
+      </div>
+    </div>
+
+  </ng-container>
+</div>
