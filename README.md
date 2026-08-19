@@ -56,13 +56,13 @@ El proyecto está desarrollado utilizando las siguientes tecnologías:
 - ✅ Creación de pedidos con verificación y descuento de stock automático
 - ✅ Perfil de usuario con historial de pedidos, tallas preferidas por categoría y ayuda/contacto
 - ✅ Imágenes reales de producto (banco libre de derechos)
+- ✅ Panel de administración
+- ✅ Carrusel automático de ofertas especiales en Home
 
 ### Pendiente
 
-- ⏳ Panel de administración
 - ⏳ Chatbot de atención al cliente
 - ⏳ Sistema de valoraciones y opiniones
-- ⏳ Carrusel automático de ofertas especiales en Home
 
 ---
 
@@ -163,8 +163,8 @@ Las fotografías de producto utilizadas en el catálogo proceden de [Unsplash](h
 - [x] Carrito de compra funcional + checkout
 - [x] Perfil de usuario con pedidos, tallas y ayuda/contacto
 - [x] Banco de imágenes reales para los productos
-- [ ] Panel de administración
-- [ ] Carrusel automático de ofertas especiales en Home (productos con descuento, rotación diaria)
+- [x] Panel de administración
+- [x] Carrusel automático de ofertas especiales en Home (productos con descuento, rotación diaria)
 - [ ] Chatbot de atención al cliente
 - [ ] Sistema de valoraciones y opiniones
 
