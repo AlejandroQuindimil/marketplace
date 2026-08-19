@@ -40,7 +40,7 @@ El proyecto está desarrollado utilizando las siguientes tecnologías:
 
 ### 🔍 Arquitectura de la aplicación
 
-![Esquema de arquitectura Angular + Spring Boot + MongoDB](frontend/public/img/arquitecturaproyecto.png)
+![Esquema de arquitectura Angular + Spring Boot + MongoDB](frontend/public/img/arquitecturaproyecto.jpg)
 
 ---
 
