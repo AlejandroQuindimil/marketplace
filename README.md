@@ -36,6 +36,7 @@ El proyecto está desarrollado utilizando las siguientes tecnologías:
 - **Spring Boot** (Java) para la API REST y la lógica de negocio.
 - **MongoDB** para el almacenamiento de datos.
 - **JWT (JSON Web Tokens)** para la autenticación y autorización.
+- **Spring Boot** (Java) con **Java Mail Sender** para la API REST, envío de correos y lógica de negocio.
 
 ### 🔍 Arquitectura de la aplicación
 
@@ -58,6 +59,8 @@ El proyecto está desarrollado utilizando las siguientes tecnologías:
 - ✅ Imágenes reales de producto (banco libre de derechos)
 - ✅ Panel de administración
 - ✅ Carrusel automático de ofertas especiales en Home
+- ✅ Registro de usuario con verificación de cuenta mediante código OTP enviado por correo electrónico
+- ✅ Autenticación y autorización mediante JWT con gestión de roles (`USER` / `ADMIN`)
 
 ### Pendiente
 
@@ -72,8 +75,9 @@ El proyecto está desarrollado utilizando las siguientes tecnologías:
 > - Tener instalado **Java 21**.
 > - Tener instalado **Node.js** y **Angular CLI**.
 > - Tener **MongoDB** corriendo en `localhost:27017`.
+> - Configurar las credenciales SMTP en el `application.properties` de Spring Boot (`spring.mail.username` y `spring.mail.password`) para permitir el envío de correos.
 > - Editor de código: **Visual Studio Code**.
->
+>   
 > Si no tienes MongoDB instalado, sigue los pasos a continuación.
 
 ---
@@ -140,8 +144,10 @@ Las fotografías de producto utilizadas en el catálogo proceden de [Unsplash](h
 
 | Método | Ruta | Descripción | Acceso |
 |--------|------|-------------|--------|
-| POST | `/api/auth/register` | Registro de usuario | Público |
-| POST | `/api/auth/login` | Inicio de sesión | Público |
+| POST | `/api/auth/register` | Registro de usuario (cuenta pendiente de verificación) | Público |
+| POST | `/api/auth/verify-code` | Confirmación de cuenta mediante código OTP recibido por correo | Público |
+| POST | `/api/auth/resend-code` | Reenviar nuevo código de verificación por correo | Público |
+| POST | `/api/auth/login` | Inicio de sesión (requiere cuenta verificada) | Público |
 | GET | `/api/productos` | Listado de productos (filtros: `categoria`, `buscar`) | Público |
 | GET | `/api/productos/destacados` | Productos destacados | Público |
 | GET | `/api/productos/{id}` | Detalle de producto | Público |
@@ -165,6 +171,7 @@ Las fotografías de producto utilizadas en el catálogo proceden de [Unsplash](h
 - [x] Banco de imágenes reales para los productos
 - [x] Panel de administración
 - [x] Carrusel automático de ofertas especiales en Home (productos con descuento, rotación diaria)
+- [x] Verificación de cuenta por correo electrónico (envío de código OTP de confirmación)
 - [ ] Chatbot de atención al cliente
 - [ ] Sistema de valoraciones y opiniones
 
