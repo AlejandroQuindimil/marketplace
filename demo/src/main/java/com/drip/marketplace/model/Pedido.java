@@ -54,4 +54,9 @@ public class Pedido {
         private Integer cantidad;
         private Double precio;
     }
+
+    // true si un admin cambio el estado manualmente desde el panel: en ese
+    // caso, la simulacion automatica de "3 dias -> ENTREGADO" deja de
+    // aplicar sobre este pedido, para no pisar la gestion real del admin
+    private boolean estadoGestionadoManualmente = false;
 }

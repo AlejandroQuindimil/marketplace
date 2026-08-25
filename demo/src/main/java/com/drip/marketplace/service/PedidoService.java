@@ -96,10 +96,13 @@ public class PedidoService {
         return pedido;
     }
 
-    /** Simula el avance PENDIENTE -> ENTREGADO tras unos dias, solo para
-     * poder probar el flujo de devoluciones sin depender de un sistema
-     * logistico real. Guarda el cambio si aplica. */
+    // Simula el avance PENDIENTE -> ENTREGADO tras unos dias, solo para
+    // poder probar el flujo de devoluciones sin depender de un sistema
+    // logistico real. Guarda el cambio si aplica. 
     private void autoActualizarEstado(Pedido pedido) {
+        // si el admin ya lo gestiono a mano, la simulacion automatica no
+        // debe volver a tocarlo
+        if (pedido.isEstadoGestionadoManualmente()) return;
         if (pedido.getEstado() == Pedido.Estado.ENTREGADO) return;
 
         long dias = Duration.between(pedido.getCreatedAt(), LocalDateTime.now()).toDays();
@@ -107,5 +110,27 @@ public class PedidoService {
             pedido.setEstado(Pedido.Estado.ENTREGADO);
             pedidoRepository.save(pedido);
         }
+    }
+
+    // listado completo de pedidos para el panel admin, mas recientes primero.
+    // Reutilizamos autoActualizarEstado() para que el admin tambien vea el
+    // avance automatico de la demo, igual que en "mis pedidos"
+    public List<Pedido> findAllAdmin() {
+        List<Pedido> pedidos = pedidoRepository.findAllByOrderByCreatedAtDesc();
+        pedidos.forEach(this::autoActualizarEstado);
+        return pedidos;
+    }
+
+    // cambia el estado de un pedido a mano desde el panel admin, sin pasar
+    // por la simulacion automatica de 3 dias
+    public Pedido cambiarEstado(String id, Pedido.Estado nuevoEstado) {
+        Pedido pedido = pedidoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Pedido no encontrado"));
+
+        pedido.setEstado(nuevoEstado);
+        // marcamos el pedido como gestionado a mano, para que la simulacion
+        // automatica no lo vuelva a sobrescribir en la siguiente consulta
+        pedido.setEstadoGestionadoManualmente(true);
+        return pedidoRepository.save(pedido);
     }
 }

@@ -16,4 +16,7 @@ public interface PedidoRepository extends MongoRepository<Pedido, String> {
 
     // pedidos creados desde una fecha en adelante, para el dashboard
     List<Pedido> findByCreatedAtAfter(LocalDateTime fecha);
+
+    // para el panel admin: todos los pedidos, sin filtrar por usuario
+    List<Pedido> findAllByOrderByCreatedAtDesc();
 }
