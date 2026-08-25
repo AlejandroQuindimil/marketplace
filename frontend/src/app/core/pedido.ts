@@ -32,4 +32,12 @@ export class PedidoService {
   misPedidos(): Observable<Pedido[]> {
     return this.http.get<Pedido[]>(`${this.apiUrl}/mis-pedidos`);
   }
+
+  misTodosPedidos(): Observable<Pedido[]> {
+    return this.http.get<Pedido[]>(`${environment.apiUrl}/admin/pedidos`);
+  }
+
+  cambiarEstado(id: string, estado: string): Observable<Pedido> {
+    return this.http.put<Pedido>(`${environment.apiUrl}/admin/pedidos/${id}/estado`, { estado });
+  }
 }

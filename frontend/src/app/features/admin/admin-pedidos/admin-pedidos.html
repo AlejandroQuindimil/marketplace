@@ -1,0 +1,72 @@
+<div class="admin-pedidos">
+  <div class="admin-header">
+    <h1>Pedidos</h1>
+
+    <select class="filtro-estado" [(ngModel)]="filtroEstado">
+      <option value="">Todos los estados</option>
+      <option *ngFor="let e of estados" [value]="e">{{ estadoLabel(e) }}</option>
+    </select>
+  </div>
+
+  <p *ngIf="loading">Cargando pedidos...</p>
+
+  <div class="pedido-card" *ngFor="let p of pedidosFiltrados">
+    <div class="pedido-header" (click)="toggleDesglose(p.id)">
+      <div class="pedido-info">
+        <span class="pedido-numero">Pedido #{{ p.id.slice(-8).toUpperCase() }}</span>
+        <span class="pedido-fecha">{{ p.createdAt | date:'d MMM yyyy, HH:mm' }}</span>
+      </div>
+
+      <div class="pedido-datos">
+        <span class="pedido-total">{{ p.total.toFixed(2) }}€</span>
+        <span class="pedido-articulos">{{ p.items.length }} artículo(s)</span>
+      </div>
+
+      <div class="estado-control" (click)="$event.stopPropagation()">
+        <select
+          class="estado-select"
+          [class]="'estado-' + p.estado.toLowerCase()"
+          [(ngModel)]="estadoSeleccionado[p.id]"
+          [disabled]="guardandoEstado[p.id]">
+          <option *ngFor="let e of estados" [value]="e">{{ estadoLabel(e) }}</option>
+        </select>
+
+        <ng-container *ngIf="hayCambioPendiente(p)">
+          <button
+            class="btn-confirmar-estado"
+            [disabled]="guardandoEstado[p.id]"
+            (click)="confirmarCambioEstado(p)">
+            {{ guardandoEstado[p.id] ? '...' : '✓' }}
+          </button>
+          <button
+            class="btn-cancelar-estado"
+            [disabled]="guardandoEstado[p.id]"
+            (click)="cancelarCambioEstado(p)">
+            ✕
+          </button>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="pedido-desglose" *ngIf="pedidoExpandido === p.id">
+      <div class="pedido-direccion">
+        📍 {{ p.direccionEnvio.calle }}, {{ p.direccionEnvio.ciudad }} ({{ p.direccionEnvio.cp }})
+      </div>
+
+      <div class="pedido-item" *ngFor="let item of p.items">
+        <div class="pedido-item-img">
+          <img [src]="item.imagen" [alt]="item.nombre" onerror="this.style.display='none'">
+        </div>
+        <div class="pedido-item-info">
+          <span class="pedido-item-nombre">{{ item.nombre }}</span>
+          <span class="pedido-item-variante">Talla {{ item.talla }} · {{ item.color }} · x{{ item.cantidad }}</span>
+        </div>
+        <span class="pedido-item-precio">{{ (item.precio * item.cantidad).toFixed(2) }}€</span>
+      </div>
+    </div>
+  </div>
+
+  <p *ngIf="!loading && pedidosFiltrados.length === 0" class="admin-vacio">
+    No hay pedidos con este filtro.
+  </p>
+</div>

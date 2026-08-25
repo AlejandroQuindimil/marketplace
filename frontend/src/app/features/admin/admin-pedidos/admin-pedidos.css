@@ -1,0 +1,128 @@
+* { box-sizing: border-box; }
+
+.admin-pedidos { font-family: -apple-system, sans-serif; }
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.admin-header h1 { font-size: 24px; margin: 0; }
+
+.filtro-estado {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 13px;
+  background: white;
+}
+
+.pedido-card {
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 10px;
+}
+
+.pedido-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  cursor: pointer;
+}
+
+.pedido-info { display: flex; flex-direction: column; gap: 2px; min-width: 160px; }
+.pedido-numero { font-weight: 600; font-size: 14px; }
+.pedido-fecha { font-size: 12px; color: #999; }
+
+.pedido-datos { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.pedido-total { font-weight: 700; font-size: 14px; }
+.pedido-articulos { font-size: 12px; color: #999; }
+
+.estado-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-confirmar-estado,
+.btn-cancelar-estado {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-confirmar-estado {
+  background: #166534;
+  color: white;
+}
+
+.btn-confirmar-estado:hover { background: #14532d; }
+
+.btn-cancelar-estado {
+  background: #f3f4f6;
+  color: #666;
+}
+
+.btn-cancelar-estado:hover { background: #e5e7eb; }
+
+.btn-confirmar-estado:disabled,
+.btn-cancelar-estado:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.estado-pendiente { background: #fef3c7; color: #92400e; }
+.estado-pagado { background: #dbeafe; color: #1e40af; }
+.estado-enviado { background: #e0e7ff; color: #3730a3; }
+.estado-entregado { background: #dcfce7; color: #166534; }
+
+.pedido-desglose {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pedido-direccion {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.pedido-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pedido-item-img {
+  width: 44px;
+  height: 56px;
+  background: #f5f5f5;
+  border-radius: 4px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.pedido-item-img img { width: 100%; height: 100%; object-fit: cover; }
+
+.pedido-item-info { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.pedido-item-nombre { font-size: 13px; font-weight: 500; }
+.pedido-item-variante { font-size: 12px; color: #999; }
+.pedido-item-precio { font-size: 13px; font-weight: 600; }
+
+.admin-vacio { color: #999; padding: 40px 0; text-align: center; }
