@@ -361,6 +361,8 @@ export class Perfil implements OnInit {
       const tallas: string[] = [];
       for (let i = 28; i <= 50; i++) tallas.push(i.toString());
       return tallas;
+    } if (categoria === 'ACCESORIOS') {
+      return ['Talla única'];
     }
     return ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
   }
