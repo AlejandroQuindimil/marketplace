@@ -4,5 +4,5 @@ export const environment = {
   //apiUrl: 'http://localhost:8080/api'
 
   //Render
-  apiUrl: 'https://marketplace-wa7t.onrender.com'
+  apiUrl: 'https://marketplace-wa7t.onrender.com/api'
 };
