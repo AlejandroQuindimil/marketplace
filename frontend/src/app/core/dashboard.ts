@@ -17,7 +17,38 @@ export interface ProductoVendido {
 export interface ProductoStockBajo {
   id: string;
   nombre: string;
+  imagen: string | null;
   stockTotal: number;
+}
+
+export interface ComparativaPeriodo {
+  totalActual: number;
+  totalAnterior: number;
+  variacionPorcentaje: number;
+}
+
+export interface PuntoAov {
+  fecha: string;
+  ticketMedio: number;
+}
+
+export interface PuntoClientes {
+  fecha: string;
+  nuevos: number;
+  recurrentes: number;
+}
+
+export interface RotacionCategoria {
+  categoria: string;
+  unidadesVendidas: number;
+  stockActual: number;
+  ratioRotacion: number;
+}
+
+export interface PuntoHeatmap {
+  diaSemana: number;
+  hora: number;
+  pedidos: number;
 }
 
 export interface DashboardData {
@@ -30,6 +61,11 @@ export interface DashboardData {
   topProductos: ProductoVendido[];
   stockBajo: ProductoStockBajo[];
   devolucionesSolicitadas: number;
+  comparativaIngresos: ComparativaPeriodo;
+  aovPorDia: PuntoAov[];
+  clientesPorDia: PuntoClientes[];
+  rotacionPorCategoria: RotacionCategoria[];
+  heatmapPedidos: PuntoHeatmap[];
 }
 
 @Injectable({ providedIn: 'root' })

@@ -32,41 +32,86 @@
     <!-- KPIs -->
     <div class="kpi-grid">
       <div class="kpi-card">
-        <span class="kpi-label">Ventas totales</span>
+        <div class="kpi-card-top">
+          <span class="kpi-label">Ventas totales</span>
+          <span class="kpi-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 5"/><polyline points="15 5 21 5 21 11"/></svg>
+          </span>
+        </div>
         <span class="kpi-valor">{{ data.totalVentas.toFixed(2) }}€</span>
       </div>
       <div class="kpi-card">
-        <span class="kpi-label">Pedidos</span>
+        <div class="kpi-card-top">
+          <span class="kpi-label">Pedidos</span>
+          <span class="kpi-icon secondary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>
+          </span>
+        </div>
         <span class="kpi-valor">{{ data.totalPedidos }}</span>
       </div>
       <div class="kpi-card">
-        <span class="kpi-label">Ticket medio</span>
+        <div class="kpi-card-top">
+          <span class="kpi-label">Ticket medio</span>
+          <span class="kpi-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 12h6M12 9v6"/></svg>
+          </span>
+        </div>
         <span class="kpi-valor">{{ data.ticketMedio.toFixed(2) }}€</span>
       </div>
       <div class="kpi-card">
-        <span class="kpi-label">Valor del stock</span>
+        <div class="kpi-card-top">
+          <span class="kpi-label">Valor del stock</span>
+          <span class="kpi-icon secondary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 21 7 12 12 3 7 12 2"/><polyline points="3 12 12 17 21 12"/><polyline points="3 17 12 22 21 17"/></svg>
+          </span>
+        </div>
         <span class="kpi-valor">{{ data.valorStockTotal.toFixed(2) }}€</span>
       </div>
     </div>
 
-    <!-- Graficas -->
-    <div class="graficas-grid">
-      <div class="grafica-card grafica-ancha">
-        <h2>Ventas por día</h2>
+    <div class="comparativa-card" *ngIf="data.comparativaIngresos as comp">
+      <div class="comparativa-info">
+        <span class="comparativa-label">Ingresos del período</span>
+        <span class="comparativa-valor">{{ comp.totalActual.toFixed(2) }}€</span>
+      </div>
+
+      <div class="comparativa-variacion" [class.positiva]="comp.variacionPorcentaje >= 0" [class.negativa]="comp.variacionPorcentaje < 0">
+        <span class="comparativa-flecha">{{ comp.variacionPorcentaje >= 0 ? '↗' : '↘' }}</span>
+        <span>{{ comp.variacionPorcentaje >= 0 ? '+' : '' }}{{ comp.variacionPorcentaje.toFixed(1) }}%</span>
+        <span class="comparativa-vs">vs período anterior ({{ comp.totalAnterior.toFixed(2) }}€)</span>
+      </div>
+    </div>
+
+    <!-- Fila principal: ventas (protagonista) + estados -->
+    <div class="paneles-fila paneles-fila--principal">
+      <div class="grafica-card">
+        <div class="grafica-card-header">
+          <h2>Ventas por día</h2>
+          <span class="grafica-dot"></span>
+        </div>
         <div class="grafica-contenedor">
           <canvas #graficoVentas role="img" aria-label="Gráfica de ventas por día en el rango seleccionado"></canvas>
         </div>
       </div>
 
       <div class="grafica-card">
-        <h2>Pedidos por estado</h2>
+        <div class="grafica-card-header">
+          <h2>Pedidos por estado</h2>
+          <span class="grafica-dot secondary"></span>
+        </div>
         <div class="grafica-contenedor">
           <canvas #graficoEstados role="img" aria-label="Gráfica de pedidos agrupados por estado"></canvas>
         </div>
       </div>
+    </div>
 
+    <!-- Fila: top productos + ticket medio -->
+    <div class="paneles-fila paneles-fila--par">
       <div class="grafica-card">
-        <h2>Top 5 productos vendidos</h2>
+        <div class="grafica-card-header">
+          <h2>Top 5 productos vendidos</h2>
+          <span class="grafica-dot"></span>
+        </div>
         <div class="grafica-contenedor" *ngIf="data.topProductos.length > 0">
           <canvas #graficoTop role="img" aria-label="Gráfica de los 5 productos más vendidos"></canvas>
         </div>
@@ -74,19 +119,89 @@
           Todavía no hay ventas registradas en este rango.
         </p>
       </div>
+
+      <div class="grafica-card">
+        <div class="grafica-card-header">
+          <h2>Ticket medio por día</h2>
+          <span class="grafica-dot secondary"></span>
+        </div>
+        <div class="grafica-contenedor">
+          <canvas #graficoAov></canvas>
+        </div>
+      </div>
     </div>
 
-    <!-- Stock bajo -->
-    <div class="stock-bajo-section" *ngIf="data.stockBajo.length > 0">
-      <h2>⚠ Productos con stock bajo</h2>
-      <div class="stock-bajo-lista">
-        <a
-          class="stock-bajo-item"
-          *ngFor="let p of data.stockBajo; trackBy: trackByProductoId"
-          [routerLink]="['/admin/productos', p.id, 'editar']">
-          <span>{{ p.nombre }}</span>
-          <span class="stock-bajo-cantidad">{{ p.stockTotal }} uds.</span>
-        </a>
+    <!-- Fila: clientes + rotacion -->
+    <div class="paneles-fila paneles-fila--par">
+      <div class="grafica-card">
+        <div class="grafica-card-header">
+          <h2>Clientes nuevos vs. recurrentes</h2>
+          <span class="grafica-dot secondary"></span>
+        </div>
+        <div class="grafica-contenedor">
+          <canvas #graficoClientes></canvas>
+        </div>
+      </div>
+
+      <div class="grafica-card">
+        <div class="grafica-card-header">
+          <h2>Rotación de stock por categoría</h2>
+          <span class="grafica-dot"></span>
+        </div>
+        <div class="grafica-contenedor grafica-alta">
+          <canvas #graficoRotacion></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fila: pedidos por dia/hora + stock bajo, uno al lado del otro -->
+    <div class="paneles-fila paneles-fila--heatmap">
+      <div class="grafica-card">
+        <div class="grafica-card-header">
+          <h2>Pedidos por día y hora</h2>
+          <span class="grafica-dot"></span>
+        </div>
+        <div class="heatmap-wrap">
+          <table class="heatmap-tabla">
+            <thead>
+              <tr>
+                <th></th>
+                <th *ngFor="let h of horasDelDia">{{ h }}h</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let dia of diasSemana; let i = index">
+                <td class="heatmap-dia">{{ dia }}</td>
+                <td
+                  *ngFor="let h of horasDelDia"
+                  class="heatmap-celda"
+                  [style.background-color]="'rgba(8,217,214,' + intensidad(i, h) + ')'"
+                  [title]="dia + ' ' + h + 'h — ' + (heatmapMatriz[i]?.[h] ?? 0) + ' pedido(s)'">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Stock bajo -->
+      <div class="stock-bajo-section" *ngIf="data.stockBajo.length > 0">
+        <h2>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Productos con stock bajo
+        </h2>
+        <div class="stock-bajo-lista">
+          <a
+             class="stock-bajo-item"
+            *ngFor="let p of data.stockBajo"
+            [routerLink]="['/admin/productos', p.id, 'editar']">
+            <div class="stock-bajo-thumb">
+              <img [src]="p.imagen" [alt]="p.nombre" onerror="this.style.display='none'">
+            </div>
+            <span class="stock-bajo-nombre">{{ p.nombre }}</span>
+            <span class="stock-bajo-cantidad">{{ p.stockTotal }} uds.</span>
+          </a>
+        </div>
       </div>
     </div>
 
