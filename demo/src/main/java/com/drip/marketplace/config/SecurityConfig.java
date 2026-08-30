@@ -95,6 +95,7 @@ public class SecurityConfig {
                 // las mas especificas (ADMIN) van antes que la generica
                 //(anyRequest().authenticated())
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/health").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/productos/**").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/productos/**").hasRole("ADMIN")
