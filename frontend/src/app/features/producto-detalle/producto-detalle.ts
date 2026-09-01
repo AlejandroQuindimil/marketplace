@@ -118,14 +118,18 @@ export class ProductoDetalle implements OnInit {
     }
   }
 
-  private cargarSimilares(categoria: string, idActual: string): void {
-    this.productoService.findAll(categoria).subscribe({
-      next: (data) => {
-        this.similares = data.filter(p => p.id !== idActual).slice(0, 10);
-        this.cdr.detectChanges();
-      }
-    });
-  }
+ private cargarSimilares(categoria: string, idActual: string): void {
+  if (!this.producto) return;
+
+  // filtra por categoria Y genero, para no mezclar abrigos de hombre
+  // con abrigos de mujer en la seccion de similares
+  this.productoService.findAll(categoria, this.producto.genero).subscribe({
+    next: (data) => {
+      this.similares = data.filter(p => p.id !== idActual).slice(0, 10);
+      this.cdr.detectChanges();
+    }
+  });
+}
 
   seleccionarTalla(talla: string): void {
     this.tallaSeleccionada = talla;
