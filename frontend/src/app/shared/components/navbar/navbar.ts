@@ -157,8 +157,9 @@ actualizarContadorCarrito(): void {
 
   logout(): void {
   this.authService.logout();
+  this.carritoService.clear();
   this.usuario = null;
-  window.location.href = '/';
+  this.router.navigate(['/']);
   }
 
 generoAbierto: string | null = null;
