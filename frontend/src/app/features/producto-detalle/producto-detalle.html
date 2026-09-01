@@ -97,21 +97,31 @@
 
 <div class="similares" *ngIf="similares.length">
   <h2>Productos similares</h2>
-  <div class="similares-carrusel">
-    <a class="similar-card" *ngFor="let p of similares" [routerLink]="['/productos', p.id]">
-      <div class="similar-img">
-        <img [src]="p.imagenes[0]" [alt]="p.nombre" onerror="this.style.display='none'">
-      </div>
-      <span class="similar-marca">{{ p.marca }}</span>
-      <span class="similar-nombre">{{ p.nombre }}</span>
-      <span class="similar-precio">{{ p.precio }}€</span>
-    </a>
+  <div class="similares-carrusel-wrap">
+    <button
+      class="flecha-similares flecha-similares-izq"
+      [disabled]="similaresInicio"
+      (click)="scrollSimilares(-1)">‹</button>
+    <div class="similares-carrusel" #similaresCarrusel (scroll)="onScrollSimilares()">
+      <a class="similar-card" *ngFor="let p of similares" [routerLink]="['/productos', p.id]">
+        <div class="similar-img">
+          <img [src]="p.imagenes[0]" [alt]="p.nombre" onerror="this.style.display='none'">
+        </div>
+        <span class="similar-marca">{{ p.marca }}</span>
+        <span class="similar-nombre">{{ p.nombre }}</span>
+        <span class="similar-precio">{{ p.precio }}€</span>
+      </a>
 
-    <a class="similar-card ver-mas" [routerLink]="['/productos']" [queryParams]="{categoria: producto.categoria}">
-      <div class="ver-mas-img">
-        <span class="ver-mas-flecha">→</span>
-      </div>
-      <span class="ver-mas-texto">Descubre más productos similares</span>
-    </a>
+      <a class="similar-card ver-mas" [routerLink]="['/productos']" [queryParams]="{categoria: producto.categoria, genero: producto.genero}">
+        <div class="ver-mas-img">
+          <span class="ver-mas-flecha">→</span>
+        </div>
+        <span class="ver-mas-texto">Descubre más productos similares</span>
+      </a>
+    </div>
+    <button
+      class="flecha-similares flecha-similares-der"
+      [disabled]="similaresFin"
+      (click)="scrollSimilares(1)">›</button>
   </div>
 </div>

@@ -225,12 +225,51 @@
 
 .similares h2 { font-size: 22px; margin-bottom: 20px; }
 
-.similares-carrusel {
-  display: flex;
-  gap: 18px;
-  overflow-x: auto;
-  padding-bottom: 10px;
+.similares-carrusel-wrap {
+  position: relative;
 }
+
+ .similares-carrusel {
+   display: flex;
+   gap: 18px;
+   overflow-x: auto;
+  padding-bottom: 10px;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+ }
+
+.similares-carrusel::-webkit-scrollbar {
+  display: none;
+}
+
+.flecha-similares {
+  position: absolute;
+ top: 35%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.95);
+  font-size: 22px;
+  cursor: pointer;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.flecha-similares:hover:not(:disabled) { background: white; }
+
+.flecha-similares:disabled {
+ opacity: 0.3;
+ cursor: not-allowed;
+}
+
+.flecha-similares-izq { left: -46px; }
+.flecha-similares-der { right: -46px; }
 .similar-card {
   flex: 0 0 180px;
   text-decoration: none;
