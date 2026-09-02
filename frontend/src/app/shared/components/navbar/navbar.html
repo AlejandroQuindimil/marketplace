@@ -83,3 +83,73 @@
   </div>
 
 </div>
+
+
+<!-- Barra inferior movil -->
+<nav class="mobile-bottom-nav">
+  <a routerLink="/" class="mobile-nav-item">
+    <lucide-icon [img]="HomeIcon" [size]="21"></lucide-icon>
+    <span>Home</span>
+  </a>
+
+  <button class="mobile-nav-item" (click)="abrirBuscadorMovil()">
+    <lucide-icon [img]="SearchIcon" [size]="21"></lucide-icon>
+    <span>Buscar</span>
+  </button>
+
+  <a routerLink="/favoritos" class="mobile-nav-item">
+    <lucide-icon [img]="HeartIcon" [size]="21"></lucide-icon>
+    <span>Favoritos</span>
+  </a>
+
+  <a routerLink="/carrito" class="mobile-nav-item mobile-nav-carrito">
+    <lucide-icon [img]="CartIcon" [size]="21"></lucide-icon>
+    <span class="mobile-badge-carrito" *ngIf="carritoService.contador() > 0">
+      {{ carritoService.contador() > 10 ? '+10' : carritoService.contador() }}
+    </span>
+    <span>Cesta</span>
+  </a>
+
+  <a *ngIf="usuario" routerLink="/perfil" class="mobile-nav-item">
+    <lucide-icon [img]="UserIcon" [size]="21"></lucide-icon>
+    <span>Perfil</span>
+  </a>
+  <a *ngIf="!usuario" routerLink="/login" class="mobile-nav-item">
+    <lucide-icon [img]="UserIcon" [size]="21"></lucide-icon>
+    <span>Entrar</span>
+  </a>
+</nav>
+
+<!-- Panel de busqueda + categorias a pantalla completa -->
+<div class="mobile-search-overlay" *ngIf="buscadorMovilAbierto">
+  <div class="mobile-search-header">
+    <input
+      type="text"
+      placeholder="Buscar productos..."
+      [(ngModel)]="busqueda"
+      (keyup.enter)="buscarYcerrar()"
+      autofocus>
+    <button class="mobile-search-cerrar" (click)="cerrarBuscadorMovil()">✕</button>
+  </div>
+
+  <div class="mobile-search-generos">
+    <button
+      [class.active]="generoMovilActivo === 'HOMBRE'"
+      (click)="seleccionarGeneroMovil('HOMBRE')">Hombre</button>
+    <button
+      [class.active]="generoMovilActivo === 'MUJER'"
+      (click)="seleccionarGeneroMovil('MUJER')">Mujer</button>
+    <button (click)="irACategoriaMovil('', 'ACCESORIOS')">Accesorios</button>
+  </div>
+
+  <div class="mobile-search-subcategorias" *ngIf="generoMovilActivo">
+    <div class="mobile-subcat-col" *ngFor="let col of subcategoriasMovil">
+      <button
+        *ngFor="let item of col.items"
+        [class.destacado]="item.destacado"
+        (click)="irACategoriaMovil(generoMovilActivo!, item.valor)">
+        {{ item.label }}
+      </button>
+    </div>
+  </div>
+</div>

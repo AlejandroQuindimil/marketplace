@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink, ActivatedRoute } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute, NavigationEnd  } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { LucideAngularModule, User, Heart, ShoppingCart, Search } from 'lucide-angular';
+import { LucideAngularModule, User, Heart, ShoppingCart, Search, Home } from 'lucide-angular';
 import { AuthService } from '../../../core/auth';
 import { CarritoService } from '../../../core/carrito';
 import { HostListener, ElementRef } from '@angular/core';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-navbar',
@@ -108,6 +109,7 @@ columnasMenuMujer = [
   readonly HeartIcon = Heart;
   readonly CartIcon = ShoppingCart;
   readonly SearchIcon = Search;
+  readonly HomeIcon = Home;
 
   
   constructor(
@@ -119,16 +121,24 @@ columnasMenuMujer = [
   ) {}
 
   ngOnInit(): void {
-  this.usuario = this.authService.getUsuario();
-  this.actualizarContadorCarrito();
-
-  this.router.events.subscribe(() => {
     this.usuario = this.authService.getUsuario();
     this.actualizarContadorCarrito();
-    const params = this.route.snapshot.queryParams;
-    this.busqueda = params['buscar'] || '';
-  });
-}
+
+    this.router.events
+      .pipe(filter((evento): evento is NavigationEnd => evento instanceof NavigationEnd))
+      .subscribe(() => {
+        this.usuario = this.authService.getUsuario();
+        this.actualizarContadorCarrito();
+        const params = this.route.snapshot.queryParams;
+        this.busqueda = params['buscar'] || '';
+
+        // cerrar overlays al cambiar de pantalla para que no se queden "pillados"
+        this.cerrarBuscadorMovil();
+        this.menuAbierto = false;
+
+        window.scrollTo(0, 0);
+      });
+  }
 
 @HostListener('document:click', ['$event'])
 onClickOutside(event: Event): void {
@@ -187,4 +197,40 @@ cerrarSubmenuInmediato(): void {
 get columnasMenuActivo() {
   return this.generoAbierto === 'MUJER' ? this.columnasMenuMujer : this.columnasMenuHombre;
 }
+
+// --- Navegacion movil ---
+buscadorMovilAbierto = false;
+generoMovilActivo: 'HOMBRE' | 'MUJER' | 'ACCESORIOS' | null = null;
+
+abrirBuscadorMovil(): void {
+  this.buscadorMovilAbierto = true;
+  this.generoMovilActivo = 'HOMBRE';
+}
+
+cerrarBuscadorMovil(): void {
+  this.buscadorMovilAbierto = false;
+  this.generoMovilActivo = null;
+}
+
+seleccionarGeneroMovil(genero: 'HOMBRE' | 'MUJER' | 'ACCESORIOS'): void {
+  this.generoMovilActivo = this.generoMovilActivo === genero ? null : genero;
+}
+
+// reutiliza los mismos datos que el mega menu de escritorio
+get subcategoriasMovil() {
+  if (this.generoMovilActivo === 'HOMBRE') return this.columnasMenuHombre;
+  if (this.generoMovilActivo === 'MUJER') return this.columnasMenuMujer;
+  return [];
+}
+
+buscarYcerrar(): void {
+  this.buscar();
+  this.cerrarBuscadorMovil();
+}
+
+irACategoriaMovil(genero: string, categoria: string): void {
+  this.router.navigate(['/productos'], { queryParams: { genero, categoria } });
+  this.cerrarBuscadorMovil();
+}
+
 }
