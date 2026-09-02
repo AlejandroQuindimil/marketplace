@@ -25,8 +25,8 @@
       *ngIf="producto.imagenes.length > 1"
       (click)="siguienteImagen()">›</button>
   </div>
-</div>
-<div class="detalle-container" *ngIf="!loading && producto">
+  </div>
+<div class="detalle-info-col">
 <button class="btn-volver" (click)="volver()">←</button>
     <div class="detalle-info">
     <span class="detalle-marca">{{  producto.marca }}</span>
@@ -76,6 +76,7 @@
     </div>
   </div>
 </div>
+</div>
 
 <p *ngIf="loading" class="loading-msg">Cargando producto...</p>
 <p *ngIf="!loading && !producto" class="loading-msg">Producto no encontrado.</p>
@@ -112,7 +113,7 @@
         <span class="similar-precio">{{ p.precio }}€</span>
       </a>
 
-      <a class="similar-card ver-mas" [routerLink]="['/productos']" [queryParams]="{categoria: producto.categoria, genero: producto.genero}">
+      <a class="similar-card ver-mas" [routerLink]="['/productos']" [queryParams]="{categoria: producto?.categoria, genero: producto?.genero}">
         <div class="ver-mas-img">
           <span class="ver-mas-flecha">→</span>
         </div>
@@ -124,4 +125,11 @@
       [disabled]="similaresFin"
       (click)="scrollSimilares(1)">›</button>
   </div>
+</div>
+<div class="detalle-topbar-movil" *ngIf="!loading && producto">
+  <button class="topbar-volver" (click)="volver()">←</button>
+  <span class="topbar-nombre">{{ producto.nombre }}</span>
+  <button class="topbar-fav" [class.active]="esFavorito" (click)="toggleFavorito()">
+    {{ esFavorito ? '♥' : '♡' }}
+  </button>
 </div>

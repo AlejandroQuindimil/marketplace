@@ -396,3 +396,212 @@
 
 .flecha-izq { left: 12px; }
 .flecha-der { right: 12px; }
+
+.detalle-topbar-movil {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .detalle-topbar-movil {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    padding: 0 14px;
+    background: white;
+    border-bottom: 1px solid #eee;
+    z-index: 999;
+  }
+
+  .topbar-volver {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    background: white;
+    font-size: 16px;
+    cursor: pointer;
+    color: #1a1a1a;
+  }
+
+  .topbar-nombre {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .topbar-fav {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    background: white;
+    font-size: 16px;
+    cursor: pointer;
+    color: #1a1a1a;
+  }
+
+  .topbar-fav.active {
+    color: #ff0000;
+    border-color: #ff0000;
+  }
+
+  .detalle-container {
+    padding-top: calc(52px + 16px) 16px 80px;
+  }
+}
+
+@media (max-width: 768px) {
+  .detalle-container {
+    padding: 16px;
+  }
+
+  .detalle-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .detalle-galeria {
+    flex-direction: column-reverse;
+  }
+
+  .miniaturas-col {
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 8px;
+  }
+
+  .miniatura {
+    width: 52px;
+    height: 65px;
+    flex-shrink: 0;
+  }
+
+  .btn-volver {
+    width: 36px;
+    height: 36px;
+    margin-bottom: 14px;
+  }
+
+  .flecha-img {
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+  }
+
+  .detalle-marca {
+    font-size: 12px;
+  }
+
+  .detalle-info h1 {
+    font-size: 20px;
+    margin: 4px 0 12px;
+  }
+
+  .detalle-precio {
+    margin-bottom: 16px;
+  }
+
+  .precio-actual {
+    font-size: 17px;
+  }
+
+  .precio-anterior {
+    font-size: 14px;
+    margin-left: 8px;
+  }
+
+  .detalle-descripcion {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .seccion {
+    margin-bottom: 18px;
+  }
+
+  .opciones button {
+    padding: 7px 14px;
+    font-size: 12px;
+  }
+
+  .btn-comprar {
+    padding: 13px;
+    font-size: 14px;
+  }
+
+  .btn-fav-circular {
+    width: 46px;
+    height: 46px;
+    min-width: 46px;
+    font-size: 18px;
+  }
+
+  .acordeones {
+    padding: 0 16px;
+    margin-top: 24px;
+  }
+
+  .acordeon-header {
+    font-size: 14px;
+    padding: 14px 0;
+  }
+
+  .acordeon-fila {
+    font-size: 13px;
+  }
+
+  .similares {
+    padding: 0 16px 40px;
+    margin-top: 32px;
+  }
+
+  .similares h2 {
+    font-size: 18px;
+    margin-bottom: 14px;
+  }
+
+  .similar-card {
+    flex: 0 0 130px;
+  }
+
+  .similar-marca {
+    font-size: 10px;
+  }
+
+  .similar-nombre,
+  .similar-precio {
+    font-size: 12px;
+  }
+
+  .ver-mas-flecha {
+    font-size: 22px;
+  }
+
+  .ver-mas-texto {
+    font-size: 11px;
+  }
+
+  /* en móvil el carrusel se navega con swipe táctil, no con flechas */
+  .flecha-similares {
+    display: none;
+  }
+
+  /* el nombre y el botón volver ahora viven en la topbar fija */
+  .btn-volver {
+    display: none;
+  }
+
+  .detalle-info h1 {
+    display: none;
+  }
+}
