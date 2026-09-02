@@ -385,3 +385,122 @@
   box-shadow: 0 1px 4px rgba(0,0,0,0.3);
   cursor: pointer;
 }
+
+
+@media (max-width: 768px) {
+  .catalogo-container {
+    padding: 16px 12px 80px;
+  }
+
+  .catalogo-container h1 {
+    font-size: 22px;
+    margin-bottom: 16px;
+  }
+
+  /* filtros de nivel superior y subcategorías: barra horizontal con scroll
+     en vez de envolver en varias líneas, que ocuparía demasiado alto */
+  .filtros {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 6px;
+    margin-bottom: 16px;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .filtros::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filtros button {
+    flex-shrink: 0;
+    padding: 7px 14px;
+    font-size: 12px;
+  }
+
+  .filtros-avanzados-bar {
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .btn-filtros {
+    padding: 7px 14px;
+    font-size: 12px;
+  }
+
+  .resultados-count {
+    font-size: 12px;
+  }
+
+  /* panel de filtros avanzados: todo apilado a ancho completo */
+  .panel-filtros {
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .filtro-grupo select {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .filtro-precio {
+    min-width: 0;
+    width: 100%;
+  }
+
+  /* grid a 2 columnas y tarjetas compactas, para que quepan
+     4 productos (2x2) en pantalla sin apenas hacer scroll */
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px 10px;
+  }
+
+  .card-img {
+    aspect-ratio: 1/1;
+    border-radius: 8px;
+    margin-bottom: 6px;
+  }
+
+  .fav-btn {
+    width: 26px;
+    height: 26px;
+    font-size: 13px;
+    top: 6px;
+    right: 6px;
+  }
+
+  .flecha-card {
+    width: 24px;
+    height: 24px;
+    font-size: 15px;
+  }
+
+  .card-info {
+    gap: 1px;
+  }
+
+  .card-marca {
+    font-size: 9px;
+  }
+
+  .card-nombre {
+    font-size: 12px;
+    line-height: 1.25;
+  }
+
+  .card-precio {
+    margin-top: 2px;
+  }
+
+  .precio-actual {
+    font-size: 12px;
+  }
+
+  .precio-anterior {
+    font-size: 11px;
+    margin-left: 6px;
+  }
+}
