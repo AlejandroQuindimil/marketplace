@@ -75,3 +75,48 @@
   border-radius: 4px;
   font-size: 14px;
 }
+
+@media (max-width: 768px) {
+  .favoritos-container {
+    padding: 14px 12px 80px;
+  }
+
+  .favoritos-container h1 {
+    font-size: 22px;
+    margin-bottom: 16px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .fav-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+    top: 8px;
+    right: 8px;
+  }
+
+  .card-marca {
+    font-size: 11px;
+  }
+
+  .card-nombre {
+    font-size: 13px;
+  }
+
+  .precio-actual {
+    font-size: 13px;
+  }
+
+  .precio-anterior {
+    font-size: 12px;
+    margin-left: 6px;
+  }
+
+  .empty-state {
+    padding: 60px 20px;
+  }
+}
