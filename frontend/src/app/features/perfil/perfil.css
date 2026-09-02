@@ -424,3 +424,96 @@
 }
 
 .btn-panel-admin:hover { background: #333; }
+@media (max-width: 768px) {
+  .perfil-layout {
+    flex-direction: column;
+    gap: 20px;
+    padding: 16px 16px 80px;
+  }
+
+  /* la sidebar vertical de escritorio pasa a ser una barra de pestañas
+     horizontal con scroll, para no comerse media pantalla antes del contenido */
+  .perfil-sidebar {
+    flex-direction: row;
+    min-width: 0;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .perfil-sidebar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .perfil-sidebar button {
+    flex-shrink: 0;
+    white-space: nowrap;
+    padding: 8px 14px;
+    border: 1px solid #eee;
+    border-radius: 20px;
+    font-size: 13px;
+  }
+
+  .perfil-sidebar button.active {
+    border-color: #1a1a1a;
+  }
+
+  .perfil-contenido h1 {
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+
+  .perfil-contenido h2 {
+    font-size: 15px;
+    margin: 24px 0 12px;
+  }
+
+  .perfil-info {
+    gap: 12px;
+  }
+
+  .perfil-avatar {
+    width: 48px;
+    height: 48px;
+    font-size: 19px;
+  }
+
+  .perfil-nombre {
+    font-size: 15px;
+  }
+
+  .direcciones-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .campo-telefono {
+    flex-wrap: wrap;
+    max-width: none;
+  }
+
+  .prefijo-telefono {
+    width: 100%;
+  }
+
+  .campo-telefono input {
+    flex: 1 1 auto;
+    min-width: 140px;
+  }
+
+  .pedido-header {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .pedido-body {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .talla-row select {
+    width: 100px;
+  }
+}
