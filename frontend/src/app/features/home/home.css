@@ -114,3 +114,69 @@
 .descubre-mas-link:hover .descubre-mas-flecha {
   transform: translateX(4px);
 }
+
+@media (max-width: 768px) {
+  .hero {
+    min-height: 340px;
+    background-position: center 15%;
+  }
+
+  .hero h1 {
+    font-size: 38px;
+  }
+
+  .hero p {
+    font-size: 14px;
+  }
+
+  .hero-btn {
+    padding: 11px 26px;
+    font-size: 13px;
+  }
+
+  .destacados {
+    padding: 40px 16px;
+  }
+
+  .destacados h2 {
+    font-size: 24px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .card-nombre,
+  .card-marca {
+    font-size: 12px;
+  }
+
+  .precio-actual {
+    font-size: 13px;
+  }
+
+  .flecha-card {
+    display: none;
+  }
+
+  .descubre-mas {
+    padding: 36px 16px 50px;
+  }
+
+  .descubre-mas-link {
+    padding: 12px 24px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 400px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .hero h1 {
+    font-size: 30px;
+  }
+}

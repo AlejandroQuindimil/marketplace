@@ -56,7 +56,7 @@ export class OfertasCarrusel implements OnInit, OnChanges, OnDestroy {
   constructor(private router: Router, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    this.itemsPerView = window.innerWidth <= 768 ? 2 : 4;
+    this.itemsPerView = this.calcularItemsPerView();
     this.buildExtended();
     this.trackIndex = this.itemsPerView;
     if (this.extendedProductos.length > 0) {
@@ -376,12 +376,19 @@ export class OfertasCarrusel implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  private calcularItemsPerView(): number {
+    const ancho = window.innerWidth;
+    if (ancho <= 480) return 2;
+    if (ancho <= 900) return 3;
+    return 4;
+  }
+
   // Al cambiar itemsPerView tambien cambia cuantos clones hacen falta,
   // asi que hay que reconstruir extendedProductos y reposicionar el
   // track (conservando el producto actual como primer visible).
   @HostListener('window:resize')
   onResize(): void {
-    const nuevo = window.innerWidth <= 768 ? 2 : 5;
+    const nuevo = this.calcularItemsPerView();
     if (nuevo === this.itemsPerView) return;
 
     this.itemsPerView = nuevo;
