@@ -186,3 +186,35 @@
 .card-ver-mas:hover .ver-mas-flecha {
   transform: translateX(4px);
 }
+
+@media (max-width: 768px) {
+  .tendencia-section {
+    padding: 0 16px;
+  }
+
+  .tendencia-section h2,
+  .tendencia-titulo {
+    font-size: 22px;
+  }
+
+  .carousel-item {
+    flex: 0 0 55%;
+    max-width: 55%;
+  }
+
+  .carousel-arrow {
+    display: none;
+  }
+
+  .oferta-nombre,
+  .oferta-marca {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 400px) {
+  .carousel-item {
+    flex: 0 0 68%;
+    max-width: 68%;
+  }
+}
