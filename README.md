@@ -104,13 +104,13 @@ Durante el diseño y desarrollo de DRIP me enfrenté a varios desafíos práctic
 - ✅ Carrusel dinámico de ofertas destacadas en la página de inicio.
 - ✅ **Panel de administración completo**: CRUD de productos, cambio manual de estado de pedidos y dashboard analítico (KPIs de venta, ticket medio, rotación de stock, clientes recurrentes y aviso de stock bajo).
 - ✅ **Desplegado y funcional en producción**.
+- ✅ Optimización completa del diseño responsive para dispositivos móviles.
 
 ### Próximas mejoras
 
 - ⏳ Cobertura de tests unitarios e integración (JUnit/Mockito en backend).
 - ⏳ Integración de un chatbot para soporte al cliente.
 - ⏳ Sistema de valoraciones y reseñas en fichas de producto.
-- ⏳ Optimización completa del diseño responsive para dispositivos móviles.
 
 ---
 
