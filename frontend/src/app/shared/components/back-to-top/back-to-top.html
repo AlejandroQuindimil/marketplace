@@ -1,9 +1,9 @@
 <button
   class="volver-arriba"
   [class.visible]="visible"
+  [class.volver-arriba-oculta-movil]="!visibleEnRutaMovil"
   (click)="subir()"
   aria-label="Volver arriba">
-  <span>Volver arriba</span>
+  <span class="volver-arriba-texto">Volver arriba</span>
   <span class="volver-arriba-flecha">🡩</span>
 </button>
- 

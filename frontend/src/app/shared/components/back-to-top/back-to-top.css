@@ -52,8 +52,23 @@
 @media (max-width: 640px) {
   .volver-arriba {
     right: 16px;
-    bottom: 16px;
-    padding: 10px 16px;
-    font-size: 12px;
+    bottom: 76px;
+    width: 46px;
+    height: 46px;
+    padding: 0;
+    border-radius: 50%;
+    justify-content: center;
+  }
+
+  .volver-arriba-texto {
+    display: none;
+  }
+
+  .volver-arriba-flecha {
+    font-size: 18px;
+  }
+
+  .volver-arriba-oculta-movil {
+    display: none;
   }
 }
