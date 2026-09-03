@@ -516,4 +516,8 @@
   .talla-row select {
     width: 100px;
   }
+
+  .btn-panel-admin {
+    display: none;
+  }
 }
