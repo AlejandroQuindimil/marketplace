@@ -14,7 +14,7 @@ import { filter } from 'rxjs/operators';
 export class Footer implements OnInit, OnDestroy {
   anioActual = new Date().getFullYear();
 
-  // en móvil, el footer solo se muestra en home ("/") y en perfil ("/perfil"...);
+  // en móvil, el footer solo se muestra en home ("/") 
   // en el resto de páginas ya lo cubre la barra inferior y sobra
   visibleEnMovil = true;
 
@@ -36,6 +36,6 @@ export class Footer implements OnInit, OnDestroy {
 
   private actualizarVisibilidad(url: string): void {
     const ruta = url.split('?')[0];
-    this.visibleEnMovil = ruta === '/' || ruta.startsWith('/perfil');
+    this.visibleEnMovil = ruta === '/' ;
   }
 }
