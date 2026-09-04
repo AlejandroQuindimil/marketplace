@@ -32,34 +32,11 @@ export class ProductoDetalle implements OnInit, OnDestroy {
   private routeSub?: Subscription;
 
   // Info estática de referencia (no viene del backend)
-  acordeones = [
-    {
-      titulo: 'Composición y cuidados',
-      abierto: false,
-      contenido: [
-        { label: 'Material exterior', valor: 'Algodón 100%' },
-        { label: 'Material interior', valor: 'Tejido de punto' },
-        { label: 'Cuidados', valor: 'Lavado a máquina 30°C' }
-      ]
-    },
-    {
-      titulo: 'Características del producto',
-      abierto: false,
-      contenido: [
-        { label: 'Cierre', valor: 'Sin cierre' },
-        { label: 'Estampado', valor: 'Liso' },
-        { label: 'Número de artículo', valor: 'DRP-0001' }
-      ]
-    },
-    {
-      titulo: 'Talla y corte',
-      abierto: false,
-      contenido: [
-        { label: 'Corte', valor: 'Regular fit' },
-        { label: 'Guía de tallas', valor: 'Consulta nuestra guía de tallas' }
-      ]
-    }
-  ];
+  acordeones: { 
+    titulo: string;
+    abierto: boolean;
+    contenido: { label: string; valor: string }[] 
+    }[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -81,6 +58,7 @@ export class ProductoDetalle implements OnInit, OnDestroy {
       if (!id) return;
       this.cargarProducto(id);
     });
+    
   }
 
   ngOnDestroy(): void {
@@ -101,6 +79,7 @@ export class ProductoDetalle implements OnInit, OnDestroy {
     this.productoService.findById(id).subscribe({
       next: (data) => {
         this.producto = data;
+        this.construirAcordeones();
         this.colorSeleccionado = data.colores[0] || '';
         this.imagenActiva = data.imagenes[0] || '';
         this.imagenIndexActivo = 0;
@@ -115,6 +94,45 @@ export class ProductoDetalle implements OnInit, OnDestroy {
       }
     });
   }
+
+ // construye los acordeones a partir de producto.detalles, incluyendo
+// solo las filas que tengan un valor real relleno — si un campo esta
+// vacio, esa fila no aparece en vez de mostrar un guion o "N/D"
+private construirAcordeones(): void {
+  if (!this.producto) return;
+
+  const d = this.producto.detalles;
+  if (!d) {
+    this.acordeones = [];
+    return;
+  }
+
+  const soloConValor = (
+    item: { label: string; valor: string | undefined }
+  ): item is { label: string; valor: string } => !!item.valor;
+
+  const composicion = [
+    { label: 'Material exterior', valor: d.materialExterior },
+    { label: 'Material interior', valor: d.materialInterior },
+    { label: 'Cuidados', valor: d.cuidados }
+  ].filter(soloConValor);
+
+  const caracteristicas = [
+    { label: 'Cierre', valor: d.cierre },
+    { label: 'Estampado', valor: d.estampado }
+  ].filter(soloConValor);
+
+  const tallaCorte = [
+    { label: 'Corte', valor: d.corte },
+    { label: 'Guía de tallas', valor: d.guiaTallas }
+  ].filter(soloConValor);
+
+  this.acordeones = [
+    { titulo: 'Composición y cuidados', abierto: false, contenido: composicion },
+    { titulo: 'Características del producto', abierto: false, contenido: caracteristicas },
+    { titulo: 'Talla y corte', abierto: false, contenido: tallaCorte }
+  ].filter(acordeon => acordeon.contenido.length > 0);
+}
 
   private comprobarFavorito(productoId: string): void {
     if (!this.authService.isLoggedIn()) return;

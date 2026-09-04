@@ -21,6 +21,17 @@ export interface Producto {
   colores: string[];
   marca: string;
   destacado: boolean;
+  detalles?: DetallesProducto;
+}
+
+export interface DetallesProducto {
+  materialExterior?: string;
+  materialInterior?: string;
+  cuidados?: string;
+  cierre?: string;
+  estampado?: string;
+  corte?: string;
+  guiaTallas?: string;
 }
 
 @Injectable({ providedIn: 'root' })
