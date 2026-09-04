@@ -40,4 +40,6 @@ public class ProductoDTO {
     private List<String> colores;
     private String marca;
     private boolean destacado;
+
+    private Producto.DetallesProducto detalles; 
 }

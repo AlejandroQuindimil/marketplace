@@ -63,4 +63,17 @@ public class Producto {
         private String talla;
         private Integer stock;
     }
+
+    private DetallesProducto detalles = new DetallesProducto();
+
+    @Data
+    public static class DetallesProducto {
+        private String materialExterior;
+        private String materialInterior;
+        private String cuidados;
+        private String cierre;
+        private String estampado;
+        private String corte;
+        private String guiatallas;
+    }
 }
