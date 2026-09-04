@@ -46,6 +46,54 @@ export class AdminProductoForm implements OnInit {
   imagenesConError: boolean[] = [false];
   imagenSeleccionada = 0;
 
+  detalles = {
+    materialExterior: '',
+    materialInterior: '',
+    cuidados: '',
+    cierre: '',
+    estampado: '',
+    corte: '',
+    guiaTallas: ''
+  };
+
+  // opciones sugeridas para los campos de "Detalles del producto": se
+  // muestran como desplegable (datalist) pero el campo sigue siendo
+  // texto libre, por si el producto necesita un valor que no esta en
+  // la lista
+  opcionesDetalles = {
+    materialExterior: [
+      'Algodón 100%', 'Poliéster 100%', 'Algodón/Poliéster', 'Lino',
+      'Lana', 'Denim', 'Cuero', 'Piel sintética', 'Nylon', 'Poliamida',
+      'Elastano/Spandex', 'Viscosa'
+    ],
+    materialInterior: [
+      'Forro de poliéster', 'Algodón', 'Sherpa', 'Forro polar',
+      'Malla transpirable', 'Peluche', 'Sin forro'
+    ],
+    cuidados: [
+      'Lavado a máquina 30°C', 'Lavado a máquina 40°C', 'Lavar a mano',
+      'Solo limpieza en seco', 'No usar secadora', 'No planchar',
+      'Planchar a baja temperatura', 'No usar lejía'
+    ],
+    cierre: [
+      'Cremallera', 'Botones', 'Cordones', 'Velcro', 'Broche',
+      'Cinturón', 'Elástico', 'Sin cierre'
+    ],
+    estampado: [
+      'Liso', 'Rayas', 'Cuadros', 'Floral', 'Animal print',
+      'Estampado gráfico', 'Degradado', 'Lunares'
+    ],
+    corte: [
+      'Regular fit', 'Slim fit', 'Oversize', 'Skinny', 'Relaxed fit',
+      'Straight fit'
+    ],
+    guiaTallas: [
+      'Consulta nuestra guía de tallas', 'Tallaje estándar',
+      'Tallaje grande, pide una talla menos',
+      'Tallaje pequeño, pide una talla más'
+    ]
+  };
+
   // formatos aceptados para subida de archivo local
   private readonly tiposImagenPermitidos = ['image/png', 'image/jpeg'];
   // indice de la fila para la que se abrio el selector de archivos;
@@ -124,7 +172,7 @@ export class AdminProductoForm implements OnInit {
   }
 
   private cargarMarcas(): void {
-    this.http.get<string[]>(`${environment.apiUrl}/marcas`).subscribe({
+    this.http.get<string[]>(`${environment.apiUrl}/productos/marcas`).subscribe({
       next: (marcas) => {
         this.marcasDisponibles = marcas;
         this.cdr.detectChanges();
@@ -151,6 +199,16 @@ export class AdminProductoForm implements OnInit {
         this.tallas = p.tallas.length ? p.tallas.map((t: any) => ({ ...t })) : [{ talla: '', stock: 0 }];
 
         this.cargarCategoriasPorGenero();
+
+        this.detalles = {
+          materialExterior: p.detalles?.materialExterior || '',
+          materialInterior: p.detalles?.materialInterior || '',
+          cuidados: p.detalles?.cuidados || '',
+          cierre: p.detalles?.cierre || '',
+          estampado: p.detalles?.estampado || '',
+          corte: p.detalles?.corte || '',
+          guiaTallas: p.detalles?.guiaTallas || ''
+        };
 
         this.loading = false;
         this.cdr.detectChanges();
@@ -503,7 +561,8 @@ export class AdminProductoForm implements OnInit {
       destacado: this.destacado,
       imagenes: this.imagenes.filter(i => i.trim() !== ''),
       colores: this.colores.filter(c => c.trim() !== ''),
-      tallas: this.tallas.filter(t => t.talla.trim() !== '')
+      tallas: this.tallas.filter(t => t.talla.trim() !== ''),
+      detalles: this.detalles,
     };
 
     this.guardando = true;

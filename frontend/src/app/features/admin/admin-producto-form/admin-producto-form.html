@@ -174,7 +174,69 @@
         </div>
         <button type="button" class="btn-add" (click)="addTalla()">+ Añadir talla</button>
       </div>
+      <div class="form-seccion">
+        <h3>Detalles del producto (opcional)</h3>
+        <p class="form-seccion-nota">Estos campos alimentan las secciones desplegables de la ficha de producto. Déjalos vacíos si no aplican.</p>
 
+       <div class="form-fila">
+          <div class="form-campo">
+            <label>Material exterior</label>
+            <input type="text" [(ngModel)]="detalles.materialExterior" name="materialExterior" placeholder="Ej: Algodón 100%" list="opciones-materialExterior">
+            <datalist id="opciones-materialExterior">
+              <option *ngFor="let o of opcionesDetalles.materialExterior" [value]="o"></option>
+            </datalist>
+          </div>
+          <div class="form-campo">
+            <label>Material interior</label>
+            <input type="text" [(ngModel)]="detalles.materialInterior" name="materialInterior" placeholder="Ej: Tejido de punto" list="opciones-materialInterior">
+            <datalist id="opciones-materialInterior">
+              <option *ngFor="let o of opcionesDetalles.materialInterior" [value]="o"></option>
+            </datalist>
+          </div>
+        </div>
+
+        <div class="form-campo">
+          <label>Cuidados</label>
+          <input type="text" [(ngModel)]="detalles.cuidados" name="cuidados" placeholder="Ej: Lavado a máquina 30°C" list="opciones-cuidados">
+          <datalist id="opciones-cuidados">
+            <option *ngFor="let o of opcionesDetalles.cuidados" [value]="o"></option>
+          </datalist>
+        </div>
+
+        <div class="form-fila">
+          <div class="form-campo">
+            <label>Cierre</label>
+            <input type="text" [(ngModel)]="detalles.cierre" name="cierre" placeholder="Ej: Cremallera, botones, sin cierre..." list="opciones-cierre">
+            <datalist id="opciones-cierre">
+              <option *ngFor="let o of opcionesDetalles.cierre" [value]="o"></option>
+            </datalist>
+          </div>
+          <div class="form-campo">
+            <label>Estampado</label>
+            <input type="text" [(ngModel)]="detalles.estampado" name="estampado" placeholder="Ej: Liso, rayas, floral..." list="opciones-estampado">
+            <datalist id="opciones-estampado">
+              <option *ngFor="let o of opcionesDetalles.estampado" [value]="o"></option>
+            </datalist>
+          </div>
+        </div>
+
+        <div class="form-fila">
+          <div class="form-campo">
+            <label>Corte</label>
+            <input type="text" [(ngModel)]="detalles.corte" name="corte" placeholder="Ej: Regular fit, oversize, slim..." list="opciones-corte">
+            <datalist id="opciones-corte">
+              <option *ngFor="let o of opcionesDetalles.corte" [value]="o"></option>
+            </datalist>
+          </div>
+          <div class="form-campo">
+            <label>Guía de tallas</label>
+            <input type="text" [(ngModel)]="detalles.guiaTallas" name="guiaTallas" placeholder="Ej: Consulta nuestra guía de tallas" list="opciones-guiaTallas">
+            <datalist id="opciones-guiaTallas">
+              <option *ngFor="let o of opcionesDetalles.guiaTallas" [value]="o"></option>
+            </datalist>
+          </div>
+        </div>
+      </div>
       <p class="form-error" *ngIf="error">{{ error }}</p>
 
       <button type="submit" class="btn-guardar" [disabled]="guardando">

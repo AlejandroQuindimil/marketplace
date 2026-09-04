@@ -485,6 +485,23 @@
   z-index: 2;
 }
 
+.form-seccion {
+  margin: 28px 0;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.form-seccion h3 {
+  font-size: 15px;
+  margin: 0 0 4px;
+}
+
+.form-seccion-nota {
+  font-size: 12px;
+  color: #999;
+  margin: 0 0 16px;
+}
+
 /* --- Responsive --- */
 
 /* Pantallas medianas: la columna de fields ya no necesita tope de 640px,
