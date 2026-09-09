@@ -16,6 +16,7 @@ import { AdminProductoForm } from './features/admin/admin-producto-form/admin-pr
 import { AdminAcceso } from './features/admin/admin-acceso/admin-acceso';
 import { AdminDashboard } from './features/admin/admin-dashboard/admin-dashboard';
 import { AdminPedidos } from './features/admin/admin-pedidos/admin-pedidos';
+import { NotFound } from './features/not-found/not-found';
 
 
 export const routes: Routes = [
@@ -30,6 +31,8 @@ export const routes: Routes = [
   { path: 'perfil', component: Perfil },
   { path: 'verificar-email', component: VerificarEmail },
   { path: 'admin/acceso', component: AdminAcceso, canActivate: [mobileAdminGuard] },
+  { path: '404', component: NotFound },
+  { path: '**', redirectTo: '/404' },
 
   {
     path: 'admin',

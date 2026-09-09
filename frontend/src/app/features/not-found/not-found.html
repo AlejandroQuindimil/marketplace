@@ -1,0 +1,65 @@
+<div class="notfound-container">
+  <h1>404</h1>
+  <p class="notfound-subtitulo">Esta página no existe... pero aquí tienes algo mejor.</p>
+
+  <div class="juego-wrap">
+    <canvas
+      #canvas
+      width="600"
+      height="200"
+      tabindex="0"
+      (click)="onTap()"
+      (pointermove)="onPointerMove($event)"
+      (keydown)="onKeydown($event)"
+      class="juego-canvas"></canvas>
+
+    <p class="juego-instrucciones" *ngIf="!jugando && !gameOver && !ganado">
+      Desliza el dedo a izquierda o derecha para mover la cesta.
+      Toca la pantalla para jugar y llegar a {{ OBJETIVO_PUNTOS }} puntos
+    </p>
+
+    <div class="juego-resultado" *ngIf="gameOver">
+      <p>💥 Se te ha vaciado el carrito. ¡Inténtalo de nuevo!</p>
+      <button class="btn-reintentar" (click)="reintentar()">Reintentar</button>
+    </div>
+
+    <div class="juego-resultado juego-ganado" *ngIf="ganado">
+      <p>🎉 ¡Lo lograste!</p>
+
+      <ng-container *ngIf="!authServiceLoggedIn()">
+        <p class="cupon-aviso">Inicia sesión para reclamar tu código de descuento.</p>
+        <a routerLink="/login" class="btn-login-cupon">Iniciar sesión</a>
+      </ng-container>
+
+      <ng-container *ngIf="authServiceLoggedIn()">
+        <p *ngIf="generandoCupon">Generando tu cupón...</p>
+        <p *ngIf="errorCupon" class="cupon-aviso">
+          No hemos podido generar tu cupón. Inténtalo de nuevo más tarde.
+        </p>
+        <div class="cupon-box" *ngIf="cuponGanado && !cuponYaUtilizado">
+          <span class="cupon-label">Tu código de 10% de descuento</span>
+          <div class="cupon-fila">
+            <span class="cupon-codigo">{{ cuponGanado }}</span>
+            <button
+              type="button"
+              class="btn-copiar-cupon"
+              (click)="copiarCupon()"
+              [class.copiado]="cuponCopiado"
+            >
+              {{ cuponCopiado ? '✓ Copiado' : 'Copiar' }}
+            </button>
+          </div>
+          <span class="cupon-nota">Cópialo y pégalo en el carrito. Un solo uso.</span>
+        </div>
+
+        <div class="cupon-box-usado" *ngIf="cuponGanado && cuponYaUtilizado">
+          <span class="cupon-label">Código ya canjeado</span>
+          <span class="cupon-codigo">{{ cuponGanado }}</span>
+          <span class="cupon-nota">Ya usaste este descuento. Solo se puede canjear una vez por cuenta.</span>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <a routerLink="/" class="btn-volver-home">Volver a la tienda</a>
+</div>

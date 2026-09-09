@@ -1,0 +1,230 @@
+* { box-sizing: border-box; }
+
+.notfound-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 24px 20px;
+  font-family: -apple-system, sans-serif;
+  text-align: center;
+}
+
+.notfound-container h1 {
+  font-size: 64px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  margin: 0;
+  background: linear-gradient(135deg, #1a1a1a 55%, #f59e0b 130%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.notfound-subtitulo {
+  color: #666;
+  font-size: 14px;
+  margin: 6px 0 20px;
+}
+
+.juego-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  max-width: 400px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.juego-canvas {
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background: #fafafa;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 5 / 4;
+  cursor: pointer;
+  touch-action: none;
+  outline: none;
+  display: block;
+}
+
+.juego-instrucciones {
+  font-size: 13px;
+  font-weight: 700;
+  color: #333;
+  margin: 4px 0 0;
+}
+
+.juego-instrucciones kbd {
+  background: #eee;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-weight: 600;
+}
+
+.juego-resultado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-reintentar {
+  padding: 10px 24px;
+  background: #1a1a1a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.cupon-aviso { font-size: 13px; color: #666; }
+
+.btn-login-cupon {
+  padding: 10px 24px;
+  background: #1a1a1a;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.cupon-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px 30px;
+  background: #f0fdf4;
+  border: 1px dashed #16a34a;
+  border-radius: 10px;
+  margin-top: 6px;
+}
+
+.cupon-label {
+  font-size: 12px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* fila que agrupa el código y el botón de copiar */
+.cupon-fila {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.cupon-codigo {
+  font-size: 26px;
+  font-weight: 700;
+  font-family: monospace;
+  letter-spacing: 2px;
+  color: #166534;
+}
+
+.btn-copiar-cupon {
+  padding: 6px 14px;
+  background: #e4e9e3;
+  color: rgb(0, 0, 0);
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn-copiar-cupon:hover {
+  background: #15803d;
+}
+
+.btn-copiar-cupon.copiado {
+  background: #929292;
+}
+
+.cupon-nota {
+  font-size: 12px;
+  color: #999;
+}
+
+.cupon-box-usado {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px 30px;
+  background: #f4f4f5;
+  border: 1px dashed #a1a1aa;
+  border-radius: 10px;
+  margin-top: 6px;
+}
+
+.cupon-box-usado .cupon-label { color: #71717a; }
+
+.cupon-box-usado .cupon-codigo {
+  color: #52525b;
+  text-decoration: line-through;
+  text-decoration-color: #a1a1aa;
+}
+
+.cupon-box-usado .cupon-nota { color: #71717a; }
+
+.btn-volver-home {
+  margin-top: 24px;
+  display: inline-block;
+  padding: 10px 24px;
+  background: none;
+  color: #1a1a1a;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-volver-home:hover {
+  background: #f5f5f5;
+  border-color: #ccc;
+}
+
+@media (max-width: 600px) {
+  .notfound-container {
+    padding: 16px 8px;
+  }
+
+  .notfound-container h1 {
+    font-size: 44px;
+  }
+
+  .notfound-subtitulo {
+    font-size: 13px;
+    margin-bottom: 14px;
+  }
+
+  .juego-wrap {
+    width: 100%;
+  }
+
+  .juego-canvas {
+    border-radius: 6px;
+  }
+
+  .cupon-box,
+  .cupon-box-usado {
+    padding: 14px 18px;
+    width: 100%;
+  }
+
+  .cupon-codigo {
+    font-size: 20px;
+    letter-spacing: 1px;
+  }
+}
