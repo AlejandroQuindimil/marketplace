@@ -32,7 +32,6 @@ export const routes: Routes = [
   { path: 'verificar-email', component: VerificarEmail },
   { path: 'admin/acceso', component: AdminAcceso, canActivate: [mobileAdminGuard] },
   { path: '404', component: NotFound },
-  { path: '**', redirectTo: '/404' },
 
   {
     path: 'admin',
