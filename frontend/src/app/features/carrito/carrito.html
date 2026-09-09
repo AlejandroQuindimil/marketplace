@@ -34,9 +34,17 @@
 
     <!-- Total + boton para abrir el checkout -->
     <div class="resumen">
+      <div class="resumen-linea" *ngIf="descuentoAplicado > 0">
+        <span>Subtotal</span>
+        <span>{{ getTotal().toFixed(2) }}€</span>
+      </div>
+      <div class="resumen-linea" *ngIf="descuentoAplicado > 0">
+        <span>Descuento ({{ descuentoAplicado }}%)</span>
+        <span class="descuento-valor">-{{ (getTotal() - totalConDescuento).toFixed(2) }}€</span>
+      </div>
       <div class="resumen-linea">
         <span>Total</span>
-        <span class="resumen-total">{{ getTotal().toFixed(2) }}€</span>
+        <span class="resumen-total">{{ totalConDescuento.toFixed(2) }}€</span>
       </div>
 
       <button class="btn-tramitar" *ngIf="!mostrandoCheckout" (click)="abrirCheckout()">
@@ -125,7 +133,21 @@
           </label>
         </div>
       </div>
-
+      <div class="cupon-row">
+        <input
+          type="text"
+          placeholder="Código de descuento"
+          [(ngModel)]="codigoCupon"
+          [disabled]="descuentoAplicado > 0">
+        <button
+          *ngIf="descuentoAplicado === 0"
+          [disabled]="validandoCupon"
+          (click)="aplicarCupon()">
+          {{ validandoCupon ? 'Verificando...' : 'Aplicar' }}
+        </button>
+        <span class="cupon-aplicado" *ngIf="descuentoAplicado > 0">✓ -{{ descuentoAplicado }}% aplicado</span>
+      </div>
+      <p class="cupon-error" *ngIf="errorCupon">{{ errorCupon }}</p>
       <p class="checkout-error" *ngIf="error">{{ error }}</p>
 
       <button class="btn-finalizar" [disabled]="!checkoutCompleto || procesando" (click)="finalizarCompra()">

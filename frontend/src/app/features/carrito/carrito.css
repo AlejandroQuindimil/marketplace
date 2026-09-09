@@ -289,6 +289,50 @@
   border-top: 2px solid #1a1a1a;
 }
 
+.cupon-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.cupon-row input {
+  flex: 1;
+  padding: 9px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.cupon-row button {
+  padding: 9px 16px;
+  background: #1a1a1a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.cupon-aplicado {
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  color: #166534;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.cupon-error {
+  color: #dc2626;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.descuento-valor {
+  color: #166534;
+  font-weight: 600;
+}
 
 
 @media (max-width: 768px) {

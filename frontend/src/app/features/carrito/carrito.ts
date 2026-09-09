@@ -7,6 +7,7 @@ import { AuthService } from '../../core/auth';
 import { UsuarioService, Direccion } from '../../core/usuario';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { CuponService } from '../../core/cupon';
 
 @Component({
   selector: 'app-carrito',
@@ -43,7 +44,8 @@ export class Carrito implements OnInit {
     private usuarioService: UsuarioService,
     private http: HttpClient,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private cuponService: CuponService
   ) {}
 
   ngOnInit(): void {
@@ -222,7 +224,8 @@ export class Carrito implements OnInit {
       calle: direccion.calle,
       ciudad: direccion.ciudad,
       cp: direccion.cp
-    }
+    },
+    codigoCupon: this.descuentoAplicado > 0 ? this.codigoCupon.trim() : null
   };
 
   this.http.post(`${environment.apiUrl}/pedidos`, body).subscribe({
@@ -239,4 +242,41 @@ export class Carrito implements OnInit {
     }
   });
   }
+
+  codigoCupon = '';
+  descuentoAplicado = 0; // porcentaje, ej: 10
+  errorCupon = '';
+  validandoCupon = false;
+    
+  aplicarCupon(): void {
+  this.errorCupon = '';
+
+  if (!this.codigoCupon.trim()) {
+    this.errorCupon = 'Introduce un código.';
+    return;
+  }
+
+  this.validandoCupon = true;
+
+  this.cuponService.aplicar(this.codigoCupon.trim()).subscribe({
+    next: (res) => {
+      this.validandoCupon = false;
+      if (res.valido) {
+        this.descuentoAplicado = res.descuento || 0;
+      } else {
+        this.errorCupon = res.error || 'Código no válido.';
+      }
+    },
+    error: (err) => {
+      this.validandoCupon = false;
+      this.errorCupon = err.error?.error || 'Código no válido.';
+    }
+  });
+}
+
+get totalConDescuento(): number {
+  const total = this.getTotal();
+  if (this.descuentoAplicado === 0) return total;
+  return total * (1 - this.descuentoAplicado / 100);
+}
 }
