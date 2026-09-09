@@ -9,12 +9,12 @@ import lombok.Data;
 
 import java.util.List;
 
-/**
- * Body esperado en POST /api/pedidos (el carrito que llega del frontend).
- * Notese que ItemDTO NO incluye precio: el precio real se lee siempre del
- * producto en base de datos dentro de PedidoService, nunca de lo que
- * mande el cliente, para que no se pueda manipular el importe a pagar.
- */
+
+// Body esperado en POST /api/pedidos (el carrito que llega del frontend).
+// Notese que ItemDTO NO incluye precio: el precio real se lee siempre del
+// producto en base de datos dentro de PedidoService, nunca de lo que
+// mande el cliente, para que no se pueda manipular el importe a pagar.
+
 @Data
 public class PedidoDTO {
 
@@ -26,7 +26,7 @@ public class PedidoDTO {
     @Valid
     private DireccionDTO direccionEnvio;
 
-    /** Un item del carrito: que producto, en que talla/color y cuantas unidades. */
+    // Un item del carrito: que producto, en que talla/color y cuantas unidades. 
     @Data
     public static class ItemDTO {
         @NotBlank(message = "El productoId es obligatorio")
@@ -43,7 +43,7 @@ public class PedidoDTO {
         private Integer cantidad;
     }
 
-    /** Direccion de envio del pedido (misma forma que Usuario.Direccion). */
+    // Direccion de envio del pedido (misma forma que Usuario.Direccion).
     @Data
     public static class DireccionDTO {
         @NotBlank(message = "La calle es obligatoria")
@@ -55,4 +55,7 @@ public class PedidoDTO {
         @NotBlank(message = "El código postal es obligatorio")
         private String cp;
     }
+
+    // Codigo de cupon de descuento que el usuario puede aplicar al pedido. Es opcional.
+    private String codigoCupon;
 }

@@ -33,7 +33,7 @@ public class Usuario {
     private LocalDateTime createdAt = LocalDateTime.now();
     private Map<String, String> tallasPreferidas = new HashMap<>();
 
-    // --- Verificacion de email ---
+    // Verificacion de email
     // false hasta que confirme el codigo que le llega por correo
     private boolean verified = false;
 
@@ -54,4 +54,10 @@ public class Usuario {
         private String cp;
         private boolean predeterminada = false;
     }
+
+    //Cupon de descuento que el ususario gana en un minijuego en el 404, un easteregg
+    //El cupon es null si nunca se ha generado al no haber ganado o encontrado el minijuego
+    //se limita a un cupon por usuario, y se puede canjear y generar una sola vez
+    private String cuponCodigo;
+    private boolean cuponUtilizado = false;
 }

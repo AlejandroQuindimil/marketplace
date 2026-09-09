@@ -8,6 +8,7 @@ import com.drip.marketplace.repository.PedidoRepository;
 import com.drip.marketplace.repository.ProductoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import com.drip.marketplace.repository.UsuarioRepository;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ public class PedidoService {
 
     private final PedidoRepository pedidoRepository;
     private final ProductoRepository productoRepository;
+    private final UsuarioRepository usuarioRepository;
 
     // Demo: sin sistema logistico real, simulamos el avance del pedido.
     // Pasados estos dias desde la creacion, si no esta ya entregado, se
@@ -68,10 +70,29 @@ public class PedidoService {
         direccion.setCiudad(dto.getDireccionEnvio().getCiudad());
         direccion.setCp(dto.getDireccionEnvio().getCp());
 
+        // Aplicar descuento si hay un cupon valido
+        double descuentoPorcentaje = 0;
+        if (dto.getCodigoCupon() != null && !dto.getCodigoCupon().isBlank()) {
+            Usuario usuario = usuarioRepository.findById(usuarioId)
+                    .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+
+            boolean cuponValido = usuario.getCuponCodigo() != null
+                && usuario.getCuponCodigo().equalsIgnoreCase(dto.getCodigoCupon())
+                && !usuario.isCuponUtilizado();
+
+            if (cuponValido) {
+                descuentoPorcentaje = 10;
+                usuario.setCuponUtilizado(true);
+                usuarioRepository.save(usuario);
+            }
+        }
+
+        double totalConDescuento = total * (1 - descuentoPorcentaje / 100);
+
         Pedido pedido = new Pedido();
         pedido.setUsuarioId(usuarioId);
         pedido.setItems(itemsPedido);
-        pedido.setTotal(total);
+        pedido.setTotal(totalConDescuento);
         pedido.setDireccionEnvio(direccion);
         pedido.setEstado(Pedido.Estado.PENDIENTE);
 
