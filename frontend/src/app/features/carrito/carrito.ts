@@ -53,6 +53,7 @@ export class Carrito implements OnInit {
     if (this.authService.isLoggedIn()) {
       this.cargarDatosUsuario();
     }
+    this.cargarIntentosCupon();
   }
 
   private cargarItems(): void {
@@ -247,9 +248,49 @@ export class Carrito implements OnInit {
   descuentoAplicado = 0; // porcentaje, ej: 10
   errorCupon = '';
   validandoCupon = false;
-    
+  intentosCupon = 0;
+  private readonly MAX_INTENTOS_CUPON = 5;
+  private readonly CUPON_STORAGE_KEY = 'drip_cupon_intentos';
+
+  // Los intentos se guardan en localStorage junto con la fecha del dia,
+  // asi el limite de 5 intentos es "por dia" de verdad: si el usuario
+  // recarga la pagina, cierra el navegador o vuelve mas tarde ese mismo
+  // dia, los intentos ya consumidos se mantienen. Solo se reinician
+  // cuando cambia la fecha.
+  private cargarIntentosCupon(): void {
+    const hoy = new Date().toDateString();
+    const guardado = localStorage.getItem(this.CUPON_STORAGE_KEY);
+
+    if (guardado) {
+      try {
+        const { fecha, intentos } = JSON.parse(guardado);
+        this.intentosCupon = fecha === hoy ? intentos : 0;
+      } catch {
+        this.intentosCupon = 0;
+      }
+    }
+
+    if (!guardado || this.intentosCupon === 0) {
+      this.guardarIntentosCupon(0, hoy);
+    }
+  }
+
+  private guardarIntentosCupon(intentos: number, fecha = new Date().toDateString()): void {
+    localStorage.setItem(this.CUPON_STORAGE_KEY, JSON.stringify({ fecha, intentos }));
+  }
+
+  private registrarIntentoFallido(): void {
+    this.intentosCupon++;
+    this.guardarIntentosCupon(this.intentosCupon);
+  }
+
   aplicarCupon(): void {
   this.errorCupon = '';
+
+  if (this.intentosCupon >= this.MAX_INTENTOS_CUPON) {
+    this.errorCupon = 'Código de descuento bloqueado: demasiados intentos fallidos. Por seguridad, prueba de nuevo en 24 horas.';
+    return;
+  }
 
   if (!this.codigoCupon.trim()) {
     this.errorCupon = 'Introduce un código.';
@@ -264,12 +305,18 @@ export class Carrito implements OnInit {
       if (res.valido) {
         this.descuentoAplicado = res.descuento || 0;
       } else {
-        this.errorCupon = res.error || 'Código no válido.';
+        this.registrarIntentoFallido();
+        this.errorCupon = this.intentosCupon >= this.MAX_INTENTOS_CUPON
+          ? 'Código de descuento bloqueado: demasiados intentos fallidos. Por seguridad, prueba de nuevo en 24 horas.'
+          : (res.error || 'Código no válido.');
       }
     },
     error: (err) => {
       this.validandoCupon = false;
-      this.errorCupon = err.error?.error || 'Código no válido.';
+      this.registrarIntentoFallido();
+      this.errorCupon = this.intentosCupon >= this.MAX_INTENTOS_CUPON
+        ? 'Código de descuento bloqueado: demasiados intentos fallidos. Por seguridad, prueba de nuevo en 24 horas.'
+        : (err.error?.error || 'Código no válido.');
     }
   });
 }

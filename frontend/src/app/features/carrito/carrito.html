@@ -138,16 +138,17 @@
           type="text"
           placeholder="Código de descuento"
           [(ngModel)]="codigoCupon"
-          [disabled]="descuentoAplicado > 0">
+          [disabled]="descuentoAplicado > 0 || intentosCupon >= 5">
         <button
           *ngIf="descuentoAplicado === 0"
-          [disabled]="validandoCupon"
+          [disabled]="validandoCupon || intentosCupon >= 5"
           (click)="aplicarCupon()">
           {{ validandoCupon ? 'Verificando...' : 'Aplicar' }}
         </button>
         <span class="cupon-aplicado" *ngIf="descuentoAplicado > 0">✓ -{{ descuentoAplicado }}% aplicado</span>
       </div>
-      <p class="cupon-error" *ngIf="errorCupon">{{ errorCupon }}</p>
+      <p class="cupon-bloqueado" *ngIf="intentosCupon >= 5">⚠️ Código de descuento bloqueado: demasiados intentos fallidos. Por seguridad, prueba de nuevo en 24 horas. Esto no afecta al resto de tu pedido.</p>
+      <p class="cupon-error" *ngIf="errorCupon && intentosCupon < 5">{{ errorCupon }}</p>
       <p class="checkout-error" *ngIf="error">{{ error }}</p>
 
       <button class="btn-finalizar" [disabled]="!checkoutCompleto || procesando" (click)="finalizarCompra()">

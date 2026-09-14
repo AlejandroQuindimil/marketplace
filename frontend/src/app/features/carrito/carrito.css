@@ -329,6 +329,23 @@
   margin-bottom: 10px;
 }
 
+.cupon-row input:disabled,
+.cupon-row button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cupon-bloqueado {
+  color: #991b1b;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
 .descuento-valor {
   color: #166534;
   font-weight: 600;
