@@ -44,5 +44,6 @@ export const routes: Routes = [
       { path: 'dashboard', component: AdminDashboard },
       { path: 'pedidos', component: AdminPedidos },
     ]
-  }
+  }, 
+  { path: '**', component: NotFound }
 ];
