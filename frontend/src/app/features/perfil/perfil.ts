@@ -7,6 +7,7 @@ import { PedidoService, Pedido } from '../../core/pedido';
 import { UsuarioService, Direccion } from '../../core/usuario';
 import { HttpClient } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
+import { CarritoService } from '../../core/carrito';
 
 @Component({
   selector: 'app-perfil',
@@ -76,6 +77,7 @@ export class Perfil implements OnInit {
     private pedidoService: PedidoService,
     private usuarioService: UsuarioService,
     private router: Router,
+    private carritoService: CarritoService,
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
     private http: HttpClient
@@ -98,6 +100,13 @@ export class Perfil implements OnInit {
 
   cambiarTab(tab: typeof this.tabActiva): void {
     this.tabActiva = tab;
+  }
+
+   logout(): void {
+    this.authService.logout();
+    this.carritoService.clear();
+    this.usuario = null;
+    this.router.navigate(['/']);
   }
 
   // --- Pedidos ---
