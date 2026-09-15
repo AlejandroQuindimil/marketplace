@@ -30,7 +30,7 @@ El proyecto está estructurado como un monorepo, separando con claridad el servi
 ### 📸 Previsualización
 
 
-<video src="frontend/public/img/drip%20portatil%20video.mp4" controls width="100%"></video>
+<video src="frontend/public/img/drip_portatil_video.mp4" controls width="100%"></video>
 
 ## 🗺️ Mapa de pantallas
 
