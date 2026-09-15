@@ -29,14 +29,7 @@ El proyecto está estructurado como un monorepo, separando con claridad el servi
 
 ### 📸 Previsualización
 
-| Header & Ofertas | Tendencia Hombre |
-| :---: | :---: |
-| <img src="frontend/public/img/inicio_img1.png" width="100%"/> | <img src="frontend/public/img/inicio_img2.png" width="100%"/> |
-
-| Tendencia Mujer | Accesorios |
-| :---: | :---: |
-| <img src="frontend/public/img/inicio_img3.png" width="100%"/> | <img src="frontend/public/img/inicio_img4.png" width="100%"/> |
-
+<video src="https://raw.githubusercontent.com/AlejandroQuindimil/marketplace/main/frontend/public/img/drip%20portatil%20video.mp4" controls width="100%"></video>
 ---
 
 ## 🗺️ Mapa de pantallas
