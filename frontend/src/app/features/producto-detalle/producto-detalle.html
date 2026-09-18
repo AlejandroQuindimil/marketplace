@@ -133,3 +133,64 @@
     {{ esFavorito ? '♥' : '♡' }}
   </button>
 </div>
+
+<div class="resenas-section" *ngIf="!loading && producto">
+  <h2>Valoraciones</h2>
+
+  <div class="resenas-resumen" *ngIf="totalResenas > 0">
+    <span class="resenas-media">{{ mediaEstrellas.toFixed(1) }} ★</span>
+    <span class="resenas-total">({{ totalResenas }} valoración{{ totalResenas === 1 ? '' : 'es' }})</span>
+  </div>
+  <p *ngIf="totalResenas === 0" class="resenas-vacio">Este producto todavía no tiene valoraciones.</p>
+
+  <!-- Formulario de nueva valoracion, solo si el usuario compro y recibio el producto -->
+  <div class="resena-form" *ngIf="puedeValorar && !resenaEnviada">
+    <h3>Deja tu valoración</h3>
+
+    <div class="estrellas-selector">
+      <span
+        *ngFor="let n of [1,2,3,4,5]"
+        class="estrella"
+        [class.activa]="n <= nuevaEstrellas"
+        (click)="seleccionarEstrellas(n)">★</span>
+    </div>
+
+    <textarea
+      [value]="nuevoComentario"
+      (input)="nuevoComentario = $any($event.target).value"
+      placeholder="Cuéntanos qué te ha parecido..."
+      maxlength="500"
+      rows="3"></textarea>
+    <span class="resena-contador" [class.resena-contador-limite]="(500 - nuevoComentario.length) <= 50">
+      {{ 500 - nuevoComentario.length }} caracteres restantes
+    </span>
+
+    <p class="resena-error" *ngIf="errorResena">{{ errorResena }}</p>
+
+    <button [disabled]="enviandoResena" (click)="enviarResena()">
+      {{ enviandoResena ? 'Enviando...' : 'Enviar valoración' }}
+    </button>
+  </div>
+
+  <p class="resena-gracias" *ngIf="resenaEnviada">¡Gracias por tu valoración!</p>
+
+  <!-- Listado de valoraciones existentes -->
+  <div class="resena-item" *ngFor="let r of resenas">
+    <div class="resena-item-header">
+      <div class="resena-autor-wrap">
+        <span class="resena-avatar">{{ r.usuarioNombre.charAt(0) }}</span>
+               <div class="resena-autor-info">
+          <span class="resena-autor">{{ ofuscarNombre(r.usuarioNombre) }}</span>
+          <span class="resena-fecha">
+            {{ r.createdAt | date:'d MMM yyyy' }}
+            <span *ngIf="r.numEdiciones > 0" class="resena-editado">(editado)</span>
+          </span>
+        </div>
+      </div>
+      <span class="resena-estrellas">
+        <span *ngFor="let n of [1,2,3,4,5]" [class.activa]="n <= r.estrellas">★</span>
+      </span>
+    </div>
+    <p class="resena-comentario">{{ r.comentario }}</p>
+  </div>
+</div>

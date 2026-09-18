@@ -7,6 +7,8 @@ import { FavoritoService } from '../../core/favorito';
 import { AuthService } from '../../core/auth';
 import { CarritoService } from '../../core/carrito';
 import { ToastService } from '../../core/toast';
+import { ResenaService, Resena } from '../../core/resena';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-producto-detalle',
@@ -38,6 +40,22 @@ export class ProductoDetalle implements OnInit, OnDestroy {
     contenido: { label: string; valor: string }[] 
     }[] = [];
 
+
+  resenas: Resena[] = [];
+  mediaEstrellas = 0;
+  totalResenas = 0;
+  puedeValorar = false;
+
+  // formulario de nueva valoracion
+  nuevaEstrellas = 0;
+  nuevoComentario = '';
+  enviandoResena = false;
+  errorResena = '';
+  resenaEnviada = false;
+
+  misResenaExistente: Resena | null = null;
+  limiteEdicionesAlcanzado = false;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -47,6 +65,7 @@ export class ProductoDetalle implements OnInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     private carritoService: CarritoService,
     private toastService: ToastService,
+    private resenaService: ResenaService, 
   ) {}
 
   ngOnInit(): void {
@@ -66,16 +85,18 @@ export class ProductoDetalle implements OnInit, OnDestroy {
   }
 
   private cargarProducto(id: string): void {
-    this.loading = true;
-    this.producto = null;
-    this.similares = [];
-    this.tallaSeleccionada = '';
-    this.colorSeleccionado = '';
-    this.imagenActiva = '';
-    this.imagenIndexActivo = 0;
-    this.esFavorito = false;
-    this.cdr.detectChanges();
+      this.loading = true;
+      this.producto = null;
+      this.similares = [];
+      this.tallaSeleccionada = '';
+      this.colorSeleccionado = '';
+      this.imagenActiva = '';
+      this.imagenIndexActivo = 0;
+      this.esFavorito = false;
+      this.misResenaExistente = null;
+      this.limiteEdicionesAlcanzado = false;
 
+    this.cdr.detectChanges();
     this.productoService.findById(id).subscribe({
       next: (data) => {
         this.producto = data;
@@ -87,6 +108,10 @@ export class ProductoDetalle implements OnInit, OnDestroy {
         this.cdr.detectChanges();
         this.cargarSimilares(data.categoria, data.genero, data.id);
         this.comprobarFavorito(data.id);
+        this.cargarResenas(data.id);
+        if (this.authService.isLoggedIn()) {
+          this.comprobarSiPuedeValorar(data.id);
+        }
       },
       error: () => {
         this.loading = false;
@@ -248,4 +273,79 @@ private construirAcordeones(): void {
     this.similaresFin = el.scrollLeft + el.clientWidth >= el.scrollWidth - 1;
     this.cdr.detectChanges();
   }
+
+
+  private cargarResenas(productoId: string): void {
+  this.resenaService.listar(productoId).subscribe({
+    next: (res) => {
+      this.resenas = res.resenas;
+      this.mediaEstrellas = res.media;
+      this.totalResenas = res.total;
+      this.cdr.detectChanges();
+    }
+  });
+}
+
+private comprobarSiPuedeValorar(productoId: string): void {
+  this.resenaService.puedoValorar(productoId).subscribe({
+    next: (res) => {
+      this.puedeValorar = res.puedeValorar;
+      this.misResenaExistente = res.miResena;
+      this.limiteEdicionesAlcanzado = res.limiteEdicionesAlcanzado;
+
+      if (res.miResena) {
+        this.nuevaEstrellas = res.miResena.estrellas;
+        this.nuevoComentario = res.miResena.comentario;
+      }
+
+      this.cdr.detectChanges();
+    }
+  });
+}
+
+seleccionarEstrellas(n: number): void {
+  this.nuevaEstrellas = n;
+}
+
+// Muestra solo las 3 primeras letras del nombre del autor de la reseña,
+// seguidas de asteriscos, para proteger su privacidad.
+ofuscarNombre(nombre: string): string {
+  if (!nombre) return '';
+  const visible = nombre.trim().slice(0, 3);
+  return `${visible}${'*'.repeat(10)}`;
+}
+
+enviarResena(): void {
+  if (!this.producto) return;
+
+  this.errorResena = '';
+
+  if (this.nuevaEstrellas === 0) {
+    this.errorResena = 'Selecciona una puntuación.';
+    return;
+  }
+  if (!this.nuevoComentario.trim()) {
+    this.errorResena = 'Escribe un comentario.';
+    return;
+  }
+  if (this.nuevoComentario.trim().length > 500) {
+    this.errorResena = 'El comentario no puede superar los 500 caracteres.';
+    return;
+  }
+
+  this.enviandoResena = true;
+
+  this.resenaService.crear(this.producto.id, this.nuevaEstrellas, this.nuevoComentario.trim()).subscribe({
+    next: () => {
+      this.enviandoResena = false;
+      this.resenaEnviada = true;
+      this.cargarResenas(this.producto!.id);
+    },
+    error: (err) => {
+      this.enviandoResena = false;
+      this.errorResena = err.error?.error || 'No se pudo enviar la valoración.';
+      this.cdr.detectChanges();
+    }
+  });
+}
 }

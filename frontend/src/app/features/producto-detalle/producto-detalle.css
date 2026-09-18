@@ -400,7 +400,219 @@
 .detalle-topbar-movil {
   display: none;
 }
+.resenas-section {
+  max-width: 1100px;
+  margin: 0 auto 60px;
+  padding: 0 40px;
+}
 
+.resenas-section h2 {
+  font-size: 22px;
+  margin-bottom: 16px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.resenas-resumen {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #eee;
+}
+
+.resenas-media {
+  font-size: 26px;
+  font-weight: 800;
+  color: #1a1a1a;
+  line-height: 1;
+}
+
+.resenas-total {
+  font-size: 13px;
+  color: #888;
+}
+
+.resenas-vacio {
+  font-size: 14px;
+  color: #999;
+  margin-bottom: 24px;
+  padding: 20px;
+  background: #fafafa;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.resena-form {
+  background: #fafafa;
+  border: 1px solid #f0f0f0;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 32px;
+  max-width: 480px;
+}
+
+.resena-form h3 {
+  font-size: 15px;
+  margin: 0 0 16px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.estrellas-selector {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.estrella {
+  cursor: pointer;
+  color: #ddd;
+  transition: transform 0.1s, color 0.15s;
+}
+
+.estrella:hover { transform: scale(1.15); }
+
+.estrella.activa { color: #f59e0b; }
+
+.resena-form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: inherit;
+  resize: vertical;
+  box-sizing: border-box;
+  margin-bottom: 12px;
+  transition: border-color 0.15s;
+}
+
+.resena-form textarea:focus {
+  outline: none;
+  border-color: #1a1a1a;
+}
+
+.resena-form button {
+  padding: 11px 24px;
+  background: #1a1a1a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.resena-form button:hover:not(:disabled) { opacity: 0.85; }
+
+.resena-form button:disabled { background: #ccc; cursor: not-allowed; }
+
+.resena-error {
+  color: #dc2626;
+  font-size: 12px;
+  margin-bottom: 12px;
+  background: #fef2f2;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.resena-gracias {
+  color: #166534;
+  font-size: 14px;
+  margin-bottom: 28px;
+  background: #f0fdf4;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.resena-item {
+  padding: 20px 0;
+  border-top: 1px solid #f0f0f0;
+  overflow-wrap: break-word;
+}
+
+.resena-item:first-of-type { border-top: none; }
+
+.resena-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.resena-autor-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.resena-avatar {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 50%;
+  background: #1a1a1a;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.resena-autor-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.resena-autor {
+  font-weight: 600;
+  font-size: 13.5px;
+  color: #1a1a1a;
+  letter-spacing: 0.2px;
+}
+
+.resena-estrellas {
+  display: flex;
+  gap: 1px;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.resena-estrellas span { color: #ddd; font-size: 15px; }
+.resena-estrellas span.activa { color: #f59e0b; }
+
+.resena-fecha { font-size: 11.5px; color: #999; }
+
+.resena-comentario {
+  font-size: 13.5px;
+  color: #444;
+  margin: 10px 0 0 48px;
+  line-height: 1.6;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.resena-contador {
+  display: block;
+  text-align: right;
+  font-size: 11px;
+  color: #999;
+  margin: -6px 0 10px;
+}
+
+.resena-contador-limite {
+  color: #dc2626;
+  font-weight: 600;
+}
 @media (max-width: 768px) {
   .detalle-topbar-movil {
     display: flex;
@@ -603,5 +815,17 @@
 
   .detalle-info h1 {
     display: none;
+  }
+    .resenas-section {
+    padding: 0 16px;
+  }
+
+  .resena-form {
+    max-width: 100%;
+    padding: 18px;
+  }
+
+  .resena-comentario {
+    margin-left: 0;
   }
 }
