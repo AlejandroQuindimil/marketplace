@@ -9,4 +9,7 @@ import java.util.Optional;
 public interface ResenaRepository extends MongoRepository<Resena, String> {
     List<Resena> findByProductoIdOrderByCreatedAtDesc(String productoId);
     Optional<Resena> findByProductoIdAndUsuarioId(String productoId, String usuarioId);
+
+    // para el panel admin: todas las resenas, mas recientes primero
+    List<Resena> findAllByOrderByCreatedAtDesc();
 }
