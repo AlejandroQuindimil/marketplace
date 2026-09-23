@@ -21,6 +21,25 @@ export interface ResenasResponse {
   total: number;
 }
 
+export interface ResenaAdmin {
+  id: string;
+  productoId: string;
+  productoNombre: string;
+  usuarioNombre: string;
+  estrellas: number;
+  comentario: string;
+  createdAt: string;
+  updatedAt: string | null;
+  numEdiciones: number;
+}
+
+// Version anterior de una reseña (la que había justo antes de editarla)
+export interface EdicionResena {
+  comentario: string;
+  estrellas: number;
+  fecha: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ResenaService {
   constructor(private http: HttpClient) {}
@@ -30,10 +49,22 @@ export class ResenaService {
   }
 
   puedoValorar(productoId: string): Observable<{ puedeValorar: boolean; miResena: Resena | null; limiteEdicionesAlcanzado: boolean }> {
-  return this.http.get<{ puedeValorar: boolean; miResena: Resena | null; limiteEdicionesAlcanzado: boolean }>(`${environment.apiUrl}/productos/${productoId}/resenas/puedo-valorar`);
-}
+    return this.http.get<{ puedeValorar: boolean; miResena: Resena | null; limiteEdicionesAlcanzado: boolean }>(`${environment.apiUrl}/productos/${productoId}/resenas/puedo-valorar`);
+  }
 
   crear(productoId: string, estrellas: number, comentario: string): Observable<Resena> {
     return this.http.post<Resena>(`${environment.apiUrl}/productos/${productoId}/resenas`, { estrellas, comentario });
   }
-}  
+
+  listarAdmin(): Observable<ResenaAdmin[]> {
+    return this.http.get<ResenaAdmin[]>(`${environment.apiUrl}/admin/resenas`);
+  }
+
+  historialAdmin(id: string): Observable<EdicionResena[]> {
+    return this.http.get<EdicionResena[]>(`${environment.apiUrl}/admin/resenas/${id}/historial`);
+  }
+
+  eliminarAdmin(id: string): Observable<any> {
+    return this.http.delete(`${environment.apiUrl}/admin/resenas/${id}`);
+  }
+}
