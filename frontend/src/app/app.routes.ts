@@ -17,6 +17,7 @@ import { AdminAcceso } from './features/admin/admin-acceso/admin-acceso';
 import { AdminDashboard } from './features/admin/admin-dashboard/admin-dashboard';
 import { AdminPedidos } from './features/admin/admin-pedidos/admin-pedidos';
 import { NotFound } from './features/not-found/not-found';
+import { AdminResenas } from './features/admin/admin-resenas/admin-resenas';
 
 
 export const routes: Routes = [
@@ -43,6 +44,7 @@ export const routes: Routes = [
       { path: 'productos/:id/editar', component: AdminProductoForm },
       { path: 'dashboard', component: AdminDashboard },
       { path: 'pedidos', component: AdminPedidos },
+      { path: 'resenas', component: AdminResenas },
     ]
   }, 
   { path: '**', component: NotFound }

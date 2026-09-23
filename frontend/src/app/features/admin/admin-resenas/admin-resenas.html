@@ -1,0 +1,102 @@
+<div class="admin-resenas">
+  <div class="admin-header">
+    <h1>Reseñas</h1>
+    <div class="admin-stats" *ngIf="!loading && resenas.length > 0">
+      <span>{{ resenas.length }} reseñas</span>
+      <span class="separador">·</span>
+      <span>{{ promedioEstrellas }} ★ promedio</span>
+    </div>
+  </div>
+
+  <div class="filtros-bar">
+    <input
+      type="text"
+      placeholder="Buscar por producto, comentario o autor..."
+      [(ngModel)]="filtroTexto">
+
+    <div class="filtro-estrellas">
+      <button [class.active]="filtroEstrellas === 0" (click)="filtroEstrellas = 0">Todas</button>
+      <button *ngFor="let n of [5,4,3,2,1]" [class.active]="filtroEstrellas === n" (click)="filtroEstrellas = n">
+        {{ n }} ★
+      </button>
+    </div>
+
+    <select class="filtro-orden" [(ngModel)]="orden">
+      <option value="recientes">Más recientes</option>
+      <option value="antiguas">Más antiguas</option>
+      <option value="estrellasDesc">Mayor puntuación</option>
+      <option value="estrellasAsc">Menor puntuación</option>
+      <option value="editadas">Más editadas</option>
+    </select>
+
+    <label class="filtro-editadas">
+      <input type="checkbox" [(ngModel)]="soloEditadas"> Solo editadas
+    </label>
+  </div>
+
+  <div class="admin-loading" *ngIf="loading">
+    <div class="skeleton-card" *ngFor="let i of [1,2,3]"></div>
+  </div>
+
+  <ng-container *ngIf="!loading">
+    <p class="admin-resultado-count" *ngIf="resenasFiltradas.length > 0">
+      {{ resenasFiltradas.length }} resultado{{ resenasFiltradas.length === 1 ? '' : 's' }}
+    </p>
+
+    <div class="resena-admin-card" *ngFor="let r of resenasFiltradas">
+      <div class="resena-admin-header">
+        <div class="resena-admin-identidad">
+          <span class="resena-admin-avatar">{{ inicial(r.usuarioNombre) }}</span>
+          <div class="resena-admin-nombres">
+            <span class="resena-admin-producto">{{ r.productoNombre }}</span>
+            <span class="resena-admin-autor">{{ r.usuarioNombre }}</span>
+          </div>
+        </div>
+
+        <div class="resena-admin-meta">
+          <span class="resena-admin-estrellas">
+            <span *ngFor="let n of [1,2,3,4,5]" [class.activa]="n <= r.estrellas">★</span>
+          </span>
+          <span class="resena-admin-fecha">{{ r.createdAt | date:'d MMM yyyy' }}</span>
+        </div>
+      </div>
+
+      <p class="resena-admin-comentario">{{ r.comentario }}</p>
+
+      <div class="resena-admin-footer">
+        <button class="btn-historial" *ngIf="r.numEdiciones > 0" (click)="toggleHistorial(r)">
+          ✎ Editada {{ r.numEdiciones }} {{ r.numEdiciones === 1 ? 'vez' : 'veces' }}
+          · última: {{ r.updatedAt | date:'d MMM yyyy' }}
+          {{ abiertas.has(r.id) ? '▴' : '▾' }}
+        </button>
+        <button class="btn-eliminar-resena" (click)="eliminar(r)">Eliminar</button>
+      </div>
+
+      <div class="resena-historial" *ngIf="abiertas.has(r.id)">
+        <p class="historial-estado" *ngIf="cargandoHistorial.has(r.id)">Cargando historial…</p>
+        <p class="historial-estado error" *ngIf="errorHistorial.has(r.id)">No se pudo cargar el historial.</p>
+
+        <ng-container *ngIf="historiales.get(r.id) as h">
+          <p class="historial-estado" *ngIf="h.length === 0">No hay versiones anteriores guardadas.</p>
+          <div class="historial-item" *ngFor="let e of h; let i = index">
+            <div class="historial-meta">
+              <span>{{ i === 0 ? 'Original' : 'Versión ' + (i + 1) }}</span>
+              <span>
+                <span class="historial-estrellas">{{ e.estrellas }} ★</span>
+                · {{ e.fecha | date:'d MMM yyyy, HH:mm' }}
+              </span>
+            </div>
+            <p class="historial-texto">{{ e.comentario }}</p>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="admin-vacio" *ngIf="resenasFiltradas.length === 0">
+      <p>No hay reseñas que coincidan con el filtro.</p>
+      <button class="btn-limpiar-filtros" *ngIf="filtroTexto || filtroEstrellas || soloEditadas" (click)="limpiarFiltros()">
+        Limpiar filtros
+      </button>
+    </div>
+  </ng-container>
+</div>
